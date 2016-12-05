@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Movie Ratings</string>
-    <string name="most_popular_settings">Most Popular</string>
-    <string name="high_rated_settings">Highest Rated</string>
     <string name="release_date_label">Release Date:</string>
+    <string name="vote_average_label">Vote Average:</string>
+
+    <!-- Menu Options -->
+    <string name="sort_by">Sort By</string>
+    <string name="most_popular_settings">Most Popular</string>
+    <string name="high_rated_settings">Top Rated</string>
+    <string name="pref_sort_key" translatable="false">sort</string>
+    <string name="pref_sort_top_rated" translatable="false">top_rated</string>
+    <string name="pref_sort_popular_rated" translatable="false">most_popular</string>
 </resources>

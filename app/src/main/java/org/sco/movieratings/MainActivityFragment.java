@@ -30,13 +30,13 @@ import org.json.JSONObject;
  * The activity for displaying all movie posters.
  */
 
-public class MovieFragment extends Fragment {
+public class MainActivityFragment extends Fragment {
 
     private MovieAdapter mMovieAdapter;
 
     private ArrayList<Movie> movieList;
 
-    public MovieFragment() {
+    public MainActivityFragment() {
     }
 
     @Override
@@ -84,7 +84,19 @@ public class MovieFragment extends Fragment {
 
     private void updateMovies() {
         FetchMovieTask movieTask = new FetchMovieTask();
-        movieTask.execute("popular");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortType = prefs.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_top_rated));
+        movieTask.execute(sortType);
+
+        if (sortType.equals("top_rated")) {
+            ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.high_rated_settings));
+        } else if (sortType.equals("most_popular")) {
+            ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.most_popular_settings));
+        } else {
+            ((MainActivity) getActivity()).setActionBarTitle("");
+        }
+
     }
 
     @Override
@@ -96,6 +108,9 @@ public class MovieFragment extends Fragment {
     public class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
 
         private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
+
+        private final String BASE_URL = "http://api.themoviedb.org/3/movie";
+        private final String IMAGE_PATH = "http://image.tmdb.org/t/p/w185";
 
         private Movie[] getMovieDataFromJson(String movieJsonStr)
             throws JSONException {
@@ -113,12 +128,6 @@ public class MovieFragment extends Fragment {
 
             Movie[] movieResults = new Movie[20];
 
-            SharedPreferences sharedPrefs =
-                    PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String movieListType = sharedPrefs.getString(
-                    getString(R.string.most_popular_settings),
-                    getString(R.string.high_rated_settings));
-
             for(int i = 0; i < moviesArray.length(); i++) {
 
                 String posterPath;
@@ -130,7 +139,7 @@ public class MovieFragment extends Fragment {
 
                 JSONObject singleMovie = moviesArray.getJSONObject(i);
 
-                posterPath = singleMovie.getString(MDB_POSTER_PATH);
+                posterPath = IMAGE_PATH + singleMovie.getString(MDB_POSTER_PATH);
                 overview = singleMovie.getString(MDB_OVERVIEW);
                 releaseDate = singleMovie.getString(MDB_RELEASE_DATE);
                 title = singleMovie.getString(MDB_TITLE);
@@ -156,27 +165,23 @@ public class MovieFragment extends Fragment {
             String moviesJsonStr = null;
 
             try {
-
-                final String POPULAR_MOVIE_BASE_URL =
-                        "http://api.themoviedb.org/3/movie/popular?";
-                final String TOP_RATED_MOVIE_BASE_URL =
-                        "http://api.themoviedb.org/3/movie/top_rated?";
+                final String POPULAR_MOVIE_BASE_URL = BASE_URL + "/popular?";
+                final String TOP_RATED_MOVIE_BASE_URL = BASE_URL + "/top_rated?";
                 final String API_KEY = "api_key";
 
                 Uri builtUri;
 
-                if (params[0] == "popular") {
+                if (params[0].equals("top_rated")) {
                     builtUri = Uri.parse(POPULAR_MOVIE_BASE_URL).buildUpon()
                             .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                             .build();
-                } else if (params[0] == "top") {
+                } else if (params[0].equals("most_popular")) {
                     builtUri = Uri.parse(TOP_RATED_MOVIE_BASE_URL).buildUpon()
                             .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                             .build();
                 } else {
-                    builtUri = Uri.parse(POPULAR_MOVIE_BASE_URL).buildUpon()
-                            .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
-                            .build();
+                    Log.e(LOG_TAG, "Unknown param: " + params[0]);
+                    return null;
                 }
 
                 URL url = new URL(builtUri.toString());

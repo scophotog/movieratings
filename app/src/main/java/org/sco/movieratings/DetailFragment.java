@@ -11,10 +11,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-/**
- * Created by sargenzi on 12/1/16.
- */
-
 public class DetailFragment extends Fragment {
 
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
@@ -23,6 +19,7 @@ public class DetailFragment extends Fragment {
     private String mMoviePoster;
     private String mMovieDetails;
     private String mMovieReleaseDate;
+    private String mMovieVoteAverage;
 
     public DetailFragment() {
                           setHasOptionsMenu(true);
@@ -55,6 +52,11 @@ public class DetailFragment extends Fragment {
             mMovieReleaseDate = movieObj.release_date;
             ((TextView) rootView.findViewById(R.id.release_date))
                     .setText(mMovieReleaseDate);
+
+            mMovieVoteAverage = movieObj.vote_average;
+            ((TextView) rootView.findViewById(R.id.vote_average))
+                    .setText(mMovieVoteAverage);
+
         }
 
         return rootView;

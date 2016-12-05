@@ -3,12 +3,7 @@ package org.sco.movieratings;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by sargenzi on 12/2/16.
- */
-
 public class Movie implements Parcelable {
-    private static final String IMAGE_PATH = "http://image.tmdb.org/t/p/w185";
 
     String title;
     String poster_path;
@@ -25,7 +20,7 @@ public class Movie implements Parcelable {
                  String vote_average) {
 
         this.title = title;
-        this.poster_path = IMAGE_PATH + poster_path;
+        this.poster_path = poster_path;
         this.overview = overview;
         this.release_date = release_date;
         this.popularity = popularity;

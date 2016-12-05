@@ -3,10 +3,6 @@ package org.sco.movieratings;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
-/**
- * Created by sargenzi on 12/1/16.
- */
-
 public class DetailActivity extends ActionBarActivity {
 
     @Override

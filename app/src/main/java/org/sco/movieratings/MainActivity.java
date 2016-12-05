@@ -1,8 +1,8 @@
 package org.sco.movieratings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,7 +16,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MovieFragment())
+                    .add(R.id.container, new MainActivityFragment())
                     .commit();
         }
     }
@@ -31,16 +31,16 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
        int id = item.getItemId();
 
-        if (id == R.id.high_rated_sort) {
-            Log.d(LOG_TAG, "High Rated Sort selected");
-            return true;
-        }
-
-        if (id == R.id.most_popular_sort) {
-            Log.d(LOG_TAG, "Most Popular Sort selected");
+        if (id == R.id.sort_by) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // For a dynamic title bar
+    public void setActionBarTitle(String title){
+        getSupportActionBar().setTitle(getText(R.string.app_name) + " " + title);
     }
 }
