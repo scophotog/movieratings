@@ -171,11 +171,11 @@ public class MainActivityFragment extends Fragment {
 
                 Uri builtUri;
 
-                if (params[0].equals("top_rated")) {
+                if (params[0].equals("most_popular")) {
                     builtUri = Uri.parse(POPULAR_MOVIE_BASE_URL).buildUpon()
                             .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                             .build();
-                } else if (params[0].equals("most_popular")) {
+                } else if (params[0].equals("top_rated")) {
                     builtUri = Uri.parse(TOP_RATED_MOVIE_BASE_URL).buildUpon()
                             .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                             .build();
