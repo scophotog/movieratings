@@ -1,7 +1,5 @@
 package org.sco.movieratings;
 
-import java.util.List;
-
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
