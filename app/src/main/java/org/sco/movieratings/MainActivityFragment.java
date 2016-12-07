@@ -15,6 +15,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +58,7 @@ public class MainActivityFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
+    /*
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -80,6 +83,35 @@ public class MainActivityFragment extends Fragment {
         });
 
         return rootView;
+    }
+*/
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        return rootView;
+
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
+
+        RecyclerView rv = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        rv.setHasFixedSize(true);
+
+        mMovieAdapter = new MovieAdapter(movieList);
+        rv.setAdapter(mMovieAdapter);
+
+        GridLayoutManager glm = new GridLayoutManager(getActivity(), 2,
+                GridLayoutManager.VERTICAL, false);
+
+        rv.setLayoutManager(glm);
+
     }
 
     private void updateMovies() {
