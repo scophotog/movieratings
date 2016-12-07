@@ -47,6 +47,8 @@ public class DetailFragment extends Fragment {
             ImageView image = (ImageView) rootView.findViewById(R.id.poster);
             Picasso.with(getActivity())
                     .load(mMoviePoster)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.image_not_found)
                     .into(image);
 
             mMovieReleaseDate = movieObj.release_date;

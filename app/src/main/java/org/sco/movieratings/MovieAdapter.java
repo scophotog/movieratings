@@ -64,7 +64,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         Picasso.with(context)
                 .load(movie.poster_path)
                 .placeholder(R.drawable.loading)
-                .error(R.drawable.loading)
+                .error(R.drawable.image_not_found)
                 .into(holder.poster);
 
         holder.poster.setOnClickListener(new View.OnClickListener() {
