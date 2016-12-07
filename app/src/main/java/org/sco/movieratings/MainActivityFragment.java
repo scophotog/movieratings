@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,8 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,42 +55,10 @@ public class MainActivityFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    /*
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        mMovieAdapter = new MovieAdapter(getActivity(), movieList);
-
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        GridView gridView = (GridView) rootView.findViewById(R.id.movielist_view);
-        gridView.setAdapter(mMovieAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Movie movie = mMovieAdapter.getItem(i);
-
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("movie", movie);
-
-                startActivity(intent);
-            }
-
-        });
-
-        return rootView;
-    }
-*/
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        return rootView;
-
+        return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
     @Override
