@@ -7,6 +7,7 @@
 
     <!-- Menu Options -->
     <string name="sort_by">Sort By</string>
+    <string name="action_refresh">Refresh</string>
     <string name="most_popular_settings">Most Popular</string>
     <string name="high_rated_settings">Top Rated</string>
     <string name="pref_sort_key" translatable="false">sort</string>

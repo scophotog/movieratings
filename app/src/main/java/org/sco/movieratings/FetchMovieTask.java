@@ -6,7 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Vector;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -14,21 +17,19 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sco.movieratings.data.MovieContract.MovieEntry;
 
-public class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
+public class FetchMovieTask extends AsyncTask<String, Void, Void> {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
 
-    private final String BASE_URL = "http://api.themoviedb.org/3/movie";
-    private final String IMAGE_PATH = "http://image.tmdb.org/t/p/w185";
+    private final Context mContext;
 
-    MovieAdapter mMovieAdapter;
-
-    FetchMovieTask(MovieAdapter myAdapter) {
-        this.mMovieAdapter = myAdapter;
+    FetchMovieTask(Context context) {
+        mContext = context;
     }
 
-    private Movie[] getMovieDataFromJson(String movieJsonStr)
+    private void getMovieDataFromJson(String movieJsonStr)
             throws JSONException {
 
         final String MDB_RESULTS = "results";
@@ -38,42 +39,70 @@ public class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
         final String MDB_TITLE = "title";
         final String MDB_POPULARITY = "popularity";
         final String MDB_VOTE_AVERAGE = "vote_average";
+        final String MDB_MOVIE_ID = "id";
 
-        JSONObject moviesJson = new JSONObject(movieJsonStr);
-        JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);
+        final String IMAGE_PATH = "http://image.tmdb.org/t/p/w185";
 
-        Movie[] movieResults = new Movie[20];
+        try {
+            JSONObject moviesJson = new JSONObject(movieJsonStr);
+            JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);
 
-        for(int i = 0; i < moviesArray.length(); i++) {
+            Vector<ContentValues> cVVector = new Vector<ContentValues>(moviesArray.length());
 
-            String posterPath;
-            String overview;
-            String releaseDate;
-            String title;
-            String popularity;
-            String averageRating;
+            for (int i = 0; i < moviesArray.length(); i++) {
 
-            JSONObject singleMovie = moviesArray.getJSONObject(i);
+                String posterPath;
+                String overview;
+                String releaseDate;
+                String title;
+                String popularity;
+                String averageRating;
+                String id;
 
-            posterPath = IMAGE_PATH + singleMovie.getString(MDB_POSTER_PATH);
-            overview = singleMovie.getString(MDB_OVERVIEW);
-            releaseDate = singleMovie.getString(MDB_RELEASE_DATE);
-            title = singleMovie.getString(MDB_TITLE);
-            popularity = singleMovie.getString(MDB_POPULARITY);
-            averageRating = singleMovie.getString(MDB_VOTE_AVERAGE);
-            movieResults[i] = new Movie(title, posterPath, overview,
-                    releaseDate, popularity, averageRating);
+                JSONObject singleMovie = moviesArray.getJSONObject(i);
 
+                posterPath = IMAGE_PATH + singleMovie.getString(MDB_POSTER_PATH);
+                overview = singleMovie.getString(MDB_OVERVIEW);
+                releaseDate = singleMovie.getString(MDB_RELEASE_DATE);
+                title = singleMovie.getString(MDB_TITLE);
+                popularity = singleMovie.getString(MDB_POPULARITY);
+                averageRating = singleMovie.getString(MDB_VOTE_AVERAGE);
+                id = singleMovie.getString(MDB_MOVIE_ID);
+
+                ContentValues movieValues = new ContentValues();
+                movieValues.put(MovieEntry.COLUMN_POSTER_PATH, posterPath);
+                movieValues.put(MovieEntry.COLUMN_OVERVIEW, overview);
+                movieValues.put(MovieEntry.COLUMN_RELEASE_DATE, releaseDate);
+                movieValues.put(MovieEntry.COLUMN_MOVIE_TITLE, title);
+                movieValues.put(MovieEntry.COLUMN_RATING, averageRating);
+                movieValues.put(MovieEntry.COLUMN_POPULARITY, popularity);
+                movieValues.put(MovieEntry.COLUMN_MOVIE_ID, id);
+                movieValues.put(MovieEntry.COLUMN_IS_FAVORITE, "N"); // Default to N
+
+                cVVector.add(movieValues);
+            }
+
+            int inserted = 0;
+
+            if (cVVector.size() > 0) {
+                ContentValues[] cvArray = new ContentValues[cVVector.size()];
+                cVVector.toArray(cvArray);
+                inserted = mContext.getContentResolver().bulkInsert(MovieEntry.CONTENT_URI, cvArray);
+            }
+
+            Log.d(LOG_TAG, "FetchMovieTask Complete. " + inserted + " inserted.");
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
         }
-
-        return movieResults;
-
     }
 
     @Override
-    protected Movie[] doInBackground(String... params) {
+    protected Void doInBackground(String... params) {
 
-        if (params.length == 0) { return null; }
+        if (params.length == 0) {
+            return null;
+        }
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -81,6 +110,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
         String moviesJsonStr = null;
 
         try {
+            final String BASE_URL = "http://api.themoviedb.org/3/movie";
             final String POPULAR_MOVIE_BASE_URL = BASE_URL + "/popular?";
             final String TOP_RATED_MOVIE_BASE_URL = BASE_URL + "/top_rated?";
             final String API_KEY = "api_key";
@@ -123,9 +153,12 @@ public class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
             }
 
             moviesJsonStr = buffer.toString();
+            getMovieDataFromJson(moviesJsonStr);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
-            return null;
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -138,28 +171,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
                 }
             }
         }
-
-        try {
-            return getMovieDataFromJson(moviesJsonStr);
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
-        }
-
         return null;
-    }
-
-    @Override
-    protected void onPostExecute(Movie[] result) {
-        if (result != null) {
-            mMovieAdapter.clear();
-            for(Movie movieItem : result) {
-                mMovieAdapter.add(movieItem);
-            }
-        }
-    }
-
-    public MovieAdapter getResults() {
-        return mMovieAdapter;
     }
 }
