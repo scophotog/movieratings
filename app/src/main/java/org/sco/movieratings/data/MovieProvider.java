@@ -192,10 +192,15 @@ public class MovieProvider extends ContentProvider {
                         if (value == null) {
                             throw new IllegalArgumentException("Cannot have null content values");
                         }
-                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            numInserted++;
+                        try {
+                            long _id = db.insertOrThrow(MovieContract.MovieEntry.TABLE_NAME, null, value);
+                            if (_id != -1) {
+                                numInserted++;
+                            }
+                        } catch (SQLiteConstraintException e) {
+                            Log.i(LOG_TAG, "Entry already exists " + e);
                         }
+
                     }
                     db.setTransactionSuccessful();
                 } finally {
