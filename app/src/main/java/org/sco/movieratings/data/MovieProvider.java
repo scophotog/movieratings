@@ -50,23 +50,25 @@ public class MovieProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
-                return retCursor;
+                break;
             }
             case MOVIE_DETAIL: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.MovieEntry.TABLE_NAME,
                         projection,
-                        MovieContract.MovieEntry._ID + " = ?",
+                        MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
                         new String[] {String.valueOf(ContentUris.parseId(uri))},
                         null,
                         null,
                         sortOrder);
-                return retCursor;
+                break;
             }
             default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
             }
         }
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return retCursor;
     }
 
     @Nullable
@@ -117,6 +119,9 @@ public class MovieProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int numDeleted;
+
+        if (null == selection) selection = "1";
+
         switch(match){
             case MOVIE:
                 numDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
@@ -130,6 +135,10 @@ public class MovieProvider extends ContentProvider {
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if (numDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
         }
 
         return numDeleted;
@@ -177,35 +186,22 @@ public class MovieProvider extends ContentProvider {
         switch(match) {
             case MOVIE:
                 db.beginTransaction();
-
                 int numInserted = 0;
                 try{
                     for(ContentValues value : values) {
                         if (value == null) {
                             throw new IllegalArgumentException("Cannot have null content values");
                         }
-                        long _id = -1;
-                        try {
-                            _id = db.insertOrThrow(MovieContract.MovieEntry.TABLE_NAME,
-                                    null, value);
-                        } catch (SQLiteConstraintException e) {
-                            Log.w(LOG_TAG, "Attempting to insert " +
-                            value.getAsString(MovieContract.MovieEntry.COLUMN_MOVIE_ID)
-                                    + " but value is already in database.");
-                        }
+                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             numInserted++;
                         }
                     }
-                    if(numInserted > 0) {
-                        db.setTransactionSuccessful();
-                    }
+                    db.setTransactionSuccessful();
                 } finally {
                     db.endTransaction();
                 }
-                if (numInserted > 0) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                }
+                getContext().getContentResolver().notifyChange(uri, null);
                 return numInserted;
             default:
                 return super.bulkInsert(uri, values);

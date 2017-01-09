@@ -34,6 +34,9 @@
                 android:name="android.support.PARENT_ACTIVTY"
                 android:value="org.sco.movieratings.MainActivity" />
         </activity>
+        <provider
+            android:authorities="org.sco.movieratings"
+            android:name=".data.MovieProvider"/>
     </application>
 
 </manifest>
