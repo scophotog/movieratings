@@ -13,7 +13,7 @@ import org.sco.movieratings.data.MovieContract;
 
 import com.squareup.picasso.Picasso;
 
-public class MovieAdapter extends CursorRecyclerAdapter<MovieAdapter.ViewHolder> {
+public class MovieAdapter extends CursorRecyclerViewAdapter<MovieAdapter.ViewHolder> {
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
     private Context mContext;
@@ -30,6 +30,7 @@ public class MovieAdapter extends CursorRecyclerAdapter<MovieAdapter.ViewHolder>
     public void onBindViewHolder(ViewHolder holder, Cursor c) {
         this.mPosterPath = c.getString(MainActivityFragment.COL_POSTER_PATH);
         this.mMovieId = c.getString(MainActivityFragment.COL_MOVIE_API_ID);
+
         Picasso.with(mContext)
                 .load(mPosterPath)
                 .placeholder(R.drawable.loading)

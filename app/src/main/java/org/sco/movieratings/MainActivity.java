@@ -9,14 +9,18 @@ import android.view.MenuItem;
 public class MainActivity extends ActionBarActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private final String MOVIEFRAGMENT_TAG = "MTAG";
+
+    private String mSort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mSort = Utility.getPreferredSort(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MainActivityFragment())
+                    .add(R.id.container, new MainActivityFragment(), MOVIEFRAGMENT_TAG)
                     .commit();
         }
     }
@@ -37,6 +41,19 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String sortType = Utility.getPreferredSort(this);
+        if (sortType != null && !sortType.equals(mSort)) {
+            MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIEFRAGMENT_TAG);
+            if ( maf != null ) {
+                maf.onSortChanged();
+            }
+        }
+        mSort = sortType;
     }
 
     // For a dynamic title bar

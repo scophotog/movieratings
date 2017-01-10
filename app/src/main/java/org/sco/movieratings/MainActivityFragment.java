@@ -34,7 +34,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     private static final int MOVIE_LOADER = 0;
     private MovieAdapter mMovieAdapter;
-    private RecyclerView mRecyclerView;
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
@@ -69,16 +68,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setHasOptionsMenu(true);
         mMovieAdapter = new MovieAdapter(getActivity(), null);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         rv.setHasFixedSize(true);
         rv.setAdapter(mMovieAdapter);
 
@@ -86,12 +79,19 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 GridLayoutManager.VERTICAL, false);
 
         rv.setLayoutManager(glm);
+
+        return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
+    }
+
+    public void onSortChanged() {
+        updateMovies();
+        getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
     }
 
     private void updateMovies() {
@@ -116,19 +116,14 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        updateMovies();
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         String sortOrder;
         Uri movieUri = MovieContract.MovieEntry.CONTENT_URI;
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortType = prefs.getString(getString(R.string.pref_sort_key),
-                getString(R.string.pref_sort_top_rated));
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortType = Utility.getPreferredSort(getActivity());
+//        String sortType = prefs.getString(getString(R.string.pref_sort_key),
+//                getString(R.string.pref_sort_top_rated));
 
         switch (sortType) {
             case "most_popular":
