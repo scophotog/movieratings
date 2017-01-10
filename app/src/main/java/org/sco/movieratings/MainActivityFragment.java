@@ -30,6 +30,7 @@ import org.sco.movieratings.data.MovieContract;
  */
 
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
     private static final int MOVIE_LOADER = 0;
     private MovieAdapter mMovieAdapter;
@@ -38,24 +39,14 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
             MovieContract.MovieEntry.COLUMN_MOVIE_ID,
-            MovieContract.MovieEntry.COLUMN_MOVIE_TITLE,
             MovieContract.MovieEntry.COLUMN_POSTER_PATH,
-            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
-            MovieContract.MovieEntry.COLUMN_OVERVIEW,
-            MovieContract.MovieEntry.COLUMN_RATING,
-            MovieContract.MovieEntry.COLUMN_POPULARITY,
             MovieContract.MovieEntry.COLUMN_IS_FAVORITE
     };
 
     static final int COL_MOVIE_ID = 0;
     static final int COL_MOVIE_API_ID = 1;
-    static final int COL_MOVIE_TITLE = 2;
-    static final int COL_POSTER_PATH = 3;
-    static final int COL_RELEASE_DATE = 4;
-    static final int COL_OVERVIEW = 5;
-    static final int COL_RATING = 6;
-    static final int COL_POPULARITY = 7;
-    static final int COL_IS_FAVORITE = 8;
+    static final int COL_POSTER_PATH = 2;
+    static final int COL_IS_FAVORITE = 3;
 
     public MainActivityFragment() {}
 
@@ -63,11 +54,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
     }
 
     @Override
@@ -137,9 +123,23 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String sortOrder;
+        Uri movieUri = MovieContract.MovieEntry.CONTENT_URI;
 
-        String sortOrder = MovieContract.MovieEntry.COLUMN_RATING + " ASC";
-        Uri movieUri = MovieContract.MovieEntry.buildMovieUriFetch();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortType = prefs.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_top_rated));
+
+        switch (sortType) {
+            case "most_popular":
+                sortOrder = MovieContract.MovieEntry.COLUMN_POPULARITY + " DESC";
+                break;
+            case "top_rated":
+                sortOrder = MovieContract.MovieEntry.COLUMN_RATING + " DESC";
+                break;
+            default:
+                sortOrder = null;
+        }
 
         return new CursorLoader(getActivity(),
                 movieUri,
@@ -147,7 +147,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 null,
                 null,
                 sortOrder
-                );
+        );
     }
 
     @Override
