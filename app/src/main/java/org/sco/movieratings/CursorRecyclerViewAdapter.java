@@ -48,6 +48,10 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         }
     }
 
+    public interface OnItemClickListener {
+        public void onItemClicked(int position);
+    }
+
     public Cursor getCursor() {
         return mCursor;
     }

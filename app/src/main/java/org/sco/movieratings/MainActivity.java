@@ -1,23 +1,40 @@
 package org.sco.movieratings;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements MainActivityFragment.Callback {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private final String MOVIEFRAGMENT_TAG = "MTAG";
 
     private String mSort;
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mSort = Utility.getPreferredSort(this);
         super.onCreate(savedInstanceState);
+        mSort = Utility.getPreferredSort(this);
+
         setContentView(R.layout.activity_main);
+
+        if(findViewById(R.id.movie_detail_container) != null) {
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new DetailFragment(), MOVIEFRAGMENT_TAG)
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
+            getSupportActionBar().setElevation(0f);
+        }
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new MainActivityFragment(), MOVIEFRAGMENT_TAG)
@@ -59,5 +76,24 @@ public class MainActivity extends ActionBarActivity {
     // For a dynamic title bar
     public void setActionBarTitle(String title){
         getSupportActionBar().setTitle(getText(R.string.app_name) + " " + title);
+    }
+
+    @Override
+    public void onItemSelected(Uri movieUri) {
+        if (mTwoPane) {
+            Bundle args = new Bundle();
+            args.putParcelable(DetailFragment.DETAIL_URI, movieUri);
+
+            DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment, MOVIEFRAGMENT_TAG)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class)
+                    .setData(movieUri);
+            startActivity(intent);
+        }
     }
 }

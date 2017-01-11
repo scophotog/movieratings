@@ -65,8 +65,12 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle saveInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
+        }
 
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mMovieTitle = (TextView) rootView.findViewById(R.id.movie_title_detail);
         mMovieDetails = (TextView) rootView.findViewById(R.id.movie_details);
         mMoviePoster = (ImageView) rootView.findViewById(R.id.poster);
@@ -84,26 +88,23 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(LOG_TAG, "In onCreateLoader");
-        Intent intent = getActivity().getIntent();
-        if (intent == null) {
-            return null;
+        if (null != mUri) {
+            return new CursorLoader(
+                    getActivity(),
+                    mUri,
+                    MOVIE_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
         }
-
-        return new CursorLoader(
-                getActivity(),
-                intent.getData(),
-                MOVIE_COLUMNS,
-                null,
-                null,
-                null
-        );
+        return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(LOG_TAG, "In onLoadFinished");
         if (data != null && data.moveToFirst()) {
-
             mMovieTitle.setText(data.getString(COL_MOVIE_TITLE));
             mMovieDetails.setText(data.getString(COL_OVERVIEW));
 

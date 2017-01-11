@@ -47,6 +47,18 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     static final int COL_POSTER_PATH = 2;
     static final int COL_IS_FAVORITE = 3;
 
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri movieUri);
+    }
+
     public MainActivityFragment() {}
 
     @Override
