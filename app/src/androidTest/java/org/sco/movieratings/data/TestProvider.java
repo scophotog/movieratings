@@ -65,7 +65,7 @@ public class TestProvider extends AndroidTestCase {
         assertEquals("Error: The MovieEntry CONTENT_URI should return MovieEntry.CONTENT_TYPE",
                 MovieEntry.CONTENT_TYPE, type);
 
-        String movieId = "123";
+        long movieId = 123;
         // content: //org.sco.movieratings/movie/123
         type = mContext.getContentResolver().getType(
                 MovieEntry.buildMovieId(movieId));
@@ -107,7 +107,7 @@ public class TestProvider extends AndroidTestCase {
 
         ContentValues updatedValues = new ContentValues(values);
         updatedValues.put(MovieEntry._ID, movieRowId);
-        updatedValues.put(MovieEntry.COLUMN_IS_FAVORITE, "N");
+        updatedValues.put(MovieEntry.COLUMN_MOVIE_ID, 222);
 
         Cursor movieCursor = mContext.getContentResolver().query(MovieEntry.CONTENT_URI, null, null, null, null);
 
@@ -195,13 +195,6 @@ public class TestProvider extends AndroidTestCase {
         for (int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++) {
             ContentValues movieValues = new ContentValues();
             movieValues.put(MovieEntry.COLUMN_MOVIE_ID, Integer.toString(111+i) );
-            movieValues.put(MovieEntry.COLUMN_POSTER_PATH, "/111");
-            movieValues.put(MovieEntry.COLUMN_IS_FAVORITE, "Y");
-            movieValues.put(MovieEntry.COLUMN_MOVIE_TITLE, "Attack of 111");
-            movieValues.put(MovieEntry.COLUMN_POPULARITY, "5");
-            movieValues.put(MovieEntry.COLUMN_RATING, "2.5");
-            movieValues.put(MovieEntry.COLUMN_RELEASE_DATE, "2016/12/1");
-            movieValues.put(MovieEntry.COLUMN_OVERVIEW, "Stuff and Junk on 111");
             returnContentValues[i] = movieValues;
         }
 

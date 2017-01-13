@@ -1,12 +1,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/sort_by"
-          android:title="@string/sort_by"
-          android:orderInCategory="100"
-          app:showAsAction="never" />
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/sort_action"
+        android:title="@string/sort_by"
+        app:showAsAction="never">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/menu_sort_by_top_rated"
+                    android:title="@string/high_rated_settings"/>
+                <item
+                    android:id="@+id/menu_sort_by_popular"
+                    android:title="@string/most_popular_settings"/>
+                <item
+                    android:id="@+id/menu_sort_by_my_favorites"
+                    android:title="@string/most_popular_settings"/>
+            </group>
+        </menu>
+    </item>
     <item android:id="@+id/action_refresh"
-          android:title="@string/action_refresh"
-          android:orderInCategory="100"
-          app:showAsAction="never" />
+          android:title="@string/action_refresh"/>
 </menu>

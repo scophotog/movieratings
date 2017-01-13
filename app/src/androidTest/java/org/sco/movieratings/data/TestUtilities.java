@@ -17,7 +17,7 @@ import org.sco.movieratings.utils.PollingCheck;
 
 public class TestUtilities extends AndroidTestCase {
 
-    static final String TEST_MOVIE_ID = "111";
+    static final long TEST_MOVIE_ID = 111;
 
     static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
         assertTrue("Empty cursor returned. " + error, valueCursor.moveToFirst());
@@ -41,13 +41,6 @@ public class TestUtilities extends AndroidTestCase {
     static ContentValues createMovieValues() {
         ContentValues movieValues = new ContentValues();
         movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, TEST_MOVIE_ID);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, "Y");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, "Foo Movie");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, "Stuff and Junk and stuff.");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, "/98237942398892.jpg");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_RATING, "5");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_POPULARITY, "3.23");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, "2016/1/1");
         return movieValues;
     }
 
