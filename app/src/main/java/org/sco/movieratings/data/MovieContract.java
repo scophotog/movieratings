@@ -29,15 +29,37 @@ public class MovieContract {
         // ID Returned by the API
         public static final String COLUMN_MOVIE_ID = "movie_id";
 
+        // Movie Title returned by the API
+        public static final String COLUMN_MOVIE_TITLE = "movie_title";
+
+        // Movie Poster Path returned by the API
+        public static final String COLUMN_POSTER_PATH = "poster_path";
+
+        // Movie Overview Returned By the API
+        public static final String COLUMN_OVERVIEW = "overview";
+
+        // Movie Release Date returned by the API
+        public static final String COLUMN_RELEASE_DATE = "release_date";
+
+        // Movie Rating returned by the API (vote_average)
+        public static final String COLUMN_RATING = "rating";
+
+        // Movie Rating returned by the API (vote_average)
+        public static final String COLUMN_POPULARITY = "popularity";
+
+        public static final String COLUMN_IS_FAVORITE = "is_favorite";
+
         public static Uri buildMovieUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildMovieId(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
-//            return CONTENT_URI.buildUpon().appendPath(movieId).build();
+        public static Uri buildMovieId(String movieId) {
+            return CONTENT_URI.buildUpon().appendPath(movieId).build();
         }
 
+        public static Uri buildMovieUriFetch() {
+            return CONTENT_URI;
+        }
     }
 
 }

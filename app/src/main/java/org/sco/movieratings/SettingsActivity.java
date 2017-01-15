@@ -5,17 +5,46 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.Window;
+
+import org.sco.movieratings.R;
 
 public class SettingsActivity extends PreferenceActivity
         implements Preference.OnPreferenceChangeListener {
 
+    private AppCompatDelegate mDelegate;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getDelegate().installViewFactory();
+        getDelegate().onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
+
+        loadToolbar();
+
         addPreferencesFromResource(R.xml.pref_general);
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sort_key)));
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+       if(item.getItemId() == android.R.id.home) {
+           this.finish();
+           return true;
+       }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void loadToolbar() {
+        getDelegate().setContentView(R.layout.activity_settings);
+        getDelegate().setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        getDelegate().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void bindPreferenceSummaryToValue(Preference preference) {
@@ -43,5 +72,12 @@ public class SettingsActivity extends PreferenceActivity
         }
 
         return true;
+    }
+
+    private AppCompatDelegate getDelegate() {
+        if (mDelegate == null) {
+            mDelegate = AppCompatDelegate.create(this, null);
+        }
+        return mDelegate;
     }
 }

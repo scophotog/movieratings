@@ -12,7 +12,8 @@ public class Utility {
 
     public static String getPreferredSort(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString(context.getString(R.string.pref_sort_key),
+        String sortType = prefs.getString(context.getString(R.string.pref_sort_key),
                 context.getString(R.string.pref_sort_top_rated));
+        return sortType;
     }
 }

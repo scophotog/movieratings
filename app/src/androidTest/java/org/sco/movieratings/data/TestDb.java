@@ -45,7 +45,13 @@ public class TestDb extends AndroidTestCase {
 
         final HashSet<String> movieColumnHashSet = new HashSet<String>();
         movieColumnHashSet.add(MovieContract.MovieEntry._ID);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_IS_FAVORITE);
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_ID);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_OVERVIEW);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_POSTER_PATH);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_RATING);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_RELEASE_DATE);
 
         int columnNameIndex = c.getColumnIndex("name");
         do {

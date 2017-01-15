@@ -1,27 +1,57 @@
 package org.sco.movieratings;
 
-import java.util.ArrayList;
-
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.sco.movieratings.data.MovieContract;
+
 
 /**
  * The activity for displaying all movie posters.
  */
 
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    private MovieListAdapter mMovieListAdapter;
 
-    private MovieAdapter mMovieAdapter;
+    private static final int MOVIE_LIST_LOADER = 0;
 
-    private ArrayList<Movie> movieList;
+    private static final String SELECTED_KEY = "selected_position";
+
+    private static final String[] MOVIE_COLUMNS = {
+            MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
+            MovieContract.MovieEntry.COLUMN_MOVIE_ID,
+            MovieContract.MovieEntry.COLUMN_POSTER_PATH,
+            MovieContract.MovieEntry.COLUMN_IS_FAVORITE
+    };
+
+    static final int COL_MOVIE_ID = 0;
+    static final int COL_MOVIE_API_ID = 1;
+    static final int COL_POSTER_PATH = 2;
+    static final int COL_IS_FAVORITE = 3;
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * MovieFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri movieId);
+    }
 
     public MainActivityFragment() {
     }
@@ -29,63 +59,98 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
-            movieList = new ArrayList<Movie>();
-        } else {
-            movieList = savedInstanceState.getParcelableArrayList("movies");
-        }
-//        setHasOptionsMenu(true);
+        // Add this line in order for this fragment to handle menu events.
+        setHasOptionsMenu(true);
+    }
+
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MOVIE_LIST_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("movies", movieList);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        RecyclerView rv = (RecyclerView) inflater.inflate(
-                R.layout.fragment_movie_list, container, false);
-        setupRecyclerView(rv);
-        return rv;
-    }
+        mMovieListAdapter = new MovieListAdapter(getActivity(), null);
 
-    private void setupRecyclerView(RecyclerView recyclerView) {
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_movie_list, container, false);
         recyclerView.setHasFixedSize(true);
-
-        mMovieAdapter = new MovieAdapter(movieList);
-        recyclerView.setAdapter(mMovieAdapter);
+        recyclerView.setAdapter(mMovieListAdapter);
 
         GridLayoutManager glm = new GridLayoutManager(getActivity(), 2,
                 GridLayoutManager.VERTICAL, false);
 
         recyclerView.setLayoutManager(glm);
+
+
+        return recyclerView;
+    }
+
+    public void onSortChanged() {
+        updateMovies();
+        getLoaderManager().restartLoader(MOVIE_LIST_LOADER, null, this);
     }
 
     private void updateMovies() {
-        FetchMovieTask movieTask = new FetchMovieTask(mMovieAdapter);
+        FetchMovieTask movieTask = new FetchMovieTask(getActivity());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortType = prefs.getString(getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_top_rated));
         movieTask.execute(sortType);
 
-//        if (sortType.equals("top_rated")) {
-//            ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.high_rated_settings));
-//        } else if (sortType.equals("most_popular")) {
-//            ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.most_popular_settings));
-//        } else {
-//            ((MainActivity) getActivity()).setActionBarTitle("");
-//        }
+        switch (sortType) {
+            case "top_rated":
+                ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.high_rated_settings));
+                break;
+            case "most_popular":
+                ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.most_popular_settings));
+                break;
+            default:
+                ((MainActivity) getActivity()).setActionBarTitle("");
+                break;
+        }
 
-        mMovieAdapter = movieTask.getResults();
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        updateMovies();
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String sortOrder;
+        Uri movieUri = MovieContract.MovieEntry.CONTENT_URI;
+
+        String sortType = Utility.getPreferredSort(getContext());
+
+        switch (sortType) {
+            case "most_popular":
+                sortOrder = MovieContract.MovieEntry.COLUMN_POPULARITY + " DESC";
+                break;
+            case "top_rated":
+                sortOrder = MovieContract.MovieEntry.COLUMN_RATING + " DESC";
+                break;
+            default:
+                sortOrder = MovieContract.MovieEntry.COLUMN_RATING + " DESC";
+        }
+
+        return new CursorLoader(getActivity(),
+                movieUri,
+                MOVIE_COLUMNS,
+                null,
+                null,
+                sortOrder
+        );
     }
 
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        mMovieListAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMovieListAdapter.swapCursor(null);
+    }
 }
