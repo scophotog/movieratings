@@ -111,6 +111,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 break;
             case "my_favorites":
                 ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.my_favorites_settings));
+                break;
             default:
                 ((MainActivity) getActivity()).setActionBarTitle("");
                 break;
@@ -123,11 +124,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         String sortType = prefs.getString(getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_top_rated));
 
-        setTitle();
-
         if (!sortType.equals("my_favorites")) {
             movieTask.execute(sortType);
         }
+
+        setTitle();
     }
 
     @Override
