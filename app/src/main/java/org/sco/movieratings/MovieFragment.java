@@ -1,7 +1,9 @@
 package org.sco.movieratings;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +30,10 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     static final String MOVIE_URI = "URI";
     private Uri mUri;
+
+    private Cursor mData;
+    
+    public static final String MOVIE_ARG = "MOVIE_ARG";
 
     private static final int MOVIE_LOADER = 0;
 
@@ -52,9 +59,11 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     static final int COL_POPULARITY = 7;
     static final int COL_IS_FAVORITE = 8;
 
+    Button mMarkAsFavorite;
+    Button mUnfavorite;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         Bundle arguments = getArguments();
         if (arguments != null) {
             mUri = arguments.getParcelable(MovieFragment.MOVIE_URI);
@@ -73,19 +82,17 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             activity.setSupportActionBar(toolbar);
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(MOVIE_LOADER, null, this);
-        favoriteButtonLoader();
-
         super.onActivityCreated(savedInstanceState);
     }
 
     private void movieLoader(Cursor data) {
-        
+        Log.d(LOG_TAG,"movieLoader");
+        mData = data;
         View view = getView();
 
         TextView mMovieTitle = (TextView) view.findViewById(R.id.movie_title);
@@ -94,31 +101,142 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         TextView mMovieReleaseDate = (TextView) view.findViewById(R.id.release_date);
         TextView mMovieVoteAverage = (TextView) view.findViewById(R.id.vote_average);
 
-        mMovieTitle.setText(data.getString(COL_MOVIE_TITLE));
-        mMovieDetails.setText(data.getString(COL_OVERVIEW));
+
+        mMovieTitle.setText(mData.getString(COL_MOVIE_TITLE));
+        mMovieDetails.setText(mData.getString(COL_OVERVIEW));
 
         Picasso.with(getActivity())
-                .load(data.getString(COL_POSTER_PATH))
+                .load(mData.getString(COL_POSTER_PATH))
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.image_not_found)
                 .into(mMoviePoster);
 
-        mMovieReleaseDate.setText(data.getString(COL_RELEASE_DATE).split("-")[0]);
+        mMovieReleaseDate.setText(mData.getString(COL_RELEASE_DATE).split("-")[0]);
 
-        mMovieVoteAverage.setText(data.getString(COL_RATING) + "/10");
+        mMovieVoteAverage.setText(mData.getString(COL_RATING) + "/10");
 
+        mMarkAsFavorite = (Button) view.findViewById(R.id.mark_as_favorite);
+        mUnfavorite = (Button) view.findViewById(R.id.remove_from_favorite);
+
+        updateFavoriteButton();
     }
 
-    private void favoriteButtonLoader() {
-        final FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Added to favorite", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                fab.setImageResource(R.drawable.ic_is_favorite);
+
+
+    private boolean isFavorite() {
+        Cursor cursor = getContext().getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI,
+                new String[]{MovieContract.MovieEntry.COLUMN_MOVIE_ID,MovieContract.MovieEntry.COLUMN_IS_FAVORITE},
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + mData.getString(COL_MOVIE_API_ID),
+                null,
+                null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            if (cursor.getString(1).equals("Y")) {
+                cursor.close();
+                return true;
+            } else {
+                cursor.close();
+                return false;
             }
-        });
+        } else {
+            return false;
+        }
+    }
+
+    private void updateFavoriteButton() {
+
+        new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return isFavorite();
+            }
+
+            @Override
+            protected void onPostExecute(Boolean favorite) {
+                if (favorite) {
+                    mUnfavorite.setVisibility(View.VISIBLE);
+                    mMarkAsFavorite.setVisibility(View.GONE);
+                    // Set remove from favorites
+                } else {
+                    mMarkAsFavorite.setVisibility(View.VISIBLE);
+                    mUnfavorite.setVisibility(View.GONE);
+                    // Set add to favorite
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        mUnfavorite.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeFromFavorite();
+                        Snackbar.make(v,"Removed from Favorites", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                });
+
+        mMarkAsFavorite.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        markAsFavorite();
+                        Snackbar.make(v,"Added to Favorites", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                });
+    }
+
+    private void removeFromFavorite() {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                if (isFavorite()) {
+                    ContentValues args = new ContentValues();
+                    args.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, "N");
+                    getContext().getContentResolver().update(
+                            MovieContract.MovieEntry.CONTENT_URI,
+                            args,
+                            MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + mData.getString(COL_MOVIE_API_ID),
+                            null);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void v) {
+                updateFavoriteButton();
+
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void markAsFavorite() {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                if (!isFavorite()) {
+                    ContentValues args = new ContentValues();
+                    args.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, "Y");
+                    getContext().getContentResolver().update(
+                            MovieContract.MovieEntry.CONTENT_URI,
+                            args,
+                            MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + mData.getString(COL_MOVIE_API_ID),
+                            null);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void v) {
+                updateFavoriteButton();
+
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -143,10 +261,11 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         if (data != null && data.moveToFirst()) {
             movieLoader(data);
         }
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        Log.v(LOG_TAG, "In onLoaderReset");
     }
 }
