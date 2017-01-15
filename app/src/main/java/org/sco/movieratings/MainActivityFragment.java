@@ -63,8 +63,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         setHasOptionsMenu(true);
     }
 
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(MOVIE_LIST_LOADER, null, this);
+        setTitle();
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -87,7 +89,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         recyclerView.setLayoutManager(glm);
 
-
         return recyclerView;
     }
 
@@ -96,19 +97,16 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         getLoaderManager().restartLoader(MOVIE_LIST_LOADER, null, this);
     }
 
-    private void updateMovies() {
-        FetchMovieTask movieTask = new FetchMovieTask(getActivity());
+    private void setTitle() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortType = prefs.getString(getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_top_rated));
 
         switch (sortType) {
             case "top_rated":
-                movieTask.execute(sortType);
                 ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.high_rated_settings));
                 break;
             case "most_popular":
-                movieTask.execute(sortType);
                 ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.most_popular_settings));
                 break;
             case "my_favorites":
@@ -117,7 +115,19 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 ((MainActivity) getActivity()).setActionBarTitle("");
                 break;
         }
+    }
 
+    private void updateMovies() {
+        FetchMovieTask movieTask = new FetchMovieTask(getActivity());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortType = prefs.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_top_rated));
+
+        setTitle();
+
+        if (!sortType.equals("my_favorites")) {
+            movieTask.execute(sortType);
+        }
     }
 
     @Override
