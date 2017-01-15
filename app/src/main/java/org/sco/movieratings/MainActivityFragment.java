@@ -101,15 +101,18 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortType = prefs.getString(getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_top_rated));
-        movieTask.execute(sortType);
 
         switch (sortType) {
             case "top_rated":
+                movieTask.execute(sortType);
                 ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.high_rated_settings));
                 break;
             case "most_popular":
+                movieTask.execute(sortType);
                 ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.most_popular_settings));
                 break;
+            case "my_favorites":
+                ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.my_favorites_settings));
             default:
                 ((MainActivity) getActivity()).setActionBarTitle("");
                 break;
@@ -119,10 +122,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String sortOrder;
         Uri movieUri = MovieContract.MovieEntry.CONTENT_URI;
 
         String sortType = Utility.getPreferredSort(getContext());
+
+        String selection = null;
+        String sortOrder = null;
 
         switch (sortType) {
             case "most_popular":
@@ -131,6 +136,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             case "top_rated":
                 sortOrder = MovieContract.MovieEntry.COLUMN_RATING + " DESC";
                 break;
+            case "my_favorites":
+                selection = MovieContract.MovieEntry.COLUMN_IS_FAVORITE + " = \"Y\"";
+                break;
             default:
                 sortOrder = MovieContract.MovieEntry.COLUMN_RATING + " DESC";
         }
@@ -138,7 +146,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         return new CursorLoader(getActivity(),
                 movieUri,
                 MOVIE_COLUMNS,
-                null,
+                selection,
                 null,
                 sortOrder
         );
