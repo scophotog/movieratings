@@ -18,72 +18,35 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.sco.movieratings.data.models.Preview;
 
-public class FetchMovieDetailTask extends AsyncTask<String, Void, List<Preview>> {
+public class FetchPreviewsTask extends AsyncTask<String, Void, List<Preview>> {
 
-    private final String LOG_TAG = FetchMovieDetailTask.class.getSimpleName();
+    public static String LOG_TAG = FetchPreviewsTask.class.getSimpleName();
+    private final Listener mListener;
 
-    private final String BASE_URL = "http://api.themoviedb.org/3/movie";
+    interface Listener {
+        void onPreviewsFetchFinished(List<Preview> previews);
+    }
 
-    MoviePreviewAdapter mMoviewPreviewAdapter;
-
-    FetchMovieDetailTask(MoviePreviewAdapter mpa) { this.mMoviewPreviewAdapter = mpa; }
-
-    private List<Preview> getMovieDataFromJson(String movieJsonStr)
-            throws JSONException {
-
-        final String MDB_RESULTS = "results";
-        final String MDB_ID = "id";
-        final String MDB_KEY = "key";
-        final String MDB_NAME = "name";
-        final String MDB_SITE = "site";
-        final String MDB_SIZE = "size";
-        final String MDB_TYPE = "type";
-                
-        JSONObject moviesJson = new JSONObject(movieJsonStr);
-        JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);
-
-        List<Preview> movieResults = new ArrayList<Preview>();
-
-        for(int i = 0; i < moviesArray.length(); i++) {
-
-            String id;
-            String key;
-            String name;
-            String site;
-            int size;
-            String type;
-
-            JSONObject moviePreviewResult = moviesArray.getJSONObject(i);
-
-            id = moviePreviewResult.getString(MDB_ID);
-            key = moviePreviewResult.getString(MDB_KEY);
-            name = moviePreviewResult.getString(MDB_NAME);
-            site = moviePreviewResult.getString(MDB_SITE);
-            size = moviePreviewResult.getInt(MDB_SIZE);
-            type = moviePreviewResult.getString(MDB_TYPE);
-            movieResults.add(new Preview(id, key, name, site, size, type));
-
-        }
-
-        return movieResults;
-
+    public FetchPreviewsTask(Listener listener) {
+        mListener = listener;
     }
 
     @Override
     protected List<Preview> doInBackground(String... params) {
+        if (params.length == 0) {
+            return null;
+        }
 
-        if (params.length == 0) { return null; }
+        String movieId = params[0];
+
+        String moviesJsonStr = null;
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
-        String moviesJsonStr = null;
-
         try {
+            final String BASE_URL = "http://api.themoviedb.org/3/movie";
             final String API_KEY = "api_key";
-
-            // http://api.themoviedb.org/3/movie/278/videos?api_key=f7eff3ac535ebd1b6d1b1baf2939cfc2
-
             Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                     .appendPath(params[0])
                     .appendPath("videos")
@@ -140,16 +103,52 @@ public class FetchMovieDetailTask extends AsyncTask<String, Void, List<Preview>>
     }
 
     @Override
-    protected void onPostExecute(List<Preview> result) {
-        if (result != null) {
-            mMoviewPreviewAdapter.clear();
-            for(Preview item : result) {
-                mMoviewPreviewAdapter.add(item);
-            }
+    protected void onPostExecute(List<Preview> previews) {
+        if (previews != null) {
+            mListener.onPreviewsFetchFinished(previews);
+        } else {
+            mListener.onPreviewsFetchFinished(new ArrayList<Preview>());
         }
     }
 
-    public MoviePreviewAdapter getResults() {
-        return mMoviewPreviewAdapter;
+    private List<Preview> getMovieDataFromJson(String movieJsonStr)
+            throws JSONException {
+
+        final String MDB_RESULTS = "results";
+        final String MDB_ID = "id";
+        final String MDB_KEY = "key";
+        final String MDB_NAME = "name";
+        final String MDB_SITE = "site";
+        final String MDB_SIZE = "size";
+        final String MDB_TYPE = "type";
+
+        JSONObject moviesJson = new JSONObject(movieJsonStr);
+        JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);
+
+        List<Preview> movieResults = new ArrayList<Preview>();
+
+        for(int i = 0; i < moviesArray.length(); i++) {
+
+            String id;
+            String key;
+            String name;
+            String site;
+            int size;
+            String type;
+
+            JSONObject moviePreviewResult = moviesArray.getJSONObject(i);
+
+            id = moviePreviewResult.getString(MDB_ID);
+            key = moviePreviewResult.getString(MDB_KEY);
+            name = moviePreviewResult.getString(MDB_NAME);
+            site = moviePreviewResult.getString(MDB_SITE);
+            size = moviePreviewResult.getInt(MDB_SIZE);
+            type = moviePreviewResult.getString(MDB_TYPE);
+            movieResults.add(new Preview(id, key, name, site, size, type));
+
+        }
+
+        return movieResults;
+
     }
 }

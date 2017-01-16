@@ -1,5 +1,8 @@
 package org.sco.movieratings;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import org.sco.movieratings.data.MovieContract;
+import org.sco.movieratings.data.models.Movie;
 
 import com.squareup.picasso.Picasso;
 
@@ -18,6 +22,10 @@ public class MovieListAdapter extends CursorRecyclerViewAdapter<MovieListAdapter
 
     private Context mContext;
     private Cursor mCursor;
+
+    public interface Callback {
+        void open(Movie movie, int position);
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;

@@ -1,7 +1,9 @@
 package org.sco.movieratings;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,12 @@ import org.sco.movieratings.data.models.Preview;
 public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapter.ViewHolder> {
     private static final String LOG_TAG = MoviePreviewAdapter.class.getSimpleName();
 
-    private ArrayList<Preview> mDataset;
+    private ArrayList<Preview> mPreviews;
+    private final Callback mCallback;
+
+    public interface Callback {
+        void view(Preview preview, int position);
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView playButton;
@@ -28,45 +35,47 @@ public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapte
         }
     }
 
-    public MoviePreviewAdapter(ArrayList<Preview> myDataset) {
-        this.mDataset = myDataset;
+    public MoviePreviewAdapter(ArrayList<Preview> myDataset, Callback callback) {
+        this.mPreviews = myDataset;
+        mCallback = callback;
+    }
+
+    public void add(List<Preview> previews) {
+        mPreviews.clear();
+        mPreviews.addAll(previews);
         notifyDataSetChanged();
     }
 
-    public void add(Preview item) {
-        mDataset.add(item);
-        notifyItemInserted(mDataset.size() - 1);
-    }
-
-    public void clear() {
-        mDataset.clear();
-        notifyDataSetChanged();
+    public ArrayList<Preview> getPreviews() {
+        return mPreviews;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.preview_list_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.preview_list_item, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        final Preview previewResult = mDataset.get(position);
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        final Preview preview = mPreviews.get(position);
 
-        holder.trailer.setText(previewResult.getName());
+        holder.trailer.setText(preview.getName());
 
         holder.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(),"Play Preview", Toast.LENGTH_SHORT).show();
+                mCallback.view(preview, holder.getAdapterPosition());
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return mPreviews.size();
     }
 
 }
