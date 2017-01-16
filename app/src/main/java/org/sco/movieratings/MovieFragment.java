@@ -73,6 +73,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     TextView mMovieVoteAverage;
     Button mMarkAsFavorite;
     Button mUnfavorite;
+    TextView mMovieTime;
     LinearLayoutManager mLinearLayout;
 
     private MoviePreviewAdapter mMoviePreviewAdapter;
@@ -102,6 +103,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mMovieVoteAverage = (TextView) rootView.findViewById(R.id.vote_average);
         mMarkAsFavorite = (Button) rootView.findViewById(R.id.mark_as_favorite);
         mUnfavorite = (Button) rootView.findViewById(R.id.remove_from_favorite);
+        mMovieTime = (TextView) rootView.findViewById(R.id.movie_time);
 
         mLinearLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
@@ -128,6 +130,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void movieView() {
         mMovieTitle.setText(mData.getString(COL_MOVIE_TITLE));
+        mMovieTitle.setBackgroundResource(R.color.movieTitleBackground);
         mMovieDetails.setText(mData.getString(COL_OVERVIEW));
 
         Picasso.with(getActivity())
@@ -138,6 +141,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
         mMovieReleaseDate.setText(mData.getString(COL_RELEASE_DATE).split("-")[0]);
         mMovieVoteAverage.setText(mData.getString(COL_RATING) + "/10");
+        mMovieTime.setText("120 min");
 
         updateFavoriteButton();
 
