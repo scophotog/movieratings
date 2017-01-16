@@ -73,12 +73,18 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     TextView mMovieVoteAverage;
     Button mMarkAsFavorite;
     Button mUnfavorite;
+    LinearLayoutManager mLinearLayout;
 
     private MoviePreviewAdapter mMoviePreviewAdapter;
     RecyclerView mRecyclerViewPreviews;
 
     public MovieFragment() {
 
+    }
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mMoviePreviewAdapter = new MoviePreviewAdapter(new ArrayList<Preview>(), this);
     }
 
     @Override
@@ -96,7 +102,13 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mMovieVoteAverage = (TextView) rootView.findViewById(R.id.vote_average);
         mMarkAsFavorite = (Button) rootView.findViewById(R.id.mark_as_favorite);
         mUnfavorite = (Button) rootView.findViewById(R.id.remove_from_favorite);
+
+        mLinearLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+
         mRecyclerViewPreviews = (RecyclerView) rootView.findViewById(R.id.preview_recycler);
+        mRecyclerViewPreviews.setHasFixedSize(false);
+        mRecyclerViewPreviews.setLayoutManager(mLinearLayout);
+        mRecyclerViewPreviews.setAdapter(mMoviePreviewAdapter);
         return rootView;
     }
 
@@ -130,14 +142,10 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         updateFavoriteButton();
 
         // Previews
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
 
-        mRecyclerViewPreviews.setLayoutManager(layoutManager);
-        mMoviePreviewAdapter = new MoviePreviewAdapter(new ArrayList<Preview>(), this);
-        mRecyclerViewPreviews.setAdapter(mMoviePreviewAdapter);
-        mRecyclerViewPreviews.setNestedScrollingEnabled(false);
 
         fetchPreviews();
+
     }
 
     @Override

@@ -35,8 +35,8 @@ public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapte
         }
     }
 
-    public MoviePreviewAdapter(ArrayList<Preview> myDataset, Callback callback) {
-        this.mPreviews = myDataset;
+    public MoviePreviewAdapter(ArrayList<Preview> previews, Callback callback) {
+        this.mPreviews = previews;
         mCallback = callback;
     }
 
