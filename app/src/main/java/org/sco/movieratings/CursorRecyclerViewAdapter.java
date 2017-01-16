@@ -1,4 +1,3 @@
-package org.sco.movieratings;
 /*
  * Copyright (C) 2014 skyfish.jy@gmail.com
  *
@@ -15,6 +14,8 @@ package org.sco.movieratings;
  * limitations under the License.
  *
  */
+
+package org.sco.movieratings;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -46,10 +47,6 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         if (mCursor != null) {
             mCursor.registerDataSetObserver(mDataSetObserver);
         }
-    }
-
-    public interface OnItemClickListener {
-        public void onItemClicked(int position);
     }
 
     public Cursor getCursor() {

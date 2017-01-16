@@ -1,4 +1,4 @@
-package org.sco.movieratings;
+package org.sco.movieratings.rest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,14 +16,15 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.sco.movieratings.BuildConfig;
 import org.sco.movieratings.data.models.Preview;
 
-public class FetchPreviewsTask extends AsyncTask<String, Void, List<Preview>> {
+public class FetchPreviewsTask extends AsyncTask<Integer, Void, List<Preview>> {
 
     public static String LOG_TAG = FetchPreviewsTask.class.getSimpleName();
     private final Listener mListener;
 
-    interface Listener {
+    public interface Listener {
         void onPreviewsFetchFinished(List<Preview> previews);
     }
 
@@ -32,12 +33,12 @@ public class FetchPreviewsTask extends AsyncTask<String, Void, List<Preview>> {
     }
 
     @Override
-    protected List<Preview> doInBackground(String... params) {
+    protected List<Preview> doInBackground(Integer... params) {
         if (params.length == 0) {
             return null;
         }
 
-        String movieId = params[0];
+        int movieId = params[0];
 
         String moviesJsonStr = null;
 
@@ -48,7 +49,7 @@ public class FetchPreviewsTask extends AsyncTask<String, Void, List<Preview>> {
             final String BASE_URL = "http://api.themoviedb.org/3/movie";
             final String API_KEY = "api_key";
             Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                    .appendPath(params[0])
+                    .appendPath(String.valueOf(movieId))
                     .appendPath("videos")
                     .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                     .build();

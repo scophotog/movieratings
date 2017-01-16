@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".MainActivity"
+        <activity android:name=".ui.MainActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait">
             <intent-filter>
@@ -20,7 +20,7 @@
         </activity>
         <activity android:name=".MovieActivity"
                   android:label="@string/movie_details_activity"
-                  android:parentActivityName=".MainActivity"
+                  android:parentActivityName=".ui.MainActivity"
                   android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVTY"
@@ -28,15 +28,16 @@
         </activity>
         <activity android:name=".SettingsActivity"
                   android:label="@string/settings_activity"
-                  android:parentActivityName=".MainActivity"
+                  android:parentActivityName=".ui.MainActivity"
                   android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVTY"
                 android:value="org.sco.movieratings.MainActivity" />
         </activity>
         <provider
-            android:authorities="org.sco.movieratings"
-            android:name=".data.MovieProvider"/>
+            android:authorities="org.sco.movieratings.data.MovieProvider"
+            android:name="org.sco.movieratings.data.generated.MovieProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

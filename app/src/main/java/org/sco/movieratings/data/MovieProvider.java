@@ -1,215 +1,62 @@
 package org.sco.movieratings.data;
 
-import android.content.ContentProvider;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.UriMatcher;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
+import net.simonvt.schematic.annotation.ContentProvider;
+import net.simonvt.schematic.annotation.ContentUri;
+import net.simonvt.schematic.annotation.InexactContentUri;
+import net.simonvt.schematic.annotation.TableEndpoint;
 
-public class MovieProvider extends ContentProvider {
-    private static final String LOG_TAG = MovieProvider.class.getSimpleName();
+/**
+ * Created by sargenzi on 1/16/17.
+ */
 
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private MovieDBHelper mOpenHelper;
+@ContentProvider(authority = MovieProvider.AUTHORITY, database = MovieDatabase.class)
+public final class MovieProvider {
 
-    static final int MOVIE = 100;
-    static final int MOVIE_DETAIL = 101;
+    public static final String AUTHORITY =
+            "org.sco.movieratings.data.MovieProvider";
 
-    private static UriMatcher buildUriMatcher(){
-        final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = MovieContract.CONTENT_AUTHORITY;
+    static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
-        matcher.addURI(authority, MovieContract.MovieEntry.TABLE_NAME, MOVIE);
-        matcher.addURI(authority, MovieContract.MovieEntry.TABLE_NAME + "/#", MOVIE_DETAIL);
-        return matcher;
+    interface Path{
+        String MOVIES = "movies";
     }
 
-    @Override
-    public boolean onCreate() {
-        mOpenHelper = new MovieDBHelper(getContext());
-        return true;
+    private static Uri buildUri(String... paths) {
+        Uri.Builder builder = BASE_CONTENT_URI.buildUpon();
+        for (String path : paths) {
+            builder.appendPath(path);
+        }
+        return builder.build();
     }
 
-    @Nullable
-    @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Cursor retCursor;
-        switch(sUriMatcher.match(uri)){
-            case MOVIE: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        MovieContract.MovieEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder);
-                break;
-            }
-            case MOVIE_DETAIL: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        MovieContract.MovieEntry.TABLE_NAME,
-                        projection,
-                        MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
-                        new String[] {String.valueOf(ContentUris.parseId(uri))},
-                        null,
-                        null,
-                        sortOrder);
-                break;
-            }
-            default: {
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-        }
-        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
-        return retCursor;
-    }
+    @TableEndpoint(table = MovieDatabase.MOVIES)
+    public static class Movies {
+        @ContentUri(
+                path = Path.MOVIES,
+                type = "vnc.android.cursor.dir/movies")
+        public static final Uri CONTENT_URI = buildUri(Path.MOVIES);
 
-    @Nullable
-    @Override
-    public String getType(Uri uri) {
-        final int match = sUriMatcher.match(uri);
-
-        switch (match) {
-            case MOVIE: {
-                return MovieContract.MovieEntry.CONTENT_TYPE;
-            }
-            case MOVIE_DETAIL: {
-                return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
-            }
-            default: {
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
+        @InexactContentUri(
+                name = "MOVIE_ID",
+                path = Path.MOVIES + "/#",
+                type = "vnc.android.cursor.dir/movies",
+                whereColumn = MovieColumns.MOVIE_ID,
+                pathSegment = 1)
+        public static Uri withId(int id) {
+            return buildUri(Path.MOVIES, String.valueOf(id));
         }
 
-    }
-
-    @Nullable
-    @Override
-    public Uri insert(Uri uri, ContentValues values) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        Uri returnUri;
-        switch (sUriMatcher.match(uri)) {
-            case MOVIE: {
-                long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
-
-                if (_id > 0) {
-                    returnUri = MovieContract.MovieEntry.buildMovieUri(_id);
-                } else {
-                    throw new android.database.SQLException("Failed to insert row into: " + uri);
-                }
-                break;
-            }
-            default: {
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-        }
-        getContext().getContentResolver().notifyChange(uri, null);
-        return returnUri;
-    }
-
-    @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        int numDeleted;
-
-        if (null == selection) selection = "1";
-
-        switch(match){
-            case MOVIE:
-                numDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
-                db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
-                                MovieContract.MovieEntry.TABLE_NAME + "'");
-                break;
-            case MOVIE_DETAIL:
-                numDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME,
-                        MovieContract.MovieEntry._ID + " = ?",
-                        new String[]{String.valueOf(ContentUris.parseId(uri))});
-                break;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
-
-        if (numDeleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
-        }
-
-        return numDeleted;
-    }
-
-    @Override
-    public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs){
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        int numUpdated = 0;
-
-        if (contentValues == null) {
-            throw new IllegalArgumentException("Cannot have null content values");
-        }
-
-        switch(sUriMatcher.match(uri)){
-            case MOVIE:{
-                numUpdated = db.update(MovieContract.MovieEntry.TABLE_NAME,
-                        contentValues,
-                        selection,
-                        selectionArgs);
-                break;
-            }
-            case MOVIE_DETAIL:{
-                numUpdated = db.update(MovieContract.MovieEntry.TABLE_NAME,
-                        contentValues,
-                        MovieContract.MovieEntry._ID + " = ?",
-                        new String[] {String.valueOf(ContentUris.parseId(uri))});
-                break;
-            }
-            default:{
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-        }
-
-        if (numUpdated > 0){
-            getContext().getContentResolver().notifyChange(uri, null);
-        }
-
-        return numUpdated;
-    }
-
-    public int bulkInsert(Uri uri, ContentValues[] values) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        switch(match) {
-            case MOVIE:
-                db.beginTransaction();
-                int numInserted = 0;
-                try{
-                    for(ContentValues value : values) {
-                        if (value == null) {
-                            throw new IllegalArgumentException("Cannot have null content values");
-                        }
-                        try {
-                            long _id = db.insertOrThrow(MovieContract.MovieEntry.TABLE_NAME, null, value);
-                            if (_id != -1) {
-                                numInserted++;
-                            }
-                        } catch (SQLiteConstraintException e) {
-                            Log.i(LOG_TAG, "Entry already exists " + e);
-                        }
-
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return numInserted;
-            default:
-                return super.bulkInsert(uri, values);
+        @InexactContentUri(
+                name = "MOVIE_FAVORITES",
+                path = Path.MOVIES + "/favorites",
+                type = "vnc.android.cursor.dir/movies",
+                whereColumn = MovieColumns.IS_FAVORITE + 1,
+                pathSegment = 1)
+        public static Uri favorites() {
+            return buildUri(Path.MOVIES);
         }
     }
+
 }

@@ -4,19 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,47 +20,22 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.sco.movieratings.data.MovieContract;
+import org.sco.movieratings.data.MovieColumns;
+import org.sco.movieratings.data.MovieProvider;
+import org.sco.movieratings.data.models.Movie;
 import org.sco.movieratings.data.models.Preview;
+import org.sco.movieratings.rest.FetchPreviewsTask;
 
 import com.squareup.picasso.Picasso;
 
-public class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+public class MovieFragment extends Fragment implements
         FetchPreviewsTask.Listener, MoviePreviewAdapter.Callback {
 
     private static final String LOG_TAG = MovieFragment.class.getSimpleName();
 
-    static final String MOVIE_URI = "URI";
-    private Uri mUri;
-
-    private Cursor mData;
+    public static final String MOVIE = "movie";
 
     public static final String PREVIEWS_EXTRA = "PREVIEWS_EXTRA";
-
-    private static final int MOVIE_LOADER = 0;
-
-    private static final String[] MOVIE_COLUMNS = {
-            MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
-            MovieContract.MovieEntry.COLUMN_MOVIE_ID,
-            MovieContract.MovieEntry.COLUMN_MOVIE_TITLE,
-            MovieContract.MovieEntry.COLUMN_POSTER_PATH,
-            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
-            MovieContract.MovieEntry.COLUMN_OVERVIEW,
-            MovieContract.MovieEntry.COLUMN_RATING,
-            MovieContract.MovieEntry.COLUMN_POPULARITY,
-            MovieContract.MovieEntry.COLUMN_IS_FAVORITE
-    };
-
-    static final int COL_MOVIE_ID = 0;
-    static final int COL_MOVIE_API_ID = 1;
-    static final int COL_MOVIE_TITLE = 2;
-    static final int COL_POSTER_PATH = 3;
-    static final int COL_RELEASE_DATE = 4;
-    static final int COL_OVERVIEW = 5;
-    static final int COL_RATING = 6;
-    static final int COL_POPULARITY = 7;
-    static final int COL_IS_FAVORITE = 8;
-
 
     TextView mMovieTitle;
     ImageView mMoviePoster;
@@ -78,6 +49,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private MoviePreviewAdapter mMoviePreviewAdapter;
     RecyclerView mRecyclerViewPreviews;
+    Movie mMovie;
 
     public MovieFragment() {
 
@@ -90,12 +62,13 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            mUri = arguments.getParcelable(MovieFragment.MOVIE_URI);
+        Intent intent = getActivity().getIntent();
+
+        if (intent != null) {
+            mMovie = intent.getParcelableExtra(MOVIE);
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
+        View rootView = inflater.inflate(R.layout.activity_movie, container, false);
         mMovieTitle = (TextView) rootView.findViewById(R.id.movie_title);
         mMoviePoster = (ImageView) rootView.findViewById(R.id.poster);
         mMovieDetails = (TextView) rootView.findViewById(R.id.movie_details);
@@ -126,27 +99,28 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        movieView();
+
     }
 
     public void movieView() {
-        mMovieTitle.setText(mData.getString(COL_MOVIE_TITLE));
+        mMovieTitle.setText(mMovie.getMovieTitle());
         mMovieTitle.setBackgroundResource(R.color.movieTitleBackground);
-        mMovieDetails.setText(mData.getString(COL_OVERVIEW));
+        mMovieDetails.setText(mMovie.getOverview());
 
         Picasso.with(getActivity())
-                .load(mData.getString(COL_POSTER_PATH))
+                .load(mMovie.getPosterPath())
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.image_not_found)
                 .into(mMoviePoster);
 
-        mMovieReleaseDate.setText(mData.getString(COL_RELEASE_DATE).split("-")[0]);
-        mMovieVoteAverage.setText(mData.getString(COL_RATING) + "/10");
+        mMovieReleaseDate.setText(mMovie.getReleaseDate().split("-")[0]);
+        mMovieVoteAverage.setText(mMovie.getVoteAverage() + "/10");
         mMovieTime.setText("120 min");
 
         updateFavoriteButton();
 
         // Previews
-
 
         fetchPreviews();
 
@@ -155,7 +129,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
     }
 
     @Override
@@ -169,9 +142,9 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private boolean isFavorite() {
         Cursor cursor = getContext().getContentResolver().query(
-                MovieContract.MovieEntry.CONTENT_URI,
-                new String[]{MovieContract.MovieEntry.COLUMN_MOVIE_ID,MovieContract.MovieEntry.COLUMN_IS_FAVORITE},
-                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + mData.getString(COL_MOVIE_API_ID),
+                MovieProvider.Movies.CONTENT_URI,
+                new String[]{MovieColumns.MOVIE_ID,MovieColumns.IS_FAVORITE},
+                MovieColumns.MOVIE_ID + " = " + mMovie.getMovieId(),
                 null,
                 null
         );
@@ -240,11 +213,11 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             protected Void doInBackground(Void... params) {
                 if (isFavorite()) {
                     ContentValues args = new ContentValues();
-                    args.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, "N");
+                    args.put(MovieColumns.IS_FAVORITE, 0);
                     getContext().getContentResolver().update(
-                            MovieContract.MovieEntry.CONTENT_URI,
+                            MovieProvider.Movies.CONTENT_URI,
                             args,
-                            MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + mData.getString(COL_MOVIE_API_ID),
+                            MovieColumns.MOVIE_ID + " = " + mMovie.getMovieId(),
                             null);
                 }
                 return null;
@@ -265,11 +238,11 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             protected Void doInBackground(Void... params) {
                 if (!isFavorite()) {
                     ContentValues args = new ContentValues();
-                    args.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, "Y");
+                    args.put(MovieColumns.IS_FAVORITE, 1);
                     getContext().getContentResolver().update(
-                            MovieContract.MovieEntry.CONTENT_URI,
+                            MovieProvider.Movies.CONTENT_URI,
                             args,
-                            MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + mData.getString(COL_MOVIE_API_ID),
+                            MovieColumns.MOVIE_ID + " = " + mMovie.getMovieId(),
                             null);
                 }
                 return null;
@@ -284,43 +257,13 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.v(LOG_TAG, "In onCreateLoader");
-        if (null != mUri) {
-            return new CursorLoader(
-                    getActivity(),
-                    mUri,
-                    MOVIE_COLUMNS,
-                    null,
-                    null,
-                    null
-            );
-        }
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.v(LOG_TAG, "In onLoadFinished");
-        if (data != null && data.moveToFirst()) {
-            mData = data;
-            movieView();
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        Log.v(LOG_TAG, "In onLoaderReset");
-    }
-
-    @Override
     public void onPreviewsFetchFinished(List<Preview> previews) {
         mMoviePreviewAdapter.add(previews);
     }
 
     private void fetchPreviews() {
         FetchPreviewsTask fetchPreviewsTask = new FetchPreviewsTask(this);
-        fetchPreviewsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mData.getString(COL_MOVIE_API_ID));
+        fetchPreviewsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mMovie.getMovieId());
     }
 
     @Override

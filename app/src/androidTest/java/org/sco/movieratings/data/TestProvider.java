@@ -47,15 +47,15 @@ public class TestProvider extends AndroidTestCase {
         PackageManager pm = mContext.getPackageManager();
 
         ComponentName componentName = new ComponentName(mContext.getPackageName(),
-                MovieProvider.class.getName());
+                MovieProviderOld.class.getName());
 
         try {
             ProviderInfo providerInfo = pm.getProviderInfo(componentName, 0);
-            assertEquals("Error: MovieProvider registered with authority: " + providerInfo.authority +
+            assertEquals("Error: MovieProviderOld registered with authority: " + providerInfo.authority +
                     " instead of authority: " + MovieContract.CONTENT_AUTHORITY,
                     providerInfo.authority, MovieContract.CONTENT_AUTHORITY);
         } catch (PackageManager.NameNotFoundException e) {
-            assertTrue("Error: MovieProvider not registered at " + mContext.getPackageName(),
+            assertTrue("Error: MovieProviderOld not registered at " + mContext.getPackageName(),
                     false);
         }
     }

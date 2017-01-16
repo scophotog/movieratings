@@ -1,14 +1,18 @@
-package org.sco.movieratings;
+package org.sco.movieratings.ui;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback {
+import org.sco.movieratings.R;
+import org.sco.movieratings.SettingsActivity;
+import org.sco.movieratings.Utility;
+
+public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -21,9 +25,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         mSort = Utility.getPreferredSort(this);
 
         setContentView(R.layout.activity_main);
+
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MainActivityFragment(), MOVIES_FRAGMENT_TAG)
+            Fragment fragment = new MainActivityFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.container, fragment, MOVIES_FRAGMENT_TAG)
                     .commit();
         }
 
@@ -62,12 +69,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
     // For a dynamic title bar
     public void setActionBarTitle(String title){
-        getSupportActionBar().setTitle(getText(R.string.app_name) + " " + title);
-    }
 
-    @Override
-    public void onItemSelected(Uri movieUri) {
-        Intent intent = new Intent(this, MovieActivity.class).setData(movieUri);
-        startActivity(intent);
     }
 }
