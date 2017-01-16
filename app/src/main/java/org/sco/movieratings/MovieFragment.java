@@ -150,13 +150,8 @@ public class MovieFragment extends Fragment implements
         );
 
         if (cursor != null && cursor.moveToFirst()) {
-            if (cursor.getString(1).equals("Y")) {
-                cursor.close();
-                return true;
-            } else {
-                cursor.close();
-                return false;
-            }
+            cursor.close();
+            return true;
         } else {
             return false;
         }
@@ -212,11 +207,8 @@ public class MovieFragment extends Fragment implements
             @Override
             protected Void doInBackground(Void... params) {
                 if (isFavorite()) {
-                    ContentValues args = new ContentValues();
-                    args.put(MovieColumns.IS_FAVORITE, 0);
-                    getContext().getContentResolver().update(
+                    getContext().getContentResolver().delete(
                             MovieProvider.Movies.CONTENT_URI,
-                            args,
                             MovieColumns.MOVIE_ID + " = " + mMovie.getMovieId(),
                             null);
                 }
@@ -237,13 +229,20 @@ public class MovieFragment extends Fragment implements
             @Override
             protected Void doInBackground(Void... params) {
                 if (!isFavorite()) {
-                    ContentValues args = new ContentValues();
-                    args.put(MovieColumns.IS_FAVORITE, 1);
-                    getContext().getContentResolver().update(
+                    ContentValues movieValues = new ContentValues();
+                    movieValues.put(MovieColumns.IS_FAVORITE, 1);
+                    movieValues.put(MovieColumns.MOVIE_ID, mMovie.getMovieId());
+                    movieValues.put(MovieColumns.MOVIE_TITLE, mMovie.getMovieTitle());
+                    movieValues.put(MovieColumns.OVERVIEW, mMovie.getOverview());
+                    movieValues.put(MovieColumns.POPULARITY, mMovie.getPopularity());
+                    movieValues.put(MovieColumns.POSTER_PATH, mMovie.getPosterPath());
+                    movieValues.put(MovieColumns.RELEASE_DATE, mMovie.getReleaseDate());
+                    movieValues.put(MovieColumns.RATING, mMovie.getVoteAverage());
+
+                    getContext().getContentResolver().insert(
                             MovieProvider.Movies.CONTENT_URI,
-                            args,
-                            MovieColumns.MOVIE_ID + " = " + mMovie.getMovieId(),
-                            null);
+                            movieValues
+                    );
                 }
                 return null;
             }
