@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -98,27 +99,27 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        String sortType = Utility.getPreferredSort(this);
-        if (sortType != null && !sortType.equals(mSort)) {
-
-            if (!sortType.equals(R.string.pref_sort_my_favorites)) {
-                MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
-                if (maf != null) {
-                    maf.onSortChanged();
-                }
-            } else {
-                MainActivityFavoriteFragment maff = (MainActivityFavoriteFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FAVORITE_FRAGMENT_TAG);
-                if(maff !=null) {
-                    maff.updateMovies();
-                }
-            }
-
-        }
-        mSort = sortType;
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        String sortType = Utility.getPreferredSort(this);
+//        if (sortType != null && !sortType.equals(mSort)) {
+//
+//            if (!sortType.equals(R.string.pref_sort_my_favorites)) {
+//                MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
+//                if (maf != null) {
+//                    maf.onSortChanged();
+//                }
+//            } else {
+//                MainActivityFavoriteFragment maff = (MainActivityFavoriteFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FAVORITE_FRAGMENT_TAG);
+//                if(maff !=null) {
+//                    maff.updateMovies();
+//                }
+//            }
+//
+//        }
+//        mSort = sortType;
+//    }
 
     private String getSortType() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

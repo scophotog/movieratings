@@ -1,6 +1,7 @@
 package org.sco.movieratings.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,31 +28,7 @@ public class MainActivityFragment extends Fragment {
     private static final String SAVED_MOVIES = "movies";
     private MovieListAdapter mMovieListAdapter;
 
-    private ArrayList<Movie> mMovieList;
-
     public MainActivityFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if(savedInstanceState == null || !savedInstanceState.containsKey(SAVED_MOVIES)) {
-            mMovieList = new ArrayList<Movie>();
-        } else {
-            mMovieList = savedInstanceState.getParcelableArrayList(SAVED_MOVIES);
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(SAVED_MOVIES, mMovieList);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        setTitle();
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -65,7 +42,12 @@ public class MainActivityFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.movie_list);
         recyclerView.setHasFixedSize(true);
 
-        mMovieListAdapter = new MovieListAdapter(getActivity(), null);
+        List<Movie> movies = new ArrayList<>();
+        if (savedInstanceState != null) {
+            movies = savedInstanceState.getParcelableArrayList(SAVED_MOVIES);
+        }
+
+        mMovieListAdapter = new MovieListAdapter(getActivity(), movies);
 
         recyclerView.setLayoutManager(
                 new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false)
@@ -73,6 +55,13 @@ public class MainActivityFragment extends Fragment {
 
         recyclerView.setAdapter(mMovieListAdapter);
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(SAVED_MOVIES, new ArrayList<>(mMovieListAdapter.getItems()));
+    }
+
 
     public void onSortChanged() {
         updateMovies();
@@ -111,16 +100,14 @@ public class MainActivityFragment extends Fragment {
         if (!sortType.equals("my_favorites")) {
             movieTask.execute(sortType);
         } else {
-            // Do query here?
-            //        Cursor c = getActivity().getContentResolver().query(MovieProvider.Movies.CONTENT_URI,
-//                null,null,null,null);
-//        Log.i(LOG_TAG, "cursor count: " + c.getCount());
+
         }
 
         setTitle();
         mMovieListAdapter = movieTask.getResults();
     }
 
+    @Override
     public void onStart() {
         super.onStart();
         updateMovies();

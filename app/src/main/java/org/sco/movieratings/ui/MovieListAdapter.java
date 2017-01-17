@@ -35,6 +35,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         } else {
             mMovies = movies;
         }
+
         notifyDataSetChanged();
     }
 
@@ -86,6 +87,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     @Override
     public int getItemCount() {
         return mMovies.size();
+    }
+
+    public List<Movie> getItems() {
+        return mMovies;
     }
 
 }

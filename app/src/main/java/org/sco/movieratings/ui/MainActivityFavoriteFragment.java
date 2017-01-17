@@ -53,7 +53,8 @@ public class MainActivityFavoriteFragment extends Fragment implements LoaderMana
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_movie_list, container, false);
     }
 
@@ -78,7 +79,51 @@ public class MainActivityFavoriteFragment extends Fragment implements LoaderMana
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 
+    public void updateMovies() {
+        Cursor c = null;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortType = prefs.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_top_rated));
 
+        if (sortType.equals("my_favorites")) {
+            c = getActivity().getContentResolver().query(MovieProvider.Movies.CONTENT_URI,
+                    null,MovieColumns.IS_FAVORITE + " = 1",null,null);
+            Log.i(LOG_TAG, "cursor count: " + c.getCount());
+        }
+
+        setTitle();
+        mMovieFavoriteListAdapter = new MovieFavoriteListAdapter(getContext(), c);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateMovies();
+    }
+
+    private void setTitle() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortType = prefs.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_top_rated));
+
+        String title;
+        switch (sortType) {
+            case "top_rated":
+                title = getString(R.string.high_rated_settings);
+                break;
+            case "most_popular":
+                title = getString(R.string.most_popular_settings);
+                break;
+            case "my_favorites":
+                title = getString(R.string.my_favorites_settings);
+                break;
+            default:
+                title = "";
+                break;
+        }
+        ((MainActivity) getActivity()).getSupportActionBar()
+                .setTitle(getText(R.string.app_name) + " " + title);
+    }
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
@@ -87,14 +132,6 @@ public class MainActivityFavoriteFragment extends Fragment implements LoaderMana
                 MovieColumns.IS_FAVORITE + " = 1",
                 null,
                 null);
-    }
-
-    public void updateMovies() {
-        Cursor c = getActivity().getContentResolver().query(MovieProvider.Movies.CONTENT_URI,
-                null,MovieColumns.IS_FAVORITE + " = 1",null,null);
-        Log.i(LOG_TAG, "cursor count: " + c.getCount());
-
-        mMovieFavoriteListAdapter = new MovieFavoriteListAdapter(getContext(), c);
     }
 
     @Override
