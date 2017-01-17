@@ -5,25 +5,19 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.sco.movieratings.MovieListLoader;
-import org.sco.movieratings.data.MovieColumns;
-import org.sco.movieratings.data.MovieProvider;
 import org.sco.movieratings.data.models.Movie;
-import org.sco.movieratings.rest.FetchMovieTask;
 import org.sco.movieratings.R;
 
 /**
@@ -45,7 +39,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
 
     public interface Callbacks {
-        public void onItemSelected(Movie movie);
+        void onItemSelected(Movie movie);
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
@@ -107,6 +101,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         outState.putParcelableArrayList(SAVED_MOVIES, new ArrayList<>(mMovieListAdapter.getItems()));
     }
 
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(MOVIES_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
