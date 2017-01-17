@@ -25,10 +25,7 @@ public class MainActivity extends AppCompatActivity
     private String mSort;
     private boolean mTwoPane;
     private static final String SORT_MODE = "SM";
-    private static final String MOVIES_FRAGMENT_TAG = "MFT";
     private static final String MOVIE_DETAIL_FRAGMENT_TAG = "MDFT";
-
-    private MainActivityFragment mMainActivityFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,19 +51,6 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             // Check if favorites sort otherwise top_rated sort;
             mSort = savedInstanceState.getString(SORT_MODE, getString(R.string.pref_sort_top_rated));
-        } else {
-            mSort = getSortType();
-        }
-
-        mMainActivityFragment = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
-        Fragment fragment;
-
-        if (mMainActivityFragment == null) {
-            fragment = new MainActivityFragment();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.movie_list_container, fragment, MOVIES_FRAGMENT_TAG)
-                    .commit();
         }
     }
 
@@ -105,7 +89,7 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         String sortType = Utility.getPreferredSort(this);
         if (sortType != null && !sortType.equals(mSort)) {
-            MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
+            MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.movie_list_container);
             if (maf != null) {
                 maf.onSortChanged();
             }
@@ -115,13 +99,6 @@ public class MainActivity extends AppCompatActivity
             }
         }
         mSort = sortType;
-    }
-
-    private String getSortType() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        return prefs.getString(getString(R.string.pref_sort_key),
-                getString(R.string.pref_sort_top_rated));
-
     }
 
     @Override

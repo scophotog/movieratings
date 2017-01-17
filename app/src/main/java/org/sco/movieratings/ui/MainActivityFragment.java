@@ -6,7 +6,6 @@ import java.util.List;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -107,6 +106,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         outState.putParcelableArrayList(SAVED_MOVIES, new ArrayList<>(mMovieListAdapter.getItems()));
     }
 
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MOVIES_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
     private void setTitle() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortType = prefs.getString(getString(R.string.pref_sort_key),
@@ -138,7 +142,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private void updateMovies() {
         getLoaderManager().restartLoader(MOVIES_LOADER, null, this);
     }
-
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
