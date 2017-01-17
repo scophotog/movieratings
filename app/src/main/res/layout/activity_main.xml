@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/movie_list_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.MainActivityFragment"
-    android:name="org.sco.movieratings.ui.MainActivityFragment"
-    tools:layout="@layout/grid_item_movie">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:baselineAligned="false"
+             android:divider="?android:attr/dividerHorizontal"
+             android:orientation="horizontal"
+             android:fitsSystemWindows="true"
+             tools:context="org.sco.movieratings.ui.MainActivity">
 
     <include layout="@layout/include_toolbar"/>
 
-</fragment>
+</FrameLayout>

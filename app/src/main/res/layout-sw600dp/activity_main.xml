@@ -5,26 +5,33 @@
               android:layout_height="match_parent"
               android:baselineAligned="false"
               android:divider="?android:attr/dividerHorizontal"
-              android:orientation="horizontal"
+              android:orientation="vertical"
+              android:fitsSystemWindows="true"
               tools:context="org.sco.movieratings.ui.MainActivity">
 
-    <!--
-    This layout is a two-pane layout for the Items master/detail flow.
-    -->
     <include layout="@layout/include_toolbar"/>
 
-    <fragment
-        android:id="@+id/movie_list_container"
-        android:name="org.sco.movieratings.ui.MainActivityFragment"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3"
-        tools:layout="@layout/grid_item_movie" />
+        android:orientation="horizontal">
 
-    <FrameLayout
-        android:id="@+id/movie_detail_container"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3" />
+        <fragment
+            android:id="@+id/movie_list_container"
+            android:name="org.sco.movieratings.ui.MainActivityFragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:layout="@layout/grid_item_movie" />
+
+        <FrameLayout
+            android:id="@+id/movie_detail_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
 </LinearLayout>
+
+

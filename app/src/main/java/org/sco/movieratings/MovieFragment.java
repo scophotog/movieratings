@@ -107,13 +107,13 @@ public class MovieFragment extends Fragment implements
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getActivity() instanceof MovieActivity) {
-            MovieActivity activity = ((MovieActivity) getActivity());
-
-            final Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
-            activity.setSupportActionBar(toolbar);
-            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+//        if (getActivity() instanceof MovieActivity) {
+//            MovieActivity activity = ((MovieActivity) getActivity());
+//
+//            final Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
+//            activity.setSupportActionBar(toolbar);
+//            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        }
 
         if (mMovie != null) {
             movieView();
