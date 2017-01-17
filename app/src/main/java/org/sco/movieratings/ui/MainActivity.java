@@ -85,18 +85,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        String sortType = Utility.getPreferredSort(this);
-        if (sortType != null && !sortType.equals(mSort)) {
-            MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
-            if (maf != null) {
-                maf.onSortChanged();
-            }
-        }
-        mSort = sortType;
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        String sortType = Utility.getPreferredSort(this);
+//        if (sortType != null && !sortType.equals(mSort)) {
+//            MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
+//            if (maf != null) {
+//                maf.onSortChanged();
+//            }
+//        }
+//        mSort = sortType;
+//    }
 
     private String getSortType() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
