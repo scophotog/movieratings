@@ -18,19 +18,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.sco.movieratings.BuildConfig;
 import org.sco.movieratings.data.models.Movie;
-import org.sco.movieratings.ui.MovieListAdapter;
 
-public class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
+public class FetchMovieTask {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
 
     private final String BASE_URL = "http://api.themoviedb.org/3/movie";
     private final String IMAGE_PATH = "http://image.tmdb.org/t/p/w185";
 
-    MovieListAdapter mMovieListAdapter;
+    List<Movie> mMovies;
 
-    public FetchMovieTask(MovieListAdapter myAdapter) {
-        this.mMovieListAdapter = myAdapter;
+    public FetchMovieTask(String sort) {
+        mMovies = new ArrayList<Movie>();
+        mMovies.addAll(doInBackground(sort));
     }
 
     private List<Movie> getMovieDataFromJson(String movieJsonStr)
@@ -75,7 +75,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
         return movieResults;
     }
 
-    @Override
+
     protected List<Movie> doInBackground(String... params) {
 
         if (params.length == 0) { return null; }
@@ -154,14 +154,13 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
         return null;
     }
 
-    @Override
     protected void onPostExecute(List<Movie> results) {
         if (results != null || results.size() > 0) {
-            mMovieListAdapter.add(results);
+            mMovies.addAll(results);
         }
     }
 
-    public MovieListAdapter getResults() {
-        return mMovieListAdapter;
+    public List<Movie> getResults() {
+        return mMovies;
     }
 }

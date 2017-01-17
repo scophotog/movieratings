@@ -11,6 +11,7 @@
     <!--
     This layout is a two-pane layout for the Items master/detail flow.
     -->
+    <include layout="@layout/include_toolbar"/>
 
     <fragment
         android:id="@+id/movie_list_container"

@@ -115,7 +115,9 @@ public class MovieFragment extends Fragment implements
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        movieView();
+        if (mMovie != null) {
+            movieView();
+        }
 
     }
 

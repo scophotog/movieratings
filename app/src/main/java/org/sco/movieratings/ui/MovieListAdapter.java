@@ -32,8 +32,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         } else {
             mMovies = movies;
         }
-
-        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -6,9 +6,13 @@ import java.util.List;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,7 +30,7 @@ import org.sco.movieratings.R;
  * The activity for displaying all movie posters.
  */
 
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
     private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
@@ -36,6 +40,9 @@ public class MainActivityFragment extends Fragment {
     private List<Movie> mMovies;
 
     private Callbacks mCallbacks = sDummyCallbacks;
+
+    private static final int MOVIES_LOADER = 0;
+
 
     public interface Callbacks {
         public void onItemSelected(Movie movie);
@@ -100,11 +107,6 @@ public class MainActivityFragment extends Fragment {
         outState.putParcelableArrayList(SAVED_MOVIES, new ArrayList<>(mMovieListAdapter.getItems()));
     }
 
-
-    public void onSortChanged() {
-        updateMovies();
-    }
-
     private void setTitle() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortType = prefs.getString(getString(R.string.pref_sort_key),
@@ -129,40 +131,162 @@ public class MainActivityFragment extends Fragment {
                 .setTitle(getText(R.string.app_name) + " " + title);
     }
 
+    public void onSortChanged() {
+        updateMovies();
+    }
+
     private void updateMovies() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortType = prefs.getString(getString(R.string.pref_sort_key),
-                getString(R.string.pref_sort_top_rated));
+        getLoaderManager().restartLoader(MOVIES_LOADER, null, this);
+    }
 
-        if (!sortType.equals("my_favorites")) {
-            FetchMovieTask movieTask = new FetchMovieTask(mMovieListAdapter);
-            movieTask.execute(sortType);
-        } else {
-            mMovies.clear();
 
-            Cursor c = getActivity().getContentResolver().query(MovieProvider.Movies.CONTENT_URI,
-                    null,
-                    MovieColumns.IS_FAVORITE + " = 1",
-                    null,
-                    null,
-                    null);
-
-            if (c != null && c.moveToFirst()) {
-                do {
-                    mMovies.add(Movie.fromCursor(c));
-                } while (c.moveToNext());
-            } else {
-                Log.e(LOG_TAG, "Cursor: Null");
-            }
-            mMovieListAdapter.notifyDataSetChanged();
-        }
+    @Override
+    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
         setTitle();
+        return new MovieListLoader(getActivity());
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        updateMovies();
+    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+        mMovies.clear();
+        mMovies.addAll(data);
+        mMovieListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Movie>> loader) {
+        mMovies.clear();
+        mMovieListAdapter.notifyDataSetChanged();
+    }
+
+    public static class MovieListLoader extends AsyncTaskLoader<List<Movie>> {
+
+        List<Movie> mMovies;
+        Context mContext;
+
+        public MovieListLoader(Context context) {
+            super(context);
+            this.mContext = context;
+        }
+
+        @Override
+        public List<Movie> loadInBackground() {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            String sortType = prefs.getString(mContext.getString(R.string.pref_sort_key),
+                    mContext.getString(R.string.pref_sort_top_rated));
+
+            List<Movie> out = new ArrayList<>();
+
+            if (!sortType.equals("my_favorites")) {
+                FetchMovieTask movieTask = new FetchMovieTask(sortType);
+                out.addAll(movieTask.getResults());
+            } else {
+                Cursor c = mContext.getContentResolver().query(MovieProvider.Movies.CONTENT_URI,
+                        null,
+                        MovieColumns.IS_FAVORITE + " = 1",
+                        null,
+                        null,
+                        null);
+
+                if (c != null && c.moveToFirst()) {
+                    do {
+                        out.add(Movie.fromCursor(c));
+                    } while (c.moveToNext());
+                } else {
+                    Log.e(LOG_TAG, "Cursor: Null");
+                }
+
+            }
+
+            return out;
+        }
+
+        @Override
+        public void deliverResult(List<Movie> movies) {
+            if(isReset()) {
+                // An async query came in while the loader is stopped.  We
+                // don't need the result.
+                if (movies != null) {
+                    onReleaseResources(movies);
+                }
+            }
+
+            List<Movie> oldMovies = mMovies;
+            mMovies = movies;
+
+            if (isStarted()) {
+                // If the Loader is currently started, we can immediately
+                // deliver its results.
+                super.deliverResult(movies);
+            }
+
+            if (oldMovies != null) {
+                onReleaseResources(oldMovies);
+            }
+        }
+
+        /**
+         * Handles a request to start the Loader.
+         */
+        @Override protected void onStartLoading() {
+            if (mMovies != null) {
+                // If we currently have a result available, deliver it
+                // immediately.
+                deliverResult(mMovies);
+            }
+
+            if (takeContentChanged() || mMovies == null) {
+                // If the data has changed since the last time it was loaded
+                // or is not currently available, start a load.
+                forceLoad();
+            }
+        }
+
+        /**
+         * Handles a request to stop the Loader.
+         */
+        @Override protected void onStopLoading() {
+            // Attempt to cancel the current load task if possible.
+            cancelLoad();
+        }
+
+        /**
+         * Handles a request to cancel a load.
+         */
+        @Override public void onCanceled(List<Movie> movies) {
+            super.onCanceled(movies);
+
+            // At this point we can release the resources associated with 'apps'
+            // if needed.
+            onReleaseResources(movies);
+        }
+
+        /**
+         * Handles a request to completely reset the Loader.
+         */
+        @Override protected void onReset() {
+            super.onReset();
+
+            // Ensure the loader is stopped
+            onStopLoading();
+
+            // At this point we can release the resources associated with 'apps'
+            // if needed.
+            if (mMovies != null) {
+                onReleaseResources(mMovies);
+                mMovies = null;
+            }
+
+        }
+
+        /**
+         * Helper function to take care of releasing resources associated
+         * with an actively loaded data set.
+         */
+        protected void onReleaseResources(List<Movie> movies) {
+            // For a simple List<> there is nothing to do.  For something
+            // like a Cursor, we would close it here.
+        }
     }
 
 }
