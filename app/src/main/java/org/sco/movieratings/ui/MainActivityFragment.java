@@ -3,19 +3,15 @@ package org.sco.movieratings.ui;
 import java.util.ArrayList;
 
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.sco.movieratings.MovieFragment;
-import org.sco.movieratings.data.MovieProvider;
 import org.sco.movieratings.data.models.Movie;
 import org.sco.movieratings.rest.FetchMovieTask;
 import org.sco.movieratings.R;

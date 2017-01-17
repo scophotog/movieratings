@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -65,7 +66,35 @@ public class MovieFragment extends Fragment implements
         Intent intent = getActivity().getIntent();
 
         if (intent != null) {
-            mMovie = intent.getParcelableExtra(MOVIE);
+            if (intent.getData() != null) {
+                Uri uri = intent.getData();
+
+                Cursor cursor = getContext().getContentResolver().query(
+                        uri,
+                        null,
+                        MovieColumns.MOVIE_ID + " = " + mMovie.getMovieId(),
+                        null,
+                        null
+                );
+                // Parse Movie
+                int preBool = cursor.getInt(cursor.getColumnIndex(MovieColumns.IS_FAVORITE));
+                Boolean favorite = preBool == 1;
+
+                mMovie = new Movie(
+                        cursor.getString(cursor.getColumnIndex(MovieColumns.MOVIE_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(MovieColumns.POSTER_PATH)),
+                        cursor.getString(cursor.getColumnIndex(MovieColumns.OVERVIEW)),
+                        cursor.getString(cursor.getColumnIndex(MovieColumns.RELEASE_DATE)),
+                        cursor.getDouble(cursor.getColumnIndex(MovieColumns.POPULARITY)),
+                        cursor.getDouble(cursor.getColumnIndex(MovieColumns.RATING)),
+                        cursor.getInt(cursor.getColumnIndex(MovieColumns.MOVIE_ID)),
+                        favorite);
+
+
+            } else {
+                mMovie = intent.getParcelableExtra(MOVIE);
+            }
+
         }
 
         View rootView = inflater.inflate(R.layout.activity_movie, container, false);
