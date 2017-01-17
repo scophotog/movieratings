@@ -26,7 +26,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     private static final String LOG_TAG = MovieListAdapter.class.getSimpleName();
 
     private Context mContext;
-    List<Movie> mMovies;
+    private List<Movie> mMovies;
 
     public MovieListAdapter(Context context, List<Movie> movies) {
         this.mContext = context;

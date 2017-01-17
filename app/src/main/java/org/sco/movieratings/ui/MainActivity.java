@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private String mSort;
     private static final String SORT_MODE = "SM";
     private static final String MOVIES_FRAGMENT_TAG = "MFT";
-    private static final String MOVIES_FAVORITE_FRAGMENT_TAG = "MFFT";
 
     private MainActivityFragment mMainActivityFragment;
 
@@ -44,29 +43,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
         mMainActivityFragment = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
-
         Fragment fragment;
 
         if (mMainActivityFragment == null) {
-            // Check we're not sorting on favorites
-            if (!mSort.equals(getString(R.string.pref_sort_my_favorites)) ) {
                 fragment = new MainActivityFragment();
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.container, fragment, MOVIES_FRAGMENT_TAG)
+                        .replace(R.id.movie_list_container, fragment, MOVIES_FRAGMENT_TAG)
                         .commit();
-            } else {
-                fragment = new MainActivityFavoriteFragment();
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.container, fragment, MOVIES_FAVORITE_FRAGMENT_TAG)
-                        .commit();
-            }
-
         }
-
     }
 
     @Override
@@ -99,27 +85,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        String sortType = Utility.getPreferredSort(this);
-//        if (sortType != null && !sortType.equals(mSort)) {
-//
-//            if (!sortType.equals(R.string.pref_sort_my_favorites)) {
-//                MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
-//                if (maf != null) {
-//                    maf.onSortChanged();
-//                }
-//            } else {
-//                MainActivityFavoriteFragment maff = (MainActivityFavoriteFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FAVORITE_FRAGMENT_TAG);
-//                if(maff !=null) {
-//                    maff.updateMovies();
-//                }
-//            }
-//
-//        }
-//        mSort = sortType;
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String sortType = Utility.getPreferredSort(this);
+        if (sortType != null && !sortType.equals(mSort)) {
+            MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
+            if (maf != null) {
+                maf.onSortChanged();
+            }
+        }
+        mSort = sortType;
+    }
 
     private String getSortType() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.sco.movieratings.data.MovieColumns;
+
 public final class Movie implements Parcelable {
 
     String title;
@@ -46,37 +48,93 @@ public final class Movie implements Parcelable {
         movie_id = in.readInt();
     }
 
+    public Movie setMovieTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
     public String getMovieTitle() {
         return title;
+    }
+
+    public Movie setPosterPath(String path) {
+        this.poster_path = path;
+        return this;
     }
 
     public String getPosterPath() {
         return poster_path;
     }
 
+    public Movie setOverview(String overview) {
+        this.overview = overview;
+        return this;
+    }
+
     public String getOverview() {
         return overview;
+    }
+
+    public Movie setReleaseDate(String release_date) {
+        this.release_date = release_date;
+        return this;
     }
 
     public String getReleaseDate() {
         return release_date;
     }
 
+    public Movie setPopularity(Double popularity) {
+        this.popularity = popularity;
+        return this;
+    }
+
     public Double getPopularity() {
         return popularity;
+    }
+
+    public Movie setVoteAverage(Double vote_average) {
+        this.vote_average = vote_average;
+        return this;
     }
 
     public Double getVoteAverage() {
         return vote_average;
     }
 
+    public Movie setMovieId(int movie_id) {
+        this.movie_id = movie_id;
+        return this;
+    }
+
     public int getMovieId() {
         return movie_id;
     }
 
-    public static Movie fromCursor(Cursor cursor) {
-        Movie movie = new Movie();
-        return movie;
+    public Movie setFavorite(int favorite) {
+        this.is_favorite = favorite == 1 ? true : false;
+        return this;
+    }
+
+    public int getFavorite() {
+        if(this.is_favorite) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public static Movie fromCursor(Cursor c) {
+        Movie m = new Movie();
+        m.setMovieTitle(c.getString(c.getColumnIndex(MovieColumns.MOVIE_TITLE)));
+        m.setMovieId(c.getInt(c.getColumnIndex(MovieColumns.MOVIE_ID)));
+        m.setOverview(c.getString(c.getColumnIndex(MovieColumns.OVERVIEW)));
+        m.setPopularity(c.getDouble(c.getColumnIndex(MovieColumns.POPULARITY)));
+        m.setReleaseDate(c.getString(c.getColumnIndex(MovieColumns.RELEASE_DATE)));
+        m.setVoteAverage(c.getDouble(c.getColumnIndex(MovieColumns.RATING)));
+        m.setPosterPath(c.getString(c.getColumnIndex(MovieColumns.POSTER_PATH)));
+        m.setFavorite(c.getInt(c.getColumnIndex(MovieColumns.IS_FAVORITE)));
+        return m;
     }
 
     @Override
