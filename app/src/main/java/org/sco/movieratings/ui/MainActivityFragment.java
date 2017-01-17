@@ -3,6 +3,7 @@ package org.sco.movieratings.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -34,7 +35,38 @@ public class MainActivityFragment extends Fragment {
 
     private List<Movie> mMovies;
 
+    private Callbacks mCallbacks = sDummyCallbacks;
+
+    public interface Callbacks {
+        public void onItemSelected(Movie movie);
+    }
+
+    private static Callbacks sDummyCallbacks = new Callbacks() {
+
+        @Override
+        public void onItemSelected(Movie movie) {
+
+        }
+    };
+
     public MainActivityFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(context instanceof Callbacks)) {
+            throw new IllegalStateException("Activity must implement fragment's callbacks.");
+        }
+
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        // Reset the active callbacks
+        mCallbacks = sDummyCallbacks;
     }
 
     @Override
@@ -53,7 +85,7 @@ public class MainActivityFragment extends Fragment {
             mMovies = savedInstanceState.getParcelableArrayList(SAVED_MOVIES);
         }
 
-        mMovieListAdapter = new MovieListAdapter(getActivity(), mMovies);
+        mMovieListAdapter = new MovieListAdapter(getActivity(), mMovies, mCallbacks);
 
         recyclerView.setLayoutManager(
                 new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false)

@@ -77,27 +77,14 @@ public class MovieFragment extends Fragment implements
                         null
                 );
                 // Parse Movie
-                int preBool = cursor.getInt(cursor.getColumnIndex(MovieColumns.IS_FAVORITE));
-                Boolean favorite = preBool == 1;
-
-                mMovie = new Movie(
-                        cursor.getString(cursor.getColumnIndex(MovieColumns.MOVIE_TITLE)),
-                        cursor.getString(cursor.getColumnIndex(MovieColumns.POSTER_PATH)),
-                        cursor.getString(cursor.getColumnIndex(MovieColumns.OVERVIEW)),
-                        cursor.getString(cursor.getColumnIndex(MovieColumns.RELEASE_DATE)),
-                        cursor.getDouble(cursor.getColumnIndex(MovieColumns.POPULARITY)),
-                        cursor.getDouble(cursor.getColumnIndex(MovieColumns.RATING)),
-                        cursor.getInt(cursor.getColumnIndex(MovieColumns.MOVIE_ID)),
-                        favorite);
-
-
+                mMovie = Movie.fromCursor(cursor);
             } else {
                 mMovie = intent.getParcelableExtra(MOVIE);
             }
-
         }
 
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
+
         mMovieTitle = (TextView) rootView.findViewById(R.id.movie_title);
         mMoviePoster = (ImageView) rootView.findViewById(R.id.poster);
         mMovieDetails = (TextView) rootView.findViewById(R.id.movie_details);

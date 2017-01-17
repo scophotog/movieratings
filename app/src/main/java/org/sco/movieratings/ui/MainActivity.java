@@ -10,17 +10,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.sco.movieratings.MovieActivity;
+import org.sco.movieratings.MovieFragment;
 import org.sco.movieratings.R;
 import org.sco.movieratings.SettingsActivity;
 import org.sco.movieratings.Utility;
+import org.sco.movieratings.data.models.Movie;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements MainActivityFragment.Callbacks {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private String mSort;
+    private boolean mTwoPane;
     private static final String SORT_MODE = "SM";
     private static final String MOVIES_FRAGMENT_TAG = "MFT";
+    private static final String MOVIE_DETAIL_FRAGMENT_TAG = "MDFT";
 
     private MainActivityFragment mMainActivityFragment;
 
@@ -29,6 +35,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (findViewById(R.id.movie_detail_container) != null) {
+            mTwoPane = true;
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new MovieFragment(), MOVIE_DETAIL_FRAGMENT_TAG)
+                        .commit();
+            }
+
+        } else {
+            mTwoPane = false;
+            getSupportActionBar().setElevation(0f);
+        }
+
         if (savedInstanceState != null) {
             // Check if favorites sort otherwise top_rated sort;
             mSort = savedInstanceState.getString(SORT_MODE, getString(R.string.pref_sort_top_rated));
@@ -36,22 +58,15 @@ public class MainActivity extends AppCompatActivity {
             mSort = getSortType();
         }
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
         mMainActivityFragment = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
         Fragment fragment;
 
         if (mMainActivityFragment == null) {
-                fragment = new MainActivityFragment();
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.movie_list_container, fragment, MOVIES_FRAGMENT_TAG)
-                        .commit();
+            fragment = new MainActivityFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.movie_list_container, fragment, MOVIES_FRAGMENT_TAG)
+                    .commit();
         }
     }
 
@@ -85,23 +100,46 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        String sortType = Utility.getPreferredSort(this);
-//        if (sortType != null && !sortType.equals(mSort)) {
-//            MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
-//            if (maf != null) {
-//                maf.onSortChanged();
-//            }
-//        }
-//        mSort = sortType;
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String sortType = Utility.getPreferredSort(this);
+        if (sortType != null && !sortType.equals(mSort)) {
+            MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag(MOVIES_FRAGMENT_TAG);
+            if (maf != null) {
+                maf.onSortChanged();
+            }
+            MovieFragment mf = (MovieFragment)getSupportFragmentManager().findFragmentByTag(MOVIE_DETAIL_FRAGMENT_TAG);
+            if (mf != null) {
+              // Do something here?
+            }
+        }
+        mSort = sortType;
+    }
 
     private String getSortType() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         return prefs.getString(getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_top_rated));
 
+    }
+
+    @Override
+    public void onItemSelected(Movie movie) {
+        if (mTwoPane) {
+            Bundle args = new Bundle();
+            args.putParcelable(MovieFragment.MOVIE, movie);
+
+            Fragment fragment = new MovieFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment, MOVIE_DETAIL_FRAGMENT_TAG)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, MovieActivity.class)
+                    .putExtra(MovieFragment.MOVIE, movie);
+            startActivity(intent);
+        }
     }
 }
