@@ -97,7 +97,7 @@ public class MovieFragment extends Fragment implements
 
         }
 
-        View rootView = inflater.inflate(R.layout.activity_movie, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
         mMovieTitle = (TextView) rootView.findViewById(R.id.movie_title);
         mMoviePoster = (ImageView) rootView.findViewById(R.id.poster);
         mMovieDetails = (TextView) rootView.findViewById(R.id.movie_details);

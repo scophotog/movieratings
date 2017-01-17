@@ -17,7 +17,7 @@ public class MovieActivity extends AppCompatActivity {
             // using a fragment transaction.
             MovieFragment fragment = new MovieFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.movie_detail_container, fragment)
+                    .add(R.id.movie_detail_container, fragment)
                     .commit();
         }
     }
