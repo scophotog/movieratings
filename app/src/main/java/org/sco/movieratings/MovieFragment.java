@@ -15,15 +15,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import net.simonvt.schematic.annotation.PrimaryKey;
 
 import org.sco.movieratings.data.MovieColumns;
 import org.sco.movieratings.data.MovieProvider;
@@ -55,7 +52,6 @@ public class MovieFragment extends Fragment implements
     TextView mMovieVoteAverage;
     Button mMarkAsFavorite;
     Button mUnfavorite;
-    TextView mMovieTime;
     TextView mPreviewsTitle;
     TextView mReviewsTitle;
     LinearLayoutManager mPreviewLinearLayout;
@@ -143,8 +139,8 @@ public class MovieFragment extends Fragment implements
                 .error(R.drawable.image_not_found)
                 .into(mMoviePoster);
 
-        mMovieReleaseDate.setText(mMovie.getReleaseDate().split("-")[0]);
-        mMovieVoteAverage.setText(mMovie.getVoteAverage() + "/10");
+        mMovieReleaseDate.setText(getString(R.string.format_release_date, mMovie.getReleaseDate().split("-")[0]));
+        mMovieVoteAverage.setText(getString(R.string.format_rating, mMovie.getVoteAverage()));
 
         updateFavoriteButton();
 
