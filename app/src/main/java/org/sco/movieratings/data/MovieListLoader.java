@@ -1,4 +1,4 @@
-package org.sco.movieratings;
+package org.sco.movieratings.data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +10,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
-import org.sco.movieratings.data.MovieColumns;
-import org.sco.movieratings.data.MovieProvider;
+import org.sco.movieratings.R;
 import org.sco.movieratings.data.models.Movie;
-import org.sco.movieratings.rest.FetchMovieTask;
+import org.sco.movieratings.data.rest.FetchMovieTask;
 
 /**
  * Created by sargenzi on 1/17/17.

@@ -1,4 +1,4 @@
-package org.sco.movieratings.rest;
+package org.sco.movieratings.data.rest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,23 +18,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.sco.movieratings.BuildConfig;
 import org.sco.movieratings.data.models.Preview;
-import org.sco.movieratings.data.models.Review;
 
-public class FetchReviewsTask extends AsyncTask<Integer, Void, List<Review>> {
+public class FetchPreviewsTask extends AsyncTask<Integer, Void, List<Preview>> {
 
-    public static String LOG_TAG = FetchReviewsTask.class.getSimpleName();
+    public static String LOG_TAG = FetchPreviewsTask.class.getSimpleName();
     private final Listener mListener;
 
     public interface Listener {
-        void onReviewsFetchFinished(List<Review> previews);
+        void onPreviewsFetchFinished(List<Preview> previews);
     }
 
-    public FetchReviewsTask(Listener listener) {
+    public FetchPreviewsTask(Listener listener) {
         mListener = listener;
     }
 
     @Override
-    protected List<Review> doInBackground(Integer... params) {
+    protected List<Preview> doInBackground(Integer... params) {
         if (params.length == 0) {
             return null;
         }
@@ -51,7 +50,7 @@ public class FetchReviewsTask extends AsyncTask<Integer, Void, List<Review>> {
             final String API_KEY = "api_key";
             Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                     .appendPath(String.valueOf(movieId))
-                    .appendPath("reviews")
+                    .appendPath("videos")
                     .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
                     .build();
 
@@ -95,7 +94,7 @@ public class FetchReviewsTask extends AsyncTask<Integer, Void, List<Review>> {
         }
 
         try {
-            return getReviewDataFromJson(moviesJsonStr);
+            return getMovieDataFromJson(moviesJsonStr);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
@@ -105,45 +104,52 @@ public class FetchReviewsTask extends AsyncTask<Integer, Void, List<Review>> {
     }
 
     @Override
-    protected void onPostExecute(List<Review> reviews) {
-        if (reviews != null) {
-            mListener.onReviewsFetchFinished(reviews);
+    protected void onPostExecute(List<Preview> previews) {
+        if (previews != null) {
+            mListener.onPreviewsFetchFinished(previews);
         } else {
-            mListener.onReviewsFetchFinished(new ArrayList<Review>());
+            mListener.onPreviewsFetchFinished(new ArrayList<Preview>());
         }
     }
 
-    private List<Review> getReviewDataFromJson(String movieJsonStr)
+    private List<Preview> getMovieDataFromJson(String movieJsonStr)
             throws JSONException {
 
         final String MDB_RESULTS = "results";
         final String MDB_ID = "id";
-        final String MDB_AUTHOR = "author";
-        final String MDB_CONTENT = "content";
-        final String MDB_URL = "url";
+        final String MDB_KEY = "key";
+        final String MDB_NAME = "name";
+        final String MDB_SITE = "site";
+        final String MDB_SIZE = "size";
+        final String MDB_TYPE = "type";
 
         JSONObject moviesJson = new JSONObject(movieJsonStr);
         JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);
 
-        List<Review> movieReviewResults = new ArrayList<Review>();
+        List<Preview> movieResults = new ArrayList<Preview>();
 
         for(int i = 0; i < moviesArray.length(); i++) {
 
             String id;
-            String author;
-            String content;
-            String url;
+            String key;
+            String name;
+            String site;
+            int size;
+            String type;
 
-            JSONObject movieReviewResult = moviesArray.getJSONObject(i);
+            JSONObject moviePreviewResult = moviesArray.getJSONObject(i);
 
-            id = movieReviewResult.getString(MDB_ID);
-            author = movieReviewResult.getString(MDB_AUTHOR);
-            content = movieReviewResult.getString(MDB_CONTENT);
-            url = movieReviewResult.getString(MDB_URL);
-            movieReviewResults.add(new Review(id, author, content, url));
+            id = moviePreviewResult.getString(MDB_ID);
+            key = moviePreviewResult.getString(MDB_KEY);
+            name = moviePreviewResult.getString(MDB_NAME);
+            site = moviePreviewResult.getString(MDB_SITE);
+            size = moviePreviewResult.getInt(MDB_SIZE);
+            type = moviePreviewResult.getString(MDB_TYPE);
+            movieResults.add(new Preview(id, key, name, site, size, type));
+
         }
 
-        return movieReviewResults;
+        return movieResults;
 
     }
 }

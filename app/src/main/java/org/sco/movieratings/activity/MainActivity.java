@@ -1,21 +1,19 @@
-package org.sco.movieratings.ui;
+package org.sco.movieratings.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.sco.movieratings.MovieActivity;
-import org.sco.movieratings.MovieFragment;
+import org.sco.movieratings.fragment.MovieFragment;
 import org.sco.movieratings.R;
-import org.sco.movieratings.SettingsActivity;
 import org.sco.movieratings.Utility;
 import org.sco.movieratings.data.models.Movie;
+import org.sco.movieratings.fragment.MainActivityFragment;
 
 import static android.view.View.GONE;
 

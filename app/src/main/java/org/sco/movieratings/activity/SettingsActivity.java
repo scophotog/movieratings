@@ -1,4 +1,4 @@
-package org.sco.movieratings;
+package org.sco.movieratings.activity;
 
 import android.os.Bundle;
 import android.preference.ListPreference;

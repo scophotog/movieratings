@@ -1,4 +1,4 @@
-package org.sco.movieratings;
+package org.sco.movieratings.adapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.sco.movieratings.data.models.Preview;
+import org.sco.movieratings.R;
 import org.sco.movieratings.data.models.Review;
 
 public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.ViewHolder> {

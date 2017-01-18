@@ -1,4 +1,4 @@
-package org.sco.movieratings.rest;
+package org.sco.movieratings.data.rest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONArray;

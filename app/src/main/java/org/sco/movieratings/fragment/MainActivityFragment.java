@@ -1,12 +1,10 @@
-package org.sco.movieratings.ui;
+package org.sco.movieratings.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -16,7 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.sco.movieratings.MovieListLoader;
+import org.sco.movieratings.data.MovieListLoader;
+import org.sco.movieratings.adapter.MovieListAdapter;
 import org.sco.movieratings.data.models.Movie;
 import org.sco.movieratings.R;
 

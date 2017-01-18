@@ -1,4 +1,4 @@
-package org.sco.movieratings;
+package org.sco.movieratings.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +22,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.sco.movieratings.R;
+import org.sco.movieratings.adapter.MoviePreviewAdapter;
+import org.sco.movieratings.adapter.MovieReviewAdapter;
 import org.sco.movieratings.data.MovieColumns;
 import org.sco.movieratings.data.MovieProvider;
 import org.sco.movieratings.data.models.Movie;
 import org.sco.movieratings.data.models.Preview;
 import org.sco.movieratings.data.models.Review;
-import org.sco.movieratings.rest.FetchPreviewsTask;
-import org.sco.movieratings.rest.FetchReviewsTask;
+import org.sco.movieratings.data.rest.FetchPreviewsTask;
+import org.sco.movieratings.data.rest.FetchReviewsTask;
 
 import com.squareup.picasso.Picasso;
 

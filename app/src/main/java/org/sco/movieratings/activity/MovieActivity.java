@@ -1,8 +1,11 @@
-package org.sco.movieratings;
+package org.sco.movieratings.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import org.sco.movieratings.fragment.MovieFragment;
+import org.sco.movieratings.R;
 
 public class MovieActivity extends AppCompatActivity {
 

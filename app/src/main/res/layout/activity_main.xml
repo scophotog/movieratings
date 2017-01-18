@@ -7,13 +7,13 @@
               android:divider="?android:attr/dividerHorizontal"
               android:orientation="vertical"
               android:fitsSystemWindows="true"
-              tools:context="org.sco.movieratings.ui.MainActivity">
+              tools:context="org.sco.movieratings.activity.MainActivity">
 
     <include layout="@layout/include_toolbar"/>
 
     <fragment
         android:id="@+id/movie_list_container"
-        android:name="org.sco.movieratings.ui.MainActivityFragment"
+        android:name="org.sco.movieratings.fragment.MainActivityFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/grid_item_movie"/>

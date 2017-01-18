@@ -1,4 +1,4 @@
-package org.sco.movieratings.ui;
+package org.sco.movieratings.adapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import org.sco.movieratings.R;
 import org.sco.movieratings.data.models.Movie;
+import org.sco.movieratings.fragment.MainActivityFragment;
 
 import com.squareup.picasso.Picasso;
 

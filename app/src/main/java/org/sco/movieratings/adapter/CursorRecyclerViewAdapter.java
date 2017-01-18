@@ -15,7 +15,7 @@
  *
  */
 
-package org.sco.movieratings;
+package org.sco.movieratings.adapter;
 
 import android.content.Context;
 import android.database.Cursor;

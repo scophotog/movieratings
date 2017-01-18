@@ -4,7 +4,7 @@
               android:id="@+id/movie_detail_container"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              tools:context="org.sco.movieratings.MovieActivity"
+              tools:context="org.sco.movieratings.activity.MovieActivity"
               android:fitsSystemWindows="true"
               android:orientation="vertical"
               tools:ignore="MergeRootFrame">
