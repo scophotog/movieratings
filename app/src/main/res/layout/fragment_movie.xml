@@ -96,17 +96,34 @@
 
             </LinearLayout>
 
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/previews_title"
+                android:text="@string/previews_text"
+                android:paddingTop="15dp"/>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/preview_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:listitem="@layout/preview_list_item"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/reviews_title"
+                android:text="@string/reviews_text"
+                android:paddingTop="15dp"/>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/reviews_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/preview_list_item"/>
+                tools:listitem="@layout/review_list_item"/>
 
         </LinearLayout>
 

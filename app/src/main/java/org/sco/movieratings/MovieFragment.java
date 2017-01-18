@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,18 +26,24 @@ import org.sco.movieratings.data.MovieColumns;
 import org.sco.movieratings.data.MovieProvider;
 import org.sco.movieratings.data.models.Movie;
 import org.sco.movieratings.data.models.Preview;
+import org.sco.movieratings.data.models.Review;
 import org.sco.movieratings.rest.FetchPreviewsTask;
+import org.sco.movieratings.rest.FetchReviewsTask;
 
 import com.squareup.picasso.Picasso;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 public class MovieFragment extends Fragment implements
-        FetchPreviewsTask.Listener, MoviePreviewAdapter.Callback {
+        FetchPreviewsTask.Listener, FetchReviewsTask.Listener, MoviePreviewAdapter.Callback {
 
     private static final String LOG_TAG = MovieFragment.class.getSimpleName();
 
     public static final String MOVIE = "movie";
 
     public static final String PREVIEWS_EXTRA = "PREVIEWS_EXTRA";
+    public static final String REVIEWS_EXTRA = "REVIEWS_EXTRA";
 
     TextView mMovieTitle;
     ImageView mMoviePoster;
@@ -46,10 +53,15 @@ public class MovieFragment extends Fragment implements
     Button mMarkAsFavorite;
     Button mUnfavorite;
     TextView mMovieTime;
-    LinearLayoutManager mLinearLayout;
+    TextView mPreviewsTitle;
+    TextView mReviewsTitle;
+    LinearLayoutManager mPreviewLinearLayout;
+    LinearLayoutManager mReviewLinearLayout;
 
     private MoviePreviewAdapter mMoviePreviewAdapter;
+    private MovieReviewAdapter mMovieReviewAdapter;
     RecyclerView mRecyclerViewPreviews;
+    RecyclerView mRecyclerViewReviews;
     Movie mMovie;
 
     public MovieFragment() {
@@ -59,6 +71,7 @@ public class MovieFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMoviePreviewAdapter = new MoviePreviewAdapter(new ArrayList<Preview>(), this);
+        mMovieReviewAdapter = new MovieReviewAdapter(new ArrayList<Review>());
     }
 
     @Override
@@ -78,13 +91,31 @@ public class MovieFragment extends Fragment implements
         mMarkAsFavorite = (Button) rootView.findViewById(R.id.mark_as_favorite);
         mUnfavorite = (Button) rootView.findViewById(R.id.remove_from_favorite);
         mMovieTime = (TextView) rootView.findViewById(R.id.movie_time);
+        mPreviewsTitle = (TextView) rootView.findViewById(R.id.previews_title);
+        mReviewsTitle = (TextView) rootView.findViewById(R.id.reviews_title);
 
-        mLinearLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-
+        mPreviewLinearLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerViewPreviews = (RecyclerView) rootView.findViewById(R.id.preview_recycler);
         mRecyclerViewPreviews.setHasFixedSize(false);
-        mRecyclerViewPreviews.setLayoutManager(mLinearLayout);
+        mRecyclerViewPreviews.setLayoutManager(mPreviewLinearLayout);
         mRecyclerViewPreviews.setAdapter(mMoviePreviewAdapter);
+
+        mReviewLinearLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerViewReviews = (RecyclerView) rootView.findViewById(R.id.reviews_recycler);
+        mRecyclerViewReviews.setHasFixedSize(false);
+        mRecyclerViewReviews.setLayoutManager(mReviewLinearLayout);
+        mRecyclerViewReviews.setAdapter(mMovieReviewAdapter);
+
+        DividerItemDecoration previewDivider = new DividerItemDecoration(mRecyclerViewPreviews.getContext(),
+                mPreviewLinearLayout.getOrientation());
+        mRecyclerViewPreviews.addItemDecoration(previewDivider);
+
+        DividerItemDecoration reviewDivider = new DividerItemDecoration(mRecyclerViewReviews.getContext(),
+                mReviewLinearLayout.getOrientation());
+        mRecyclerViewReviews.addItemDecoration(reviewDivider);
+
+
+
         return rootView;
     }
 
@@ -117,7 +148,8 @@ public class MovieFragment extends Fragment implements
         // Previews
         fetchPreviews();
 
-        // TODO: Reviews
+        // Reviews
+        fetchReviews();
 
     }
 
@@ -132,6 +164,10 @@ public class MovieFragment extends Fragment implements
         ArrayList<Preview> previews = mMoviePreviewAdapter.getPreviews();
         if (previews != null && !previews.isEmpty()) {
             savedInstanceState.putParcelableArrayList(PREVIEWS_EXTRA, previews);
+        }
+        ArrayList<Review> reviews = mMovieReviewAdapter.getReviews();
+        if (reviews != null && !reviews.isEmpty()) {
+            savedInstanceState.putParcelableArrayList(REVIEWS_EXTRA, reviews);
         }
     }
 
@@ -164,12 +200,12 @@ public class MovieFragment extends Fragment implements
             @Override
             protected void onPostExecute(Boolean favorite) {
                 if (favorite) {
-                    mUnfavorite.setVisibility(View.VISIBLE);
-                    mMarkAsFavorite.setVisibility(View.GONE);
+                    mUnfavorite.setVisibility(VISIBLE);
+                    mMarkAsFavorite.setVisibility(GONE);
                     // Set remove from favorites
                 } else {
-                    mMarkAsFavorite.setVisibility(View.VISIBLE);
-                    mUnfavorite.setVisibility(View.GONE);
+                    mMarkAsFavorite.setVisibility(VISIBLE);
+                    mUnfavorite.setVisibility(GONE);
                     // Set add to favorite
                 }
             }
@@ -253,11 +289,32 @@ public class MovieFragment extends Fragment implements
     @Override
     public void onPreviewsFetchFinished(List<Preview> previews) {
         mMoviePreviewAdapter.add(previews);
+        if (previews.size() == 0) {
+            mReviewsTitle.setVisibility(GONE);
+        } else {
+            mReviewsTitle.setVisibility(VISIBLE);
+        }
     }
+
+    @Override
+    public void onReviewsFetchFinished(List<Review> reviews) {
+        mMovieReviewAdapter.add(reviews);
+        if (reviews.size() == 0) {
+            mPreviewsTitle.setVisibility(GONE);
+        } else {
+            mPreviewsTitle.setVisibility(VISIBLE);
+        }
+    }
+
 
     private void fetchPreviews() {
         FetchPreviewsTask fetchPreviewsTask = new FetchPreviewsTask(this);
         fetchPreviewsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mMovie.getMovieId());
+    }
+
+    private void fetchReviews() {
+        FetchReviewsTask fetchReviewsTask = new FetchReviewsTask(this);
+        fetchReviewsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mMovie.getMovieId());
     }
 
     @Override

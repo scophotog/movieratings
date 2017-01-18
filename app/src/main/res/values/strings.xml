@@ -5,6 +5,9 @@
     <string name="release_date_label">Release Date:</string>
     <string name="vote_average_label">Vote Average:</string>
 
+    <string name="reviews_text">Reviews:</string>
+    <string name="previews_text">Previews:</string>
+
     <!-- Menu Options -->
     <string name="sort_by">Sort By</string>
     <string name="action_refresh">Refresh</string>
