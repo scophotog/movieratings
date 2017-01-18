@@ -18,7 +18,7 @@
 
         <fragment
             android:id="@+id/movie_list_container"
-            android:name="org.sco.movieratings.fragment.MainActivityFragment"
+            android:name="org.sco.movieratings.fragment.MovieListFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

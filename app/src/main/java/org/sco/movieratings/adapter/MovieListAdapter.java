@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 import org.sco.movieratings.R;
 import org.sco.movieratings.data.models.Movie;
-import org.sco.movieratings.fragment.MainActivityFragment;
+import org.sco.movieratings.fragment.MovieListFragment;
 
 import com.squareup.picasso.Picasso;
 
@@ -22,9 +22,9 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     private Context mContext;
     private List<Movie> mMovies;
 
-    private MainActivityFragment.Callbacks callbacks;
+    private MovieListFragment.Callbacks callbacks;
 
-    public MovieListAdapter(Context context, List<Movie> movies, MainActivityFragment.Callbacks callbacks) {
+    public MovieListAdapter(Context context, List<Movie> movies, MovieListFragment.Callbacks callbacks) {
         this.mContext = context;
         this.callbacks = callbacks;
 
@@ -39,9 +39,9 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
         public ImageView poster;
         public Movie mMovie;
-        private MainActivityFragment.Callbacks callbacks;
+        private MovieListFragment.Callbacks callbacks;
 
-        public ViewHolder(View v, MainActivityFragment.Callbacks callbacks) {
+        public ViewHolder(View v, MovieListFragment.Callbacks callbacks) {
             super(v);
             poster = (ImageView) v.findViewById(R.id.moviePoster);
             this.callbacks = callbacks;

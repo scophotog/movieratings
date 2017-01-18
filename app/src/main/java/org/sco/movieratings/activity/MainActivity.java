@@ -13,12 +13,12 @@ import org.sco.movieratings.fragment.MovieFragment;
 import org.sco.movieratings.R;
 import org.sco.movieratings.Utility;
 import org.sco.movieratings.data.models.Movie;
-import org.sco.movieratings.fragment.MainActivityFragment;
+import org.sco.movieratings.fragment.MovieListFragment;
 
 import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity
-        implements MainActivityFragment.Callbacks {
+        implements MovieListFragment.Callbacks {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         String sortType = Utility.getPreferredSort(this);
         if (sortType != null && !sortType.equals(mSort)) {
-            MainActivityFragment maf = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.movie_list_container);
+            MovieListFragment maf = (MovieListFragment) getSupportFragmentManager().findFragmentById(R.id.movie_list_container);
             if (maf != null) {
                 maf.onSortChanged();
             }

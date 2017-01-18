@@ -13,19 +13,23 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.sco.movieratings.data.MovieListLoader;
 import org.sco.movieratings.adapter.MovieListAdapter;
 import org.sco.movieratings.data.models.Movie;
 import org.sco.movieratings.R;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 /**
  * The activity for displaying all movie posters.
  */
 
-public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Movie>> {
+public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
-    private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+    private static final String LOG_TAG = MovieListFragment.class.getSimpleName();
 
     private static final String SAVED_MOVIES = "movies";
     private MovieListAdapter mMovieListAdapter;
@@ -36,6 +40,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     private static final int MOVIES_LOADER = 0;
 
+    private RecyclerView mRecycler;
+    private TextView mEmptyView;
 
     public interface Callbacks {
         void onItemSelected(Movie movie);
@@ -49,7 +55,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         }
     };
 
-    public MainActivityFragment() {
+    public MovieListFragment() {
     }
 
     @Override
@@ -77,8 +83,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.movie_list);
-        recyclerView.setHasFixedSize(true);
+        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
+        mRecycler = (RecyclerView) view.findViewById(R.id.movie_list);
+        mRecycler.setHasFixedSize(true);
+
 
         mMovies = new ArrayList<>();
         if (savedInstanceState != null) {
@@ -87,11 +95,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         mMovieListAdapter = new MovieListAdapter(getActivity(), mMovies, mCallbacks);
 
-        recyclerView.setLayoutManager(
+        mRecycler.setLayoutManager(
                 new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false)
         );
 
-        recyclerView.setAdapter(mMovieListAdapter);
+        mRecycler.setAdapter(mMovieListAdapter);
     }
 
     @Override
@@ -123,6 +131,13 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
         mMovies.clear();
         mMovies.addAll(data);
+        if (data.isEmpty()) {
+            mRecycler.setVisibility(GONE);
+            mEmptyView.setVisibility(VISIBLE);
+        } else {
+            mRecycler.setVisibility(VISIBLE);
+            mEmptyView.setVisibility(GONE);
+        }
         mMovieListAdapter.notifyDataSetChanged();
     }
 
