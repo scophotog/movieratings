@@ -37,26 +37,6 @@ public final class MovieProvider {
                 path = Path.MOVIES,
                 type = "vnc.android.cursor.dir/movies")
         public static final Uri CONTENT_URI = buildUri(Path.MOVIES);
-
-        @InexactContentUri(
-                name = "MOVIE_ID",
-                path = Path.MOVIES + "/#",
-                type = "vnc.android.cursor.dir/movies",
-                whereColumn = MovieColumns.MOVIE_ID,
-                pathSegment = 1)
-        public static Uri withId(int id) {
-            return buildUri(Path.MOVIES, String.valueOf(id));
-        }
-
-        @InexactContentUri(
-                name = "MOVIE_FAVORITES",
-                path = Path.MOVIES + "/favorites",
-                type = "vnc.android.cursor.dir/movies",
-                whereColumn = MovieColumns.IS_FAVORITE + 1,
-                pathSegment = 1)
-        public static Uri favorites() {
-            return buildUri(Path.MOVIES);
-        }
     }
 
 }
