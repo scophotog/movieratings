@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onItemSelected(Movie movie) {
         if (mTwoPane) {
-            findViewById(R.id.pick_a_movie_text).setVisibility(GONE);
+            findViewById(R.id.empty_detail_view).setVisibility(GONE);
             Bundle args = new Bundle();
             args.putParcelable(MovieFragment.MOVIE, movie);
 

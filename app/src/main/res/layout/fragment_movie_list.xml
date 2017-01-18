@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone"
-        android:text="@string/pick_movie" />
+        android:text="@string/no_movies" />
 
 </FrameLayout>
 

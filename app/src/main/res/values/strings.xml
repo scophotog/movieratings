@@ -5,7 +5,8 @@
     <string name="release_date_label">Release Date:</string>
     <string name="vote_average_label">Vote Average:</string>
 
-    <string name="pick_movie">No movies :(</string>
+    <string name="no_movies">No movies :(</string>
+    <string name="pick_movie">Select a Movie</string>
 
     <string name="reviews_text">Reviews:</string>
     <string name="previews_text">Previews:</string>

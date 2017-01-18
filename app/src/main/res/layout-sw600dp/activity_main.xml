@@ -31,17 +31,16 @@
             android:layout_weight="1">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/pick_a_movie_text"
-                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/empty_detail_view"
                 android:text="@string/pick_movie"
-                android:textAppearance="?android:textAppearanceMedium"/>
+                android:visibility="visible"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:gravity="center"/>
 
         </FrameLayout>
 
     </LinearLayout>
 
 </LinearLayout>
-
-
