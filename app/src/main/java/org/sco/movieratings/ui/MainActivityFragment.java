@@ -107,30 +107,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         super.onActivityCreated(savedInstanceState);
     }
 
-    private void setTitle() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortType = prefs.getString(getString(R.string.pref_sort_key),
-                getString(R.string.pref_sort_top_rated));
-
-        String title;
-        switch (sortType) {
-            case "top_rated":
-                title = getString(R.string.high_rated_settings);
-                break;
-            case "most_popular":
-                title = getString(R.string.most_popular_settings);
-                break;
-            case "my_favorites":
-                title = getString(R.string.my_favorites_settings);
-                break;
-            default:
-                title = "";
-                break;
-        }
-        ((MainActivity) getActivity()).getSupportActionBar()
-                .setTitle(getText(R.string.app_name) + " " + title);
-    }
-
     public void onSortChanged() {
         updateMovies();
     }
@@ -141,7 +117,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        setTitle();
         return new MovieListLoader(getActivity());
     }
 

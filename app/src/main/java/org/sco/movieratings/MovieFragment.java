@@ -63,24 +63,9 @@ public class MovieFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Intent intent = getActivity().getIntent();
-
-        if (intent != null) {
-            if (intent.getData() != null) {
-                Uri uri = intent.getData();
-
-                Cursor cursor = getContext().getContentResolver().query(
-                        uri,
-                        null,
-                        MovieColumns.MOVIE_ID + " = " + mMovie.getMovieId(),
-                        null,
-                        null
-                );
-                // Parse Movie
-                mMovie = Movie.fromCursor(cursor);
-            } else {
-                mMovie = intent.getParcelableExtra(MOVIE);
-            }
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mMovie = arguments.getParcelable(MovieFragment.MOVIE);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
@@ -107,21 +92,13 @@ public class MovieFragment extends Fragment implements
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        if (getActivity() instanceof MovieActivity) {
-//            MovieActivity activity = ((MovieActivity) getActivity());
-//
-//            final Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
-//            activity.setSupportActionBar(toolbar);
-//            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        }
-
         if (mMovie != null) {
             movieView();
         }
 
     }
 
-    public void movieView() {
+    private void movieView() {
         mMovieTitle.setText(mMovie.getMovieTitle());
         mMovieTitle.setBackgroundResource(R.color.movieTitleBackground);
         mMovieDetails.setText(mMovie.getOverview());
@@ -139,8 +116,9 @@ public class MovieFragment extends Fragment implements
         updateFavoriteButton();
 
         // Previews
-
         fetchPreviews();
+
+        // TODO: Reviews
 
     }
 
@@ -285,6 +263,6 @@ public class MovieFragment extends Fragment implements
 
     @Override
     public void view(Preview preview, int position) {
-
+        // You tube start here
     }
 }

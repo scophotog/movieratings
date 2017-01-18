@@ -93,12 +93,9 @@ public class MainActivity extends AppCompatActivity
             if (maf != null) {
                 maf.onSortChanged();
             }
-            MovieFragment mf = (MovieFragment)getSupportFragmentManager().findFragmentByTag(MOVIE_DETAIL_FRAGMENT_TAG);
-            if (mf != null) {
-              // Do something here?
-            }
         }
         mSort = sortType;
+        setTitle();
     }
 
     @Override
@@ -107,7 +104,7 @@ public class MainActivity extends AppCompatActivity
             Bundle args = new Bundle();
             args.putParcelable(MovieFragment.MOVIE, movie);
 
-            Fragment fragment = new MovieFragment();
+            MovieFragment fragment = new MovieFragment();
             fragment.setArguments(args);
 
             getSupportFragmentManager().beginTransaction()
@@ -118,5 +115,29 @@ public class MainActivity extends AppCompatActivity
                     .putExtra(MovieFragment.MOVIE, movie);
             startActivity(intent);
         }
+    }
+
+
+    public void setTitle() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortType = prefs.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_top_rated));
+
+        String title;
+        switch (sortType) {
+            case "top_rated":
+                title = getString(R.string.high_rated_settings);
+                break;
+            case "most_popular":
+                title = getString(R.string.most_popular_settings);
+                break;
+            case "my_favorites":
+                title = getString(R.string.my_favorites_settings);
+                break;
+            default:
+                title = "";
+                break;
+        }
+        getSupportActionBar().setTitle(getText(R.string.app_name) + " " + title);
     }
 }
