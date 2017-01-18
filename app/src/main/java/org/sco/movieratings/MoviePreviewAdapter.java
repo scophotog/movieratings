@@ -21,7 +21,7 @@ public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapte
     private final Callback mCallback;
 
     public interface Callback {
-        void view(Preview preview, int position);
+        void view(Preview preview);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -67,8 +67,7 @@ public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapte
         holder.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(),"Play Preview", Toast.LENGTH_SHORT).show();
-                mCallback.view(preview, holder.getAdapterPosition());
+                mCallback.view(preview);
             }
         });
     }

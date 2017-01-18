@@ -3,6 +3,7 @@ package org.sco.movieratings;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import net.simonvt.schematic.annotation.PrimaryKey;
 
 import org.sco.movieratings.data.MovieColumns;
 import org.sco.movieratings.data.MovieProvider;
@@ -318,7 +321,13 @@ public class MovieFragment extends Fragment implements
     }
 
     @Override
-    public void view(Preview preview, int position) {
-        // You tube start here
+    public void view(Preview preview) {
+        Intent youTubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + preview.getKey()));
+        Intent youTubeWebIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + preview.getKey()));
+        try {
+            startActivity(youTubeIntent);
+        } catch (ActivityNotFoundException e) {
+            startActivity(youTubeWebIntent);
+        }
     }
 }
