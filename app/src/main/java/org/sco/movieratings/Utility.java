@@ -8,7 +8,9 @@ import android.preference.PreferenceManager;
  * Created by sargenzi on 1/10/17.
  */
 
-public class Utility {
+public final class Utility {
+
+    private Utility(){}
 
     public static String getPreferredSort(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
