@@ -100,7 +100,6 @@ public class MovieFragment extends Fragment implements
 
     private void movieView() {
         mMovieTitle.setText(mMovie.getMovieTitle());
-        mMovieTitle.setBackgroundResource(R.color.movieTitleBackground);
         mMovieDetails.setText(mMovie.getOverview());
 
         Picasso.with(getActivity())
