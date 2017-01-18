@@ -19,6 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:id="@+id/movie_title"
+                android:visibility="invisible"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="?android:attr/textColorPrimary"
                 android:background="?android:attr/colorAccent"
@@ -47,13 +48,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/release_date"
-                        android:gravity="end|center_vertical"
-                        android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/movie_time"
                         android:gravity="end|center_vertical"
                         android:textAppearance="@android:style/TextAppearance.Material.Medium"/>
 
@@ -102,6 +96,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/previews_title"
+                android:visibility="invisible"
                 android:text="@string/previews_text"
                 android:paddingTop="15dp"/>
 
@@ -116,6 +111,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/reviews_title"
+                android:visibility="invisible"
                 android:text="@string/reviews_text"
                 android:paddingTop="15dp"/>
 

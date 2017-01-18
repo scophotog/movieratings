@@ -85,6 +85,7 @@ public class MovieFragment extends Fragment implements
         }
 
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
+        // Hide pick a movie
 
         mMovieTitle = (TextView) rootView.findViewById(R.id.movie_title);
         mMoviePoster = (ImageView) rootView.findViewById(R.id.poster);
@@ -93,7 +94,6 @@ public class MovieFragment extends Fragment implements
         mMovieVoteAverage = (TextView) rootView.findViewById(R.id.vote_average);
         mMarkAsFavorite = (Button) rootView.findViewById(R.id.mark_as_favorite);
         mUnfavorite = (Button) rootView.findViewById(R.id.remove_from_favorite);
-        mMovieTime = (TextView) rootView.findViewById(R.id.movie_time);
         mPreviewsTitle = (TextView) rootView.findViewById(R.id.previews_title);
         mReviewsTitle = (TextView) rootView.findViewById(R.id.reviews_title);
 
@@ -134,6 +134,7 @@ public class MovieFragment extends Fragment implements
 
     private void movieView() {
         mMovieTitle.setText(mMovie.getMovieTitle());
+        mMovieTitle.setVisibility(VISIBLE);
         mMovieDetails.setText(mMovie.getOverview());
 
         Picasso.with(getActivity())
@@ -144,7 +145,6 @@ public class MovieFragment extends Fragment implements
 
         mMovieReleaseDate.setText(mMovie.getReleaseDate().split("-")[0]);
         mMovieVoteAverage.setText(mMovie.getVoteAverage() + "/10");
-        mMovieTime.setText("120 min");
 
         updateFavoriteButton();
 

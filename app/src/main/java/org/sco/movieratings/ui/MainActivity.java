@@ -17,6 +17,8 @@ import org.sco.movieratings.SettingsActivity;
 import org.sco.movieratings.Utility;
 import org.sco.movieratings.data.models.Movie;
 
+import static android.view.View.GONE;
+
 public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Callbacks {
 
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onItemSelected(Movie movie) {
         if (mTwoPane) {
+            findViewById(R.id.pick_a_movie_text).setVisibility(GONE);
             Bundle args = new Bundle();
             args.putParcelable(MovieFragment.MOVIE, movie);
 
