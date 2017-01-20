@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.sco.movieratings.R;
-import org.sco.movieratings.data.models.Preview;
+import org.sco.movieratings.api.models.Preview;
 
 public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapter.ViewHolder> {
     private static final String LOG_TAG = MoviePreviewAdapter.class.getSimpleName();

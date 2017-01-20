@@ -3,16 +3,17 @@ package org.sco.movieratings.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.sco.movieratings.api.models.Movie;
 import org.sco.movieratings.fragment.MovieFragment;
 import org.sco.movieratings.R;
 import org.sco.movieratings.Utility;
-import org.sco.movieratings.data.models.Movie;
 import org.sco.movieratings.fragment.MovieListFragment;
 
 import static android.view.View.GONE;
@@ -88,12 +89,12 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         String sortType = Utility.getPreferredSort(this);
-        if (sortType != null && !sortType.equals(mSort)) {
-            MovieListFragment maf = (MovieListFragment) getSupportFragmentManager().findFragmentById(R.id.movie_list_container);
-            if (maf != null) {
-                maf.onSortChanged();
-            }
-        }
+//        if (sortType != null && !sortType.equals(mSort)) {
+//            MovieListFragment maf = (MovieListFragment) getSupportFragmentManager().findFragmentById(R.id.movie_list_container);
+//            if (maf != null) {
+//                maf.onSortChanged();
+//            }
+//        }
         mSort = sortType;
         setTitle();
     }
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         } else {
             Intent intent = new Intent(this, MovieActivity.class)
-                    .putExtra(MovieFragment.MOVIE, movie);
+                    .putExtra(MovieFragment.MOVIE, (Parcelable) movie);
             startActivity(intent);
         }
     }

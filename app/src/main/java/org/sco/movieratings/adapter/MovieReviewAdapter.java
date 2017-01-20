@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.sco.movieratings.R;
-import org.sco.movieratings.data.models.Review;
+import org.sco.movieratings.api.models.Review;
 
 public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.ViewHolder> {
     private static final String LOG_TAG = MovieReviewAdapter.class.getSimpleName();

@@ -4,21 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.sco.movieratings.data.MovieListLoader;
 import org.sco.movieratings.adapter.MovieListAdapter;
-import org.sco.movieratings.data.models.Movie;
 import org.sco.movieratings.R;
+import org.sco.movieratings.api.models.Movie;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -27,12 +32,14 @@ import static android.view.View.VISIBLE;
  * The activity for displaying all movie posters.
  */
 
-public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Movie>> {
+public class MovieListFragment extends Fragment {
 
     private static final String LOG_TAG = MovieListFragment.class.getSimpleName();
 
     private static final String SAVED_MOVIES = "movies";
     private MovieListAdapter mMovieListAdapter;
+    private MoviesInteractor mMoviesInteractor;
+    private CompositeSubscription mCompositeSubscription;
 
     private List<Movie> mMovies;
 
@@ -76,6 +83,12 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mMoviesInteractor = new MoviesInteractor();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_movie_list, container, false);
@@ -108,30 +121,10 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         outState.putParcelableArrayList(SAVED_MOVIES, new ArrayList<>(mMovieListAdapter.getItems()));
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(MOVIES_LOADER, null, this);
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    public void onSortChanged() {
-        updateMovies();
-    }
-
-    private void updateMovies() {
-        getLoaderManager().restartLoader(MOVIES_LOADER, null, this);
-    }
-
-    @Override
-    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        return new MovieListLoader(getActivity());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+    private void updateMovies(List<Movie> movies) {
         mMovies.clear();
-        mMovies.addAll(data);
-        if (data.isEmpty()) {
+        mMovies.addAll(movies);
+        if (movies.isEmpty()) {
             mRecycler.setVisibility(GONE);
             mEmptyView.setVisibility(VISIBLE);
         } else {
@@ -142,9 +135,30 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
-        mMovies.clear();
-        mMovieListAdapter.notifyDataSetChanged();
-    }
+    public void onResume() {
+        super.onResume();
+        mCompositeSubscription = new CompositeSubscription();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String sortType = prefs.getString(getContext().getString(R.string.pref_sort_key),
+                getContext().getString(R.string.pref_sort_top_rated));
 
+        //Listen to the API results stream
+        if(!sortType.equals("my_favorites")) {
+            mCompositeSubscription.add(mMoviesInteractor.getMovies(sortType)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<List<Movie>>() {
+                                   @Override
+                                   public void call(final List<Movie> movies) {
+                                       updateMovies(movies);
+                                   }
+                               }, new Action1<Throwable>() {
+                                   @Override
+                                   public void call(final Throwable throwable) {
+                                       Toast.makeText(getContext(), "Failed to fetch movies",Toast.LENGTH_SHORT).show();
+                                   }
+                               }
+                    ));
+        }
+
+    }
 }

@@ -18,9 +18,11 @@
     <string name="high_rated_settings">Top Rated</string>
     <string name="my_favorites_settings">My Favorites</string>
     <string name="pref_sort_key" translatable="false">sort</string>
-    <string name="pref_sort_top_rated" translatable="false">top_rated</string>
-    <string name="pref_sort_popular_rated" translatable="false">most_popular</string>
     <string name="pref_sort_my_favorites" translatable="false">my_favorites</string>
+    <!-- Make sure these next two match the api -->
+    <string name="pref_sort_top_rated" translatable="false">top_rated</string>
+    <string name="pref_sort_popular_rated" translatable="false">popular</string>
+
 
     <!-- Formats -->
     <!-- Format Release Date -->

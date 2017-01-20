@@ -11,13 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import org.sco.movieratings.R;
-import org.sco.movieratings.data.models.Movie;
+import org.sco.movieratings.api.models.Movie;
 import org.sco.movieratings.fragment.MovieListFragment;
 
 import com.squareup.picasso.Picasso;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
     private static final String LOG_TAG = MovieListAdapter.class.getSimpleName();
+
+    private final String IMAGE_PATH = "http://image.tmdb.org/t/p/w185";
 
     private Context mContext;
     private List<Movie> mMovies;
@@ -75,7 +77,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.mMovie = mMovies.get(position);
         Picasso.with(mContext)
-                .load(mMovies.get(position).getPosterPath())
+                .load(IMAGE_PATH + mMovies.get(position).getPosterPath())
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.image_not_found)
                 .into(holder.poster);

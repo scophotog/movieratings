@@ -21,25 +21,27 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.sco.movieratings.R;
 import org.sco.movieratings.adapter.MoviePreviewAdapter;
 import org.sco.movieratings.adapter.MovieReviewAdapter;
+import org.sco.movieratings.api.models.Movie;
 import org.sco.movieratings.data.MovieColumns;
 import org.sco.movieratings.data.MovieProvider;
-import org.sco.movieratings.data.models.Movie;
-import org.sco.movieratings.data.models.Preview;
-import org.sco.movieratings.data.models.Review;
-import org.sco.movieratings.data.rest.FetchPreviewsTask;
-import org.sco.movieratings.data.rest.FetchReviewsTask;
+import org.sco.movieratings.api.models.Preview;
+import org.sco.movieratings.api.models.Review;
 
 import com.squareup.picasso.Picasso;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class MovieFragment extends Fragment implements
-        FetchPreviewsTask.Listener, FetchReviewsTask.Listener, MoviePreviewAdapter.Callback {
+public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callback {
 
     private static final String LOG_TAG = MovieFragment.class.getSimpleName();
 
@@ -66,6 +68,9 @@ public class MovieFragment extends Fragment implements
     RecyclerView mRecyclerViewReviews;
     Movie mMovie;
 
+    private MoviesInteractor mMoviesInteractor;
+    private CompositeSubscription mCompositeSubscription;
+
     public MovieFragment() {
 
     }
@@ -74,6 +79,7 @@ public class MovieFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         mMoviePreviewAdapter = new MoviePreviewAdapter(new ArrayList<Preview>(), this);
         mMovieReviewAdapter = new MovieReviewAdapter(new ArrayList<Review>());
+        mMoviesInteractor = new MoviesInteractor();
     }
 
     @Override
@@ -132,12 +138,14 @@ public class MovieFragment extends Fragment implements
     }
 
     private void movieView() {
-        mMovieTitle.setText(mMovie.getMovieTitle());
+        String IMAGE_PATH = "http://image.tmdb.org/t/p/w185";
+
+        mMovieTitle.setText(mMovie.getTitle());
         mMovieTitle.setVisibility(VISIBLE);
         mMovieDetails.setText(mMovie.getOverview());
 
         Picasso.with(getActivity())
-                .load(mMovie.getPosterPath())
+                .load(IMAGE_PATH + mMovie.getPosterPath())
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.image_not_found)
                 .into(mMoviePoster);
@@ -177,7 +185,7 @@ public class MovieFragment extends Fragment implements
         Cursor cursor = getContext().getContentResolver().query(
                 MovieProvider.Movies.CONTENT_URI,
                 new String[]{MovieColumns.MOVIE_ID,MovieColumns.IS_FAVORITE},
-                MovieColumns.MOVIE_ID + " = " + mMovie.getMovieId(),
+                MovieColumns.MOVIE_ID + " = " + mMovie.getId(),
                 null,
                 null
         );
@@ -242,7 +250,7 @@ public class MovieFragment extends Fragment implements
                 if (isFavorite()) {
                     getContext().getContentResolver().delete(
                             MovieProvider.Movies.CONTENT_URI,
-                            MovieColumns.MOVIE_ID + " = " + mMovie.getMovieId(),
+                            MovieColumns.MOVIE_ID + " = " + mMovie.getId(),
                             null);
                 }
                 return null;
@@ -264,8 +272,8 @@ public class MovieFragment extends Fragment implements
                 if (!isFavorite()) {
                     ContentValues movieValues = new ContentValues();
                     movieValues.put(MovieColumns.IS_FAVORITE, 1);
-                    movieValues.put(MovieColumns.MOVIE_ID, mMovie.getMovieId());
-                    movieValues.put(MovieColumns.MOVIE_TITLE, mMovie.getMovieTitle());
+                    movieValues.put(MovieColumns.MOVIE_ID, mMovie.getId());
+                    movieValues.put(MovieColumns.MOVIE_TITLE, mMovie.getTitle());
                     movieValues.put(MovieColumns.OVERVIEW, mMovie.getOverview());
                     movieValues.put(MovieColumns.POPULARITY, mMovie.getPopularity());
                     movieValues.put(MovieColumns.POSTER_PATH, mMovie.getPosterPath());
@@ -288,8 +296,7 @@ public class MovieFragment extends Fragment implements
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    @Override
-    public void onPreviewsFetchFinished(List<Preview> previews) {
+    private void onPreviewsFetchFinished(List<Preview> previews) {
         mMoviePreviewAdapter.add(previews);
         if (previews.size() == 0) {
             mReviewsTitle.setVisibility(GONE);
@@ -298,8 +305,7 @@ public class MovieFragment extends Fragment implements
         }
     }
 
-    @Override
-    public void onReviewsFetchFinished(List<Review> reviews) {
+    private void onReviewsFetchFinished(List<Review> reviews) {
         mMovieReviewAdapter.add(reviews);
         if (reviews.size() == 0) {
             mPreviewsTitle.setVisibility(GONE);
@@ -308,15 +314,40 @@ public class MovieFragment extends Fragment implements
         }
     }
 
-
     private void fetchPreviews() {
-        FetchPreviewsTask fetchPreviewsTask = new FetchPreviewsTask(this);
-        fetchPreviewsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mMovie.getMovieId());
+        mCompositeSubscription = new CompositeSubscription();
+        mCompositeSubscription.add(mMoviesInteractor.getPreviews(mMovie)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Preview>>() {
+                    @Override
+                    public void call(final List<Preview> previews) {
+                        onPreviewsFetchFinished(previews);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(final Throwable throwable) {
+                        Toast.makeText(getContext(), "Failed to fetch reviews", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                ));
     }
 
     private void fetchReviews() {
-        FetchReviewsTask fetchReviewsTask = new FetchReviewsTask(this);
-        fetchReviewsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mMovie.getMovieId());
+        mCompositeSubscription = new CompositeSubscription();
+        mCompositeSubscription.add(mMoviesInteractor.getReviews(mMovie)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Review>>() {
+                               @Override
+                               public void call(final List<Review> reviews) {
+                                   onReviewsFetchFinished(reviews);
+                               }
+                           }, new Action1<Throwable>() {
+                               @Override
+                               public void call(final Throwable throwable) {
+                                   Toast.makeText(getContext(), "Failed to fetch reviews", Toast.LENGTH_SHORT).show();
+                               }
+                           }
+                ));
     }
 
     @Override
