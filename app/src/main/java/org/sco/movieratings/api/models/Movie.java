@@ -68,20 +68,21 @@ public class Movie implements Serializable, Parcelable {
         this.voteAverage= voteAverage;
     }
 
+    // TODO: Implement these items in the db
     private Movie(Parcel in) {
         this.posterPath = in.readString();
-        this.isAdult = in.readByte() != 0;
+//        this.isAdult = in.readByte() != 0;
         this.overview = in.readString();
         this.releaseDate = in.readString();
-        this.genreIds = (ArrayList<Integer>) in.readSerializable();
+//        this.genreIds = (ArrayList<Integer>) in.readSerializable();
         this.id = in.readInt();
-        this.originalTitle = in.readString();
-        this.originalLanguage = in.readString();
+//        this.originalTitle = in.readString();
+//        this.originalLanguage = in.readString();
         this.title = in.readString();
-        this.backdropPath = in.readString();
+//        this.backdropPath = in.readString();
         this.popularity = in.readDouble();
-        this.voteCount = in.readInt();
-        this.hasVideo = in.readByte() != 0;
+//        this.voteCount = in.readInt();
+//        this.hasVideo = in.readByte() != 0;
         this.voteAverage = in.readDouble();
     }
 
@@ -233,18 +234,18 @@ public class Movie implements Serializable, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.posterPath);
-        dest.writeByte((byte) (this.isAdult ? 1 : 0));
+//        dest.writeByte((byte) (this.isAdult ? 1 : 0));
         dest.writeString(this.overview);
         dest.writeString(this.releaseDate);
-        dest.writeSerializable((Serializable) this.genreIds);
+//        dest.writeSerializable((Serializable) this.genreIds);
         dest.writeInt(this.id);
-        dest.writeString(this.originalTitle);
-        dest.writeString(this.originalLanguage);
+//        dest.writeString(this.originalTitle);
+//        dest.writeString(this.originalLanguage);
         dest.writeString(this.title);
-        dest.writeString(this.backdropPath);
+//        dest.writeString(this.backdropPath);
         dest.writeDouble(this.popularity);
-        dest.writeInt(this.voteCount);
-        dest.writeByte((byte) (this.hasVideo ? 1 : 0));
+//        dest.writeInt(this.voteCount);
+//        dest.writeByte((byte) (this.hasVideo ? 1 : 0));
         dest.writeDouble(this.voteAverage);
     }
 

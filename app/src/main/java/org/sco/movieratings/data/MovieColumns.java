@@ -39,4 +39,5 @@ public interface MovieColumns {
     @DataType(DataType.Type.INTEGER) @NotNull
     String IS_FAVORITE = "is_favorite";
 
+    // TODO: Add columns from Movie.java
 }
