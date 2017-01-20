@@ -344,4 +344,10 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
             startActivity(youTubeWebIntent);
         }
     }
+
+    @Override
+    public void onPause() {
+        mCompositeSubscription.unsubscribe();
+        super.onPause();
+    }
 }

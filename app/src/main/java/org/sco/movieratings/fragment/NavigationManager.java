@@ -23,18 +23,9 @@ public class NavigationManager {
     public void navigateTo(@NonNull Fragment fragment, @IdRes int inLayoutResId) {
         final String tag = fragment.getClass().getName();
 
-        boolean wasFragmentPopped;
-        try {
-            wasFragmentPopped = fragmentManager.popBackStackImmediate(tag, 0);
-        } catch (final IllegalStateException e) {
-            wasFragmentPopped = false;
-        }
-
-        if (!wasFragmentPopped) {
-            fragmentManager.beginTransaction()
-                    .replace(inLayoutResId, fragment, tag)
-                    .commit();
-        }
+        fragmentManager.beginTransaction()
+                .replace(inLayoutResId, fragment, tag)
+                .commit();
 
     }
 

@@ -3,22 +3,17 @@ package org.sco.movieratings.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.sco.movieratings.adapter.MovieListAdapter;
 import org.sco.movieratings.R;
 import org.sco.movieratings.api.models.Movie;
 
@@ -123,6 +118,12 @@ public class MovieListFragment extends Fragment {
                         mMoviesInteractor.onMovieClicked(movie, getContext());
                     }
                 }));
+    }
+
+    @Override
+    public void onPause() {
+        mCompositeSubscription.unsubscribe();
+        super.onPause();
     }
 
 }
