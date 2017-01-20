@@ -14,7 +14,7 @@ import net.simonvt.schematic.annotation.TableEndpoint;
 public final class MovieProvider {
 
     public static final String AUTHORITY =
-            "org.sco.movieratings.data.MovieProvider";
+            "org.sco.movieratings.db.MovieProvider";
 
     static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
