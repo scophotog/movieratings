@@ -21,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,10 +28,12 @@ import org.sco.movieratings.R;
 import org.sco.movieratings.adapter.MoviePreviewAdapter;
 import org.sco.movieratings.adapter.MovieReviewAdapter;
 import org.sco.movieratings.api.models.Movie;
-import org.sco.movieratings.data.MovieColumns;
-import org.sco.movieratings.data.MovieProvider;
+import org.sco.movieratings.db.MovieColumns;
+import org.sco.movieratings.db.MovieProvider;
 import org.sco.movieratings.api.models.Preview;
 import org.sco.movieratings.api.models.Review;
+import org.sco.movieratings.interactor.MovieInteractor;
+import org.sco.movieratings.presenter.MoviePresenter;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;

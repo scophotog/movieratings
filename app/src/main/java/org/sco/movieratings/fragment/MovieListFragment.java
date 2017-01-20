@@ -14,8 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.sco.movieratings.utility.MovieListRouter;
 import org.sco.movieratings.R;
 import org.sco.movieratings.api.models.Movie;
+import org.sco.movieratings.interactor.MoviesInteractor;
+import org.sco.movieratings.presenter.MovieListPresenter;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;

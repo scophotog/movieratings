@@ -1,4 +1,4 @@
-package org.sco.movieratings.fragment;
+package org.sco.movieratings.interactor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +15,9 @@ import org.sco.movieratings.api.ApiManager;
 import org.sco.movieratings.api.response.MoviesResponse;
 import org.sco.movieratings.api.TheMovieDBService;
 import org.sco.movieratings.api.models.Movie;
-import org.sco.movieratings.data.MovieColumns;
-import org.sco.movieratings.data.MovieProvider;
+import org.sco.movieratings.db.MovieColumns;
+import org.sco.movieratings.db.MovieProvider;
+import org.sco.movieratings.utility.MovieListRouter;
 
 import rx.Observable;
 import rx.Subscriber;

@@ -1,8 +1,10 @@
-package org.sco.movieratings;
+package org.sco.movieratings.utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import org.sco.movieratings.R;
 
 /**
  * Created by sargenzi on 1/10/17.

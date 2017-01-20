@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.method.MovementMethod;
 
 import org.sco.movieratings.api.models.Movie;
 import org.sco.movieratings.fragment.MovieFragment;
 import org.sco.movieratings.R;
-import org.sco.movieratings.fragment.MovieListRouter;
+import org.sco.movieratings.utility.MovieListRouter;
 
 public class MovieActivity extends AppCompatActivity {
 

@@ -32,8 +32,8 @@
                 android:value="org.sco.movieratings.MainActivity" />
         </activity>
         <provider
-            android:authorities="org.sco.movieratings.data.MovieProvider"
-            android:name="org.sco.movieratings.data.generated.MovieProvider"
+            android:authorities="org.sco.movieratings.db.MovieProvider"
+            android:name="org.sco.movieratings.db.generated.MovieProvider"
             android:exported="false"/>
     </application>
 

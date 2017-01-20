@@ -1,4 +1,4 @@
-package org.sco.movieratings.fragment;
+package org.sco.movieratings.utility;
 
 import android.app.Activity;
 import android.content.Context;

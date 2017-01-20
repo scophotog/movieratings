@@ -1,4 +1,4 @@
-package org.sco.movieratings.fragment;
+package org.sco.movieratings.presenter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

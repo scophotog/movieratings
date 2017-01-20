@@ -1,7 +1,6 @@
 package org.sco.movieratings.api.models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
@@ -10,7 +9,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sco.movieratings.data.MovieColumns;
+import org.sco.movieratings.db.MovieColumns;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,29 +1,19 @@
-package org.sco.movieratings.fragment;
+package org.sco.movieratings.interactor;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import android.content.Context;
-import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import org.sco.movieratings.api.ApiManager;
 import org.sco.movieratings.api.TheMovieDBService;
 import org.sco.movieratings.api.models.Movie;
 import org.sco.movieratings.api.models.Preview;
 import org.sco.movieratings.api.models.Review;
-import org.sco.movieratings.api.response.MoviesResponse;
 import org.sco.movieratings.api.response.PreviewsResponse;
 import org.sco.movieratings.api.response.ReviewsResponse;
-import org.sco.movieratings.data.MovieColumns;
-import org.sco.movieratings.data.MovieProvider;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by sargenzi on 1/19/17.

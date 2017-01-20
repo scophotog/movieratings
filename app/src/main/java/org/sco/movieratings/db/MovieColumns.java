@@ -1,4 +1,4 @@
-package org.sco.movieratings.data;
+package org.sco.movieratings.db;
 
 import net.simonvt.schematic.annotation.AutoIncrement;
 import net.simonvt.schematic.annotation.DataType;

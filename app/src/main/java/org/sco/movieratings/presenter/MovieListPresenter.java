@@ -1,4 +1,4 @@
-package org.sco.movieratings.fragment;
+package org.sco.movieratings.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
