@@ -34,8 +34,6 @@ import org.sco.movieratings.data.MovieProvider;
 import org.sco.movieratings.api.models.Preview;
 import org.sco.movieratings.api.models.Review;
 
-import com.squareup.picasso.Picasso;
-
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
@@ -283,18 +281,18 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
     private void onPreviewsFetchFinished(List<Preview> previews) {
         mMoviePreviewAdapter.add(previews);
         if (previews.size() == 0) {
-            mReviewsTitle.setVisibility(GONE);
+            mPreviewsTitle.setVisibility(GONE);
         } else {
-            mReviewsTitle.setVisibility(VISIBLE);
+            mPreviewsTitle.setVisibility(VISIBLE);
         }
     }
 
     private void onReviewsFetchFinished(List<Review> reviews) {
         mMovieReviewAdapter.add(reviews);
         if (reviews.size() == 0) {
-            mPreviewsTitle.setVisibility(GONE);
+            mReviewsTitle.setVisibility(GONE);
         } else {
-            mPreviewsTitle.setVisibility(VISIBLE);
+            mReviewsTitle.setVisibility(VISIBLE);
         }
     }
 
