@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 
 import org.sco.movieratings.R;
 import org.sco.movieratings.api.models.Movie;
-import org.sco.movieratings.fragment.MovieListPresenter;
 
 import com.squareup.picasso.Picasso;
 

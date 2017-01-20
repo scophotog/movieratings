@@ -1,5 +1,8 @@
 package org.sco.movieratings.fragment;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -20,9 +23,24 @@ public class NavigationManager {
     public void navigateTo(@NonNull Fragment fragment, @IdRes int inLayoutResId) {
         final String tag = fragment.getClass().getName();
 
-        fragmentManager.beginTransaction()
-                .replace(inLayoutResId, fragment, tag)
-                .commit();
+        boolean wasFragmentPopped;
+        try {
+            wasFragmentPopped = fragmentManager.popBackStackImmediate(tag, 0);
+        } catch (final IllegalStateException e) {
+            wasFragmentPopped = false;
+        }
+
+        if (!wasFragmentPopped) {
+            fragmentManager.beginTransaction()
+                    .replace(inLayoutResId, fragment, tag)
+                    .commit();
+        }
+
+    }
+
+    public void navigateToActivity(@NonNull Activity activity, @NonNull Context context) {
+        Intent intent = activity.getIntent();
+        context.startActivity(intent);
     }
 
 }

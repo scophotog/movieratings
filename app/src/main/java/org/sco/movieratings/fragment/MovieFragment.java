@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -51,17 +52,14 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
     public static final String PREVIEWS_EXTRA = "PREVIEWS_EXTRA";
     public static final String REVIEWS_EXTRA = "REVIEWS_EXTRA";
 
-    TextView mMovieTitle;
-    ImageView mMoviePoster;
-    TextView mMovieDetails;
-    TextView mMovieReleaseDate;
-    TextView mMovieVoteAverage;
+
+    LinearLayoutManager mPreviewLinearLayout;
+    LinearLayoutManager mReviewLinearLayout;
+
     Button mMarkAsFavorite;
     Button mUnfavorite;
     TextView mPreviewsTitle;
     TextView mReviewsTitle;
-    LinearLayoutManager mPreviewLinearLayout;
-    LinearLayoutManager mReviewLinearLayout;
 
     private MoviePreviewAdapter mMoviePreviewAdapter;
     private MovieReviewAdapter mMovieReviewAdapter;
@@ -71,6 +69,7 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
 
     private MovieInteractor mMovieInteractor;
     private CompositeSubscription mCompositeSubscription;
+    private MoviePresenter mMoviePresenter;
 
     public MovieFragment() {
 
@@ -84,8 +83,12 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
         return movieFragment;
     }
 
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mMovie = getArguments().getParcelable(MOVIE);
+        if (mMovie == null) {
+//            throw new IllegalArgumentException("A movie is required for this view");
+        }
         mMoviePreviewAdapter = new MoviePreviewAdapter(new ArrayList<Preview>(), this);
         mMovieReviewAdapter = new MovieReviewAdapter(new ArrayList<Review>());
         mMovieInteractor = new MovieInteractor();
@@ -93,32 +96,27 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            mMovie = arguments.getParcelable(MovieFragment.MOVIE);
-        }
+        return inflater.inflate(R.layout.fragment_movie, container, false);
+    }
 
-        View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
-        // Hide pick a movie
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mMoviePresenter = new MoviePresenter(view);
 
-        mMovieTitle = (TextView) rootView.findViewById(R.id.movie_title);
-        mMoviePoster = (ImageView) rootView.findViewById(R.id.poster);
-        mMovieDetails = (TextView) rootView.findViewById(R.id.movie_details);
-        mMovieReleaseDate = (TextView) rootView.findViewById(R.id.release_date);
-        mMovieVoteAverage = (TextView) rootView.findViewById(R.id.vote_average);
-        mMarkAsFavorite = (Button) rootView.findViewById(R.id.mark_as_favorite);
-        mUnfavorite = (Button) rootView.findViewById(R.id.remove_from_favorite);
-        mPreviewsTitle = (TextView) rootView.findViewById(R.id.previews_title);
-        mReviewsTitle = (TextView) rootView.findViewById(R.id.reviews_title);
+        mMarkAsFavorite = (Button) view.findViewById(R.id.mark_as_favorite);
+        mUnfavorite = (Button) view.findViewById(R.id.remove_from_favorite);
+        mPreviewsTitle = (TextView) view.findViewById(R.id.previews_title);
+        mReviewsTitle = (TextView) view.findViewById(R.id.reviews_title);
 
         mPreviewLinearLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mRecyclerViewPreviews = (RecyclerView) rootView.findViewById(R.id.preview_recycler);
+        mRecyclerViewPreviews = (RecyclerView) view.findViewById(R.id.preview_recycler);
         mRecyclerViewPreviews.setHasFixedSize(false);
         mRecyclerViewPreviews.setLayoutManager(mPreviewLinearLayout);
         mRecyclerViewPreviews.setAdapter(mMoviePreviewAdapter);
 
         mReviewLinearLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mRecyclerViewReviews = (RecyclerView) rootView.findViewById(R.id.reviews_recycler);
+        mRecyclerViewReviews = (RecyclerView) view.findViewById(R.id.reviews_recycler);
         mRecyclerViewReviews.setHasFixedSize(false);
         mRecyclerViewReviews.setLayoutManager(mReviewLinearLayout);
         mRecyclerViewReviews.setAdapter(mMovieReviewAdapter);
@@ -131,36 +129,13 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
                 mReviewLinearLayout.getOrientation());
         mRecyclerViewReviews.addItemDecoration(reviewDivider);
 
-
-
-        return rootView;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        if (mMovie != null) {
-            movieView();
-        }
+        movieView();
 
     }
 
     private void movieView() {
-        String IMAGE_PATH = "http://image.tmdb.org/t/p/w185";
 
-        mMovieTitle.setText(mMovie.getTitle());
-        mMovieTitle.setVisibility(VISIBLE);
-        mMovieDetails.setText(mMovie.getOverview());
-
-        Picasso.with(getActivity())
-                .load(IMAGE_PATH + mMovie.getPosterPath())
-                .placeholder(R.drawable.loading)
-                .error(R.drawable.image_not_found)
-                .into(mMoviePoster);
-
-        mMovieReleaseDate.setText(getString(R.string.format_release_date, mMovie.getReleaseDate().split("-")[0]));
-        mMovieVoteAverage.setText(getString(R.string.format_rating, mMovie.getVoteAverage()));
+        mMoviePresenter.present(mMovie);
 
         updateFavoriteButton();
 

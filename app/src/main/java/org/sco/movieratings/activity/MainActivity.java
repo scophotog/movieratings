@@ -3,30 +3,20 @@ package org.sco.movieratings.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.sco.movieratings.api.models.Movie;
-import org.sco.movieratings.fragment.MovieFragment;
 import org.sco.movieratings.R;
-import org.sco.movieratings.Utility;
-import org.sco.movieratings.fragment.MovieListFragment;
-import org.sco.movieratings.fragment.MovieListPresenter;
-
-import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private String mSort;
-    private boolean mTwoPane;
     private static final String SORT_MODE = "SM";
-    private static final String MOVIE_DETAIL_FRAGMENT_TAG = "MDFT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,23 +26,10 @@ public class MainActivity extends AppCompatActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (findViewById(R.id.movie_detail_container) != null) {
-            mTwoPane = true;
-            if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_detail_container, new MovieFragment(), MOVIE_DETAIL_FRAGMENT_TAG)
-                        .commit();
-            }
-
-        } else {
-            mTwoPane = false;
-            getSupportActionBar().setElevation(0f);
-        }
-
         if (savedInstanceState != null) {
-            // Check if favorites sort otherwise top_rated sort;
             mSort = savedInstanceState.getString(SORT_MODE, getString(R.string.pref_sort_top_rated));
         }
+        setTitle();
     }
 
     @Override
@@ -88,37 +65,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String sortType = Utility.getPreferredSort(this);
-//        if (sortType != null && !sortType.equals(mSort)) {
-//            MovieListFragment maf = (MovieListFragment) getSupportFragmentManager().findFragmentById(R.id.movie_list_container);
-//            if (maf != null) {
-//                maf.onSortChanged();
-//            }
-//        }
-        mSort = sortType;
         setTitle();
     }
-
-//    @Override
-//    public void onItemSelected(Movie movie) {
-//        if (mTwoPane) {
-//            findViewById(R.id.empty_detail_view).setVisibility(GONE);
-//            Bundle args = new Bundle();
-//            args.putParcelable(MovieFragment.MOVIE, movie);
-//
-//            MovieFragment fragment = new MovieFragment();
-//            fragment.setArguments(args);
-//
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.movie_detail_container, fragment, MOVIE_DETAIL_FRAGMENT_TAG)
-//                    .commit();
-//        } else {
-//            Intent intent = new Intent(this, MovieActivity.class)
-//                    .putExtra(MovieFragment.MOVIE, (Parcelable) movie);
-//            startActivity(intent);
-//        }
-//    }
-
 
     public void setTitle() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);

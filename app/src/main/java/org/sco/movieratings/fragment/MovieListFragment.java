@@ -26,9 +26,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 /**
  * The activity for displaying all movie posters.
  */
@@ -43,8 +40,6 @@ public class MovieListFragment extends Fragment {
     private CompositeSubscription mCompositeSubscription;
 
     List<Movie> mMovies;
-
-    private static final int MOVIES_LOADER = 0;
 
     public MovieListFragment() {
     }
@@ -125,12 +120,9 @@ public class MovieListFragment extends Fragment {
                 .subscribe(new Action1<Movie>() {
                     @Override
                     public void call(final Movie movie) {
-                        mMoviesInteractor.onMovieClicked(movie);
+                        mMoviesInteractor.onMovieClicked(movie, getContext());
                     }
                 }));
     }
 
-    private void updateMovies(List<Movie> movies) {
-        mMovieListPresenter.present(movies);
-    }
 }

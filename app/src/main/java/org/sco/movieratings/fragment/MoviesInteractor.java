@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import org.sco.movieratings.R;
+import org.sco.movieratings.activity.MainActivity;
 import org.sco.movieratings.api.ApiManager;
 import org.sco.movieratings.api.response.MoviesResponse;
 import org.sco.movieratings.api.TheMovieDBService;
@@ -104,9 +106,12 @@ public class MoviesInteractor {
                 });
     }
 
-    public void onMovieClicked(@NonNull Movie movie) {
-        movieListRouter.navigateTo(movie);
+    public void onMovieClicked(@NonNull Movie movie, @NonNull Context context) {
+         if (((MainActivity) context).findViewById(R.id.movie_detail_container) != null) {
+             movieListRouter.startFragment(movie);
+         } else {
+             movieListRouter.startActivity(movie, context);
+         }
     }
-
 
 }

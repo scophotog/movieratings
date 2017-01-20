@@ -1,15 +1,31 @@
 package org.sco.movieratings.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.MovementMethod;
 
+import org.sco.movieratings.api.models.Movie;
 import org.sco.movieratings.fragment.MovieFragment;
 import org.sco.movieratings.R;
+import org.sco.movieratings.fragment.MovieListRouter;
 
 public class MovieActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MovieActivity.class.getSimpleName();
+
+    public static MovieActivity newInstance(Movie movie, Context context) {
+        MovieActivity activity = new MovieActivity();
+
+        Intent intent = new Intent(context, MovieActivity.class)
+                    .putExtra(MovieFragment.MOVIE, (Parcelable) movie);
+        activity.setIntent(intent);
+
+        return activity;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,16 +40,8 @@ public class MovieActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putParcelable(MovieFragment.MOVIE, getIntent().getParcelableExtra(MovieFragment.MOVIE));
-
-            MovieFragment fragment = new MovieFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container, fragment)
-                    .commit();
+            MovieListRouter router = new MovieListRouter(getSupportFragmentManager());
+            router.startFragment((Movie) getIntent().getParcelableExtra(MovieFragment.MOVIE));
         }
     }
 
