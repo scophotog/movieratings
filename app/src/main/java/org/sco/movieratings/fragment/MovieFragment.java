@@ -21,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,11 +54,13 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
     public static final String REVIEWS_EXTRA = "REVIEWS_EXTRA";
 
 
-    LinearLayoutManager mPreviewLinearLayout;
-    LinearLayoutManager mReviewLinearLayout;
+    LinearLayoutManager mPreviewLinearLayoutManager;
+    LinearLayout mPreviewLinearLayout;
+    LinearLayoutManager mReviewLinearLayoutManager;
+    LinearLayout mReviewLinearLayout;
 
-    Button mMarkAsFavorite;
-    Button mUnfavorite;
+    ImageButton mMarkAsFavorite;
+
     TextView mPreviewsTitle;
     TextView mReviewsTitle;
 
@@ -103,29 +107,30 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
         super.onViewCreated(view, savedInstanceState);
         mMoviePresenter = new MoviePresenter(view);
 
-        mMarkAsFavorite = (Button) view.findViewById(R.id.mark_as_favorite);
-        mUnfavorite = (Button) view.findViewById(R.id.remove_from_favorite);
+        mMarkAsFavorite = (ImageButton) view.findViewById(R.id.mark_as_favorite);
         mPreviewsTitle = (TextView) view.findViewById(R.id.previews_title);
         mReviewsTitle = (TextView) view.findViewById(R.id.reviews_title);
 
-        mPreviewLinearLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mPreviewLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mPreviewLinearLayout = (LinearLayout) view.findViewById(R.id.previews_container);
         mRecyclerViewPreviews = (RecyclerView) view.findViewById(R.id.preview_recycler);
         mRecyclerViewPreviews.setHasFixedSize(false);
-        mRecyclerViewPreviews.setLayoutManager(mPreviewLinearLayout);
+        mRecyclerViewPreviews.setLayoutManager(mPreviewLinearLayoutManager);
         mRecyclerViewPreviews.setAdapter(mMoviePreviewAdapter);
 
-        mReviewLinearLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mReviewLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mReviewLinearLayout = (LinearLayout) view.findViewById(R.id.reviews_container);
         mRecyclerViewReviews = (RecyclerView) view.findViewById(R.id.reviews_recycler);
         mRecyclerViewReviews.setHasFixedSize(false);
-        mRecyclerViewReviews.setLayoutManager(mReviewLinearLayout);
+        mRecyclerViewReviews.setLayoutManager(mReviewLinearLayoutManager);
         mRecyclerViewReviews.setAdapter(mMovieReviewAdapter);
 
         DividerItemDecoration previewDivider = new DividerItemDecoration(mRecyclerViewPreviews.getContext(),
-                mPreviewLinearLayout.getOrientation());
+                mPreviewLinearLayoutManager.getOrientation());
         mRecyclerViewPreviews.addItemDecoration(previewDivider);
 
         DividerItemDecoration reviewDivider = new DividerItemDecoration(mRecyclerViewReviews.getContext(),
-                mReviewLinearLayout.getOrientation());
+                mReviewLinearLayoutManager.getOrientation());
         mRecyclerViewReviews.addItemDecoration(reviewDivider);
 
         movieView();
@@ -193,34 +198,28 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
             @Override
             protected void onPostExecute(Boolean favorite) {
                 if (favorite) {
-                    mUnfavorite.setVisibility(VISIBLE);
-                    mMarkAsFavorite.setVisibility(GONE);
-                    // Set remove from favorites
+                    mMarkAsFavorite.setSelected(true);
                 } else {
-                    mMarkAsFavorite.setVisibility(VISIBLE);
-                    mUnfavorite.setVisibility(GONE);
-                    // Set add to favorite
+                    mMarkAsFavorite.setSelected(false);
                 }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        mUnfavorite.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        removeFromFavorite();
-                        Snackbar.make(v,"Removed from Favorites", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }
-                });
 
         mMarkAsFavorite.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        markAsFavorite();
-                        Snackbar.make(v,"Added to Favorites", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+                        if(isFavorite()) {
+                            mMarkAsFavorite.setSelected(false);
+                            removeFromFavorite();
+                            Snackbar.make(v,"Removed from Favorites", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        } else {
+                            mMarkAsFavorite.setSelected(false);
+                            markAsFavorite();
+                            Snackbar.make(v,"Added to Favorites", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        }
                     }
                 });
     }
@@ -281,19 +280,15 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
 
     private void onPreviewsFetchFinished(List<Preview> previews) {
         mMoviePreviewAdapter.add(previews);
-        if (previews.size() == 0) {
-            mPreviewsTitle.setVisibility(GONE);
-        } else {
-            mPreviewsTitle.setVisibility(VISIBLE);
+        if (previews.size() > 0) {
+            mPreviewLinearLayout.setVisibility(VISIBLE);
         }
     }
 
     private void onReviewsFetchFinished(List<Review> reviews) {
         mMovieReviewAdapter.add(reviews);
-        if (reviews.size() == 0) {
-            mReviewsTitle.setVisibility(GONE);
-        } else {
-            mReviewsTitle.setVisibility(VISIBLE);
+        if (reviews.size() > 0) {
+            mReviewLinearLayout.setVisibility(VISIBLE);
         }
     }
 
