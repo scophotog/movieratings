@@ -3,7 +3,6 @@ package org.sco.movieratings.fragment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,12 +11,8 @@ import android.util.Log;
 
 import org.sco.movieratings.api.ApiManager;
 import org.sco.movieratings.api.response.MoviesResponse;
-import org.sco.movieratings.api.response.PreviewsResponse;
-import org.sco.movieratings.api.response.ReviewsResponse;
 import org.sco.movieratings.api.TheMovieDBService;
 import org.sco.movieratings.api.models.Movie;
-import org.sco.movieratings.api.models.Preview;
-import org.sco.movieratings.api.models.Review;
 import org.sco.movieratings.data.MovieColumns;
 import org.sco.movieratings.data.MovieProvider;
 
@@ -37,13 +32,16 @@ public class MoviesInteractor {
     private static final int RETRY_ON_ERROR_COUNT = 3;
 
     private final ApiManager apiManager;
+    private final MovieListRouter movieListRouter;
 
-    public MoviesInteractor() {
-        this(new ApiManager());
+
+    public MoviesInteractor(@NonNull MovieListRouter router) {
+        this(new ApiManager(), router);
     }
 
-    public MoviesInteractor(@NonNull ApiManager apiManager) {
+    public MoviesInteractor(@NonNull ApiManager apiManager, @NonNull MovieListRouter router) {
         this.apiManager = apiManager;
+        this.movieListRouter = router;
     }
 
     @NonNull
@@ -56,38 +54,6 @@ public class MoviesInteractor {
                             return Observable.just(response.getMovies());
                         } else {
                             return Observable.error(new IllegalArgumentException("Failed to get list of movies"));
-                        }
-                    }
-                })
-                .retry(RETRY_ON_ERROR_COUNT);
-    }
-
-    @NonNull
-    public Observable<List<Review>> getReviews(Movie movie) {
-        return apiManager.getService(TheMovieDBService.class).getMovieReviews(movie.getId())
-                .flatMap(new Func1<ReviewsResponse, Observable<List<Review>>>() {
-                    @Override
-                    public Observable<List<Review>> call(final ReviewsResponse response) {
-                        if (response != null && response.getReviews() != null) {
-                            return Observable.just(response.getReviews());
-                        } else {
-                            return Observable.error(new IllegalArgumentException("Failed to get list of reviews"));
-                        }
-                    }
-                })
-                .retry(RETRY_ON_ERROR_COUNT);
-    }
-
-    @NonNull
-    public Observable<List<Preview>> getPreviews(Movie movie) {
-        return apiManager.getService(TheMovieDBService.class).getMoviePreviews(movie.getId())
-                .flatMap(new Func1<PreviewsResponse, Observable<List<Preview>>>() {
-                    @Override
-                    public Observable<List<Preview>> call(final PreviewsResponse response) {
-                        if (response != null && response.getPreviews() != null) {
-                            return Observable.just(response.getPreviews());
-                        } else {
-                            return Observable.error(new IllegalArgumentException("Failed to get list of reviews"));
                         }
                     }
                 })
@@ -136,6 +102,10 @@ public class MoviesInteractor {
                         }
                     }
                 });
+    }
+
+    public void onMovieClicked(@NonNull Movie movie) {
+        movieListRouter.navigateTo(movie);
     }
 
 

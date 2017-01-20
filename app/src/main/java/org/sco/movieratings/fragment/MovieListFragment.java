@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -37,55 +38,21 @@ public class MovieListFragment extends Fragment {
     private static final String LOG_TAG = MovieListFragment.class.getSimpleName();
 
     private static final String SAVED_MOVIES = "movies";
-    private MovieListAdapter mMovieListAdapter;
     private MoviesInteractor mMoviesInteractor;
+    private MovieListPresenter mMovieListPresenter;
     private CompositeSubscription mCompositeSubscription;
 
-    private List<Movie> mMovies;
-
-    private Callbacks mCallbacks = sDummyCallbacks;
+    List<Movie> mMovies;
 
     private static final int MOVIES_LOADER = 0;
-
-    private RecyclerView mRecycler;
-    private TextView mEmptyView;
-
-    public interface Callbacks {
-        void onItemSelected(Movie movie);
-    }
-
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-
-        @Override
-        public void onItemSelected(Movie movie) {
-
-        }
-    };
 
     public MovieListFragment() {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (!(context instanceof Callbacks)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
-        }
-
-        mCallbacks = (Callbacks) context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        // Reset the active callbacks
-        mCallbacks = sDummyCallbacks;
-    }
-
-    @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMoviesInteractor = new MoviesInteractor();
+        mMoviesInteractor = new MoviesInteractor(new MovieListRouter(getFragmentManager()));
     }
 
     @Override
@@ -96,29 +63,21 @@ public class MovieListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
-        mRecycler = (RecyclerView) view.findViewById(R.id.movie_list);
-        mRecycler.setHasFixedSize(true);
-
+        super.onViewCreated(view, savedInstanceState);
+        mMovieListPresenter = new MovieListPresenter(view);
 
         mMovies = new ArrayList<>();
         if (savedInstanceState != null) {
             mMovies = savedInstanceState.getParcelableArrayList(SAVED_MOVIES);
+            mMovieListPresenter.present(mMovies);
         }
-
-        mMovieListAdapter = new MovieListAdapter(getActivity(), mMovies, mCallbacks);
-
-        mRecycler.setLayoutManager(
-                new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false)
-        );
-
-        mRecycler.setAdapter(mMovieListAdapter);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(SAVED_MOVIES, new ArrayList<>(mMovieListAdapter.getItems()));
+        outState.putParcelableArrayList(SAVED_MOVIES,
+                (ArrayList<? extends Parcelable>) mMovieListPresenter.getMovies());
     }
 
     @Override
@@ -136,7 +95,7 @@ public class MovieListFragment extends Fragment {
                     .subscribe(new Action1<List<Movie>>() {
                                    @Override
                                    public void call(final List<Movie> movies) {
-                                       updateMovies(movies);
+                                       mMovieListPresenter.present(movies);
                                    }
                                }, new Action1<Throwable>() {
                                    @Override
@@ -151,7 +110,7 @@ public class MovieListFragment extends Fragment {
                     .subscribe(new Action1<List<Movie>>() {
                             @Override
                             public void call(final List<Movie> movies) {
-                                updateMovies(movies);
+                                mMovieListPresenter.present(movies);
                             }
                         }, new Action1<Throwable>() {
                             @Override
@@ -162,18 +121,16 @@ public class MovieListFragment extends Fragment {
                     ));
         }
 
+        mCompositeSubscription.add(mMovieListPresenter.getMovieClickStream()
+                .subscribe(new Action1<Movie>() {
+                    @Override
+                    public void call(final Movie movie) {
+                        mMoviesInteractor.onMovieClicked(movie);
+                    }
+                }));
     }
 
     private void updateMovies(List<Movie> movies) {
-        mMovies.clear();
-        mMovies.addAll(movies);
-        if (movies.isEmpty()) {
-            mRecycler.setVisibility(GONE);
-            mEmptyView.setVisibility(VISIBLE);
-        } else {
-            mRecycler.setVisibility(VISIBLE);
-            mEmptyView.setVisibility(GONE);
-        }
-        mMovieListAdapter.notifyDataSetChanged();
+        mMovieListPresenter.present(movies);
     }
 }

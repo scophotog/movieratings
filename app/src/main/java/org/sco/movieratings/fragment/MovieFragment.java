@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -68,18 +69,26 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
     RecyclerView mRecyclerViewReviews;
     Movie mMovie;
 
-    private MoviesInteractor mMoviesInteractor;
+    private MovieInteractor mMovieInteractor;
     private CompositeSubscription mCompositeSubscription;
 
     public MovieFragment() {
 
     }
 
+    public static MovieFragment newInstance(@NonNull Movie movie) {
+        final MovieFragment movieFragment = new MovieFragment();
+        final Bundle args = new Bundle();
+        args.putParcelable(MOVIE, movie);
+        movieFragment.setArguments(args);
+        return movieFragment;
+    }
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMoviePreviewAdapter = new MoviePreviewAdapter(new ArrayList<Preview>(), this);
         mMovieReviewAdapter = new MovieReviewAdapter(new ArrayList<Review>());
-        mMoviesInteractor = new MoviesInteractor();
+        mMovieInteractor = new MovieInteractor();
     }
 
     @Override
@@ -316,7 +325,7 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
 
     private void fetchPreviews() {
         mCompositeSubscription = new CompositeSubscription();
-        mCompositeSubscription.add(mMoviesInteractor.getPreviews(mMovie)
+        mCompositeSubscription.add(mMovieInteractor.getPreviews(mMovie)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Preview>>() {
                     @Override
@@ -334,7 +343,7 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
 
     private void fetchReviews() {
         mCompositeSubscription = new CompositeSubscription();
-        mCompositeSubscription.add(mMoviesInteractor.getReviews(mMovie)
+        mCompositeSubscription.add(mMovieInteractor.getReviews(mMovie)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Review>>() {
                                @Override

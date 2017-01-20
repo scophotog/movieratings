@@ -15,11 +15,11 @@ import org.sco.movieratings.fragment.MovieFragment;
 import org.sco.movieratings.R;
 import org.sco.movieratings.Utility;
 import org.sco.movieratings.fragment.MovieListFragment;
+import org.sco.movieratings.fragment.MovieListPresenter;
 
 import static android.view.View.GONE;
 
-public class MainActivity extends AppCompatActivity
-        implements MovieListFragment.Callbacks {
+public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -99,25 +99,25 @@ public class MainActivity extends AppCompatActivity
         setTitle();
     }
 
-    @Override
-    public void onItemSelected(Movie movie) {
-        if (mTwoPane) {
-            findViewById(R.id.empty_detail_view).setVisibility(GONE);
-            Bundle args = new Bundle();
-            args.putParcelable(MovieFragment.MOVIE, movie);
-
-            MovieFragment fragment = new MovieFragment();
-            fragment.setArguments(args);
-
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.movie_detail_container, fragment, MOVIE_DETAIL_FRAGMENT_TAG)
-                    .commit();
-        } else {
-            Intent intent = new Intent(this, MovieActivity.class)
-                    .putExtra(MovieFragment.MOVIE, (Parcelable) movie);
-            startActivity(intent);
-        }
-    }
+//    @Override
+//    public void onItemSelected(Movie movie) {
+//        if (mTwoPane) {
+//            findViewById(R.id.empty_detail_view).setVisibility(GONE);
+//            Bundle args = new Bundle();
+//            args.putParcelable(MovieFragment.MOVIE, movie);
+//
+//            MovieFragment fragment = new MovieFragment();
+//            fragment.setArguments(args);
+//
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.movie_detail_container, fragment, MOVIE_DETAIL_FRAGMENT_TAG)
+//                    .commit();
+//        } else {
+//            Intent intent = new Intent(this, MovieActivity.class)
+//                    .putExtra(MovieFragment.MOVIE, (Parcelable) movie);
+//            startActivity(intent);
+//        }
+//    }
 
 
     public void setTitle() {
