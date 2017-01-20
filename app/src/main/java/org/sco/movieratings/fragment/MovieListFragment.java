@@ -121,19 +121,6 @@ public class MovieListFragment extends Fragment {
         outState.putParcelableArrayList(SAVED_MOVIES, new ArrayList<>(mMovieListAdapter.getItems()));
     }
 
-    private void updateMovies(List<Movie> movies) {
-        mMovies.clear();
-        mMovies.addAll(movies);
-        if (movies.isEmpty()) {
-            mRecycler.setVisibility(GONE);
-            mEmptyView.setVisibility(VISIBLE);
-        } else {
-            mRecycler.setVisibility(VISIBLE);
-            mEmptyView.setVisibility(GONE);
-        }
-        mMovieListAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -158,7 +145,35 @@ public class MovieListFragment extends Fragment {
                                    }
                                }
                     ));
+        } else {
+            mCompositeSubscription.add(mMoviesInteractor.getFavorites(getContext())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<List<Movie>>() {
+                            @Override
+                            public void call(final List<Movie> movies) {
+                                updateMovies(movies);
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(final Throwable throwable) {
+                                Toast.makeText(getContext(), "Failed to fetch movies", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    ));
         }
 
+    }
+
+    private void updateMovies(List<Movie> movies) {
+        mMovies.clear();
+        mMovies.addAll(movies);
+        if (movies.isEmpty()) {
+            mRecycler.setVisibility(GONE);
+            mEmptyView.setVisibility(VISIBLE);
+        } else {
+            mRecycler.setVisibility(VISIBLE);
+            mEmptyView.setVisibility(GONE);
+        }
+        mMovieListAdapter.notifyDataSetChanged();
     }
 }
