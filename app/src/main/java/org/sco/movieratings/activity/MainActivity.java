@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             case "top_rated":
                 title = getString(R.string.high_rated_settings);
                 break;
-            case "most_popular":
+            case "popular":
                 title = getString(R.string.most_popular_settings);
                 break;
             case "my_favorites":

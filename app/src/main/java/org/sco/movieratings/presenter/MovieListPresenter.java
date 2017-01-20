@@ -25,6 +25,7 @@ import static android.view.View.VISIBLE;
 
 public class MovieListPresenter {
 
+    private final View mLoadingView;
     private final TextView mEmptyView;
     private final RecyclerView mRecycler;
     private final PublishSubject<Movie> clickStream = PublishSubject.create();
@@ -32,16 +33,18 @@ public class MovieListPresenter {
     private List<Movie> mMovies = new ArrayList<>();
 
     public MovieListPresenter(@NonNull View view) {
-        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
-        mRecycler = (RecyclerView) view.findViewById(R.id.movie_list);
-        mRecycler.setHasFixedSize(true);
-        mRecycler.setLayoutManager(
+        this.mLoadingView = view.findViewById(R.id.loading);
+        this.mEmptyView = (TextView) view.findViewById(R.id.empty_view);
+        this.mRecycler = (RecyclerView) view.findViewById(R.id.movie_list);
+        this.mRecycler.setHasFixedSize(true);
+        this.mRecycler.setLayoutManager(
                 new GridLayoutManager(view.getContext(), 2, GridLayoutManager.VERTICAL, false)
         );
-        mRecycler.setAdapter(new MovieListAdapter(clickStream));
+        this.mRecycler.setAdapter(new MovieListAdapter(clickStream));
     }
 
     public void present(@NonNull List<Movie> movies) {
+        this.mLoadingView.setVisibility(GONE);
         if (movies.isEmpty()) {
             mRecycler.setVisibility(GONE);
             mEmptyView.setVisibility(VISIBLE);
@@ -54,10 +57,12 @@ public class MovieListPresenter {
         this.mRecycler.swapAdapter(new MovieListAdapter(movies, clickStream), true);
     }
 
+    @NonNull
     public Observable<Movie> getMovieClickStream() {
         return clickStream.asObservable();
     }
 
+    @NonNull
     public List<Movie> getMovies() {
         return mMovies;
     }
