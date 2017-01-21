@@ -16,6 +16,7 @@
         android:name="org.sco.movieratings.fragment.MovieListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/grid_item_movie"/>
+        tools:layout="@layout/fragment_movie_list"
+        />
 
 </LinearLayout>

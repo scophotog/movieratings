@@ -54,9 +54,7 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
     public static final String REVIEWS_EXTRA = "REVIEWS_EXTRA";
 
 
-    LinearLayoutManager mPreviewLinearLayoutManager;
     LinearLayout mPreviewLinearLayout;
-    LinearLayoutManager mReviewLinearLayoutManager;
     LinearLayout mReviewLinearLayout;
 
     ImageButton mMarkAsFavorite;
@@ -111,30 +109,17 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
         mPreviewsTitle = (TextView) view.findViewById(R.id.previews_title);
         mReviewsTitle = (TextView) view.findViewById(R.id.reviews_title);
 
-        mPreviewLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mPreviewLinearLayout = (LinearLayout) view.findViewById(R.id.previews_container);
         mRecyclerViewPreviews = (RecyclerView) view.findViewById(R.id.preview_recycler);
         mRecyclerViewPreviews.setHasFixedSize(false);
-        mRecyclerViewPreviews.setLayoutManager(mPreviewLinearLayoutManager);
         mRecyclerViewPreviews.setAdapter(mMoviePreviewAdapter);
 
-        mReviewLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mReviewLinearLayout = (LinearLayout) view.findViewById(R.id.reviews_container);
         mRecyclerViewReviews = (RecyclerView) view.findViewById(R.id.reviews_recycler);
         mRecyclerViewReviews.setHasFixedSize(false);
-        mRecyclerViewReviews.setLayoutManager(mReviewLinearLayoutManager);
         mRecyclerViewReviews.setAdapter(mMovieReviewAdapter);
 
-        DividerItemDecoration previewDivider = new DividerItemDecoration(mRecyclerViewPreviews.getContext(),
-                mPreviewLinearLayoutManager.getOrientation());
-        mRecyclerViewPreviews.addItemDecoration(previewDivider);
-
-        DividerItemDecoration reviewDivider = new DividerItemDecoration(mRecyclerViewReviews.getContext(),
-                mReviewLinearLayoutManager.getOrientation());
-        mRecyclerViewReviews.addItemDecoration(reviewDivider);
-
         movieView();
-
     }
 
     private void movieView() {

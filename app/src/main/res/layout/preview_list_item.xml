@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="horizontal"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:gravity="center">
+              android:id="@+id/preview_item"
+              android:theme="?android:attr/listViewStyle"
+              android:baselineAligned="true">
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/ic_media_play"
         android:id="@+id/playButton"
-        android:layout_weight="1"/>
+        android:backgroundTint="?android:attr/colorAccent"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/trailerName"
         android:textAppearance="?android:textAppearanceMedium"
-        android:layout_weight="5"
         android:paddingLeft="10dp"
-        android:gravity="center_vertical"/>
+        android:gravity="center_vertical"
+        tools:text="You Tube: HQ Preview"/>
 
 </LinearLayout>

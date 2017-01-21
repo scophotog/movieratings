@@ -3,12 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <ProgressBar style="?android:progressBarStyle"
                  android:id="@+id/loading"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
+                 tools:visibility="gone"
                  android:layout_gravity="center" />
 
     <android.support.v7.widget.RecyclerView
@@ -16,7 +19,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        tools:visibility="visible"
+        app:layoutManager="GridLayoutManager"
+        android:orientation="vertical"
+        app:spanCount="2"
+        app:reverseLayout="false"
+        tools:listitem="@layout/grid_item_movie"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:layout_gravity="center"/>
 
     <TextView
         android:id="@+id/empty_view"
@@ -24,6 +36,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone"
+        tools:visibility="gone"
         android:textAppearance="?android:textAppearanceMedium"
         android:text="@string/no_movies" />
 

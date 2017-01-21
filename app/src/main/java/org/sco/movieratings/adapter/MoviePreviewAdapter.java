@@ -61,7 +61,7 @@ public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapte
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Preview preview = mPreviews.get(position);
 
-        holder.trailer.setText(preview.getName());
+        holder.trailer.setText(preview.getSite() + ": " + preview.getName());
 
         holder.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
