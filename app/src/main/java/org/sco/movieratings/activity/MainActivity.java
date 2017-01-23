@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        prefs.edit().putString(getString(R.string.pref_sort_key),mSort);
+//        prefs.edit().putString(getString(R.string.pref_sort_key),mSort).apply();
         super.onPause();
     }
 

@@ -2,4 +2,8 @@
 <resources>
     <color name="blackBackground">#000000</color>
     <color name="movieTitleBackground">#00897B</color>
+    <color name="colorPrimary">#125688</color>
+    <color name="colorPrimaryDark">#1a237e</color>
+    <color name="textColorPrimary">#ffffff</color>
+    <color name="colorAccent">#b71c1c</color>
 </resources>

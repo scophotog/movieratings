@@ -22,11 +22,11 @@
                 android:layout_height="100dp"
                 android:id="@+id/movie_title"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="?android:attr/textColorPrimary"
-                android:background="?android:attr/colorAccent"
+                android:textColor="@color/textColorPrimary"
+                android:background="@color/colorPrimaryDark"
                 android:gravity="center_vertical"
                 android:paddingLeft="10dp"
-                tools:text="Scott Pilgrim"/>
+                tools:text="Interstellar"/>
 
             <View
                 android:id="@+id/view_anchor"
@@ -58,7 +58,7 @@
                         android:layout_height="225dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="-10dp"
-                        tools:src="@color/movieTitleBackground"/>
+                        tools:src="@drawable/movie_poster"/>
 
                     <ImageButton
                         android:layout_width="50dp"
@@ -67,7 +67,10 @@
                         android:id="@+id/mark_as_favorite"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
-                        android:tint="?android:attr/colorAccent"/>
+                        android:backgroundTint="?android:attr/colorBackground"
+                        android:tint="@color/colorAccent"
+                        android:cropToPadding="false"
+                        />
 
                     <LinearLayout
                         android:layout_width="match_parent"
