@@ -88,6 +88,10 @@ public class MainActivity extends AppCompatActivity {
                 title = "";
                 break;
         }
+
+    }
+
+    public void setTitle(final String title) {
         getSupportActionBar().setTitle(getText(R.string.app_name) + " " + title);
     }
 }

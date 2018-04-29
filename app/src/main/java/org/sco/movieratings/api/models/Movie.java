@@ -51,20 +51,20 @@ public class Movie implements Serializable, Parcelable {
                  @NonNull Boolean hasVideo,
                  @NonNull Double voteAverage) {
 
-        this.posterPath = posterPath;
+        this.posterPath = posterPath;//
         this.isAdult = isAdult;
         this.overview = overview;
-        this.releaseDate = releaseDate;
+        this.releaseDate = releaseDate;//
         this.genreIds = genreIds;
-        this.id = id;
+        this.id = id; //
         this.originalTitle = originalTitle;
         this.originalLanguage = originalLanguage;
-        this.title = title;
+        this.title = title;//
         this.backdropPath = backdropPath;
-        this.popularity = popularity;
+        this.popularity = popularity;//
         this.voteCount = voteCount;
         this.hasVideo = hasVideo;
-        this.voteAverage= voteAverage;
+        this.voteAverage= voteAverage;//
     }
 
     // TODO: Implement these items in the db

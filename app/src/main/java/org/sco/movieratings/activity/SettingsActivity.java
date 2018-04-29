@@ -8,7 +8,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.Window;
 
 import org.sco.movieratings.R;
 
