@@ -1,13 +1,7 @@
 package org.sco.movieratings.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.Inflater;
-
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -16,23 +10,28 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import org.sco.movieratings.activity.MainActivity;
-import org.sco.movieratings.utility.MovieListRouter;
 import org.sco.movieratings.R;
+import org.sco.movieratings.activity.MainActivity;
 import org.sco.movieratings.api.models.Movie;
 import org.sco.movieratings.interactor.MoviesInteractor;
+import org.sco.movieratings.presenter.BottomBarPresenter;
 import org.sco.movieratings.presenter.MovieListPresenter;
+import org.sco.movieratings.utility.MovieListRouter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
+import static org.sco.movieratings.utility.Utility.getPreferredSort;
+import static org.sco.movieratings.utility.Utility.updatePreference;
+
 /**
  * The activity for displaying all movie posters.
  */
-
 public class MovieListFragment extends Fragment {
 
     private static final String LOG_TAG = MovieListFragment.class.getSimpleName();
@@ -40,9 +39,8 @@ public class MovieListFragment extends Fragment {
     private static final String SAVED_MOVIES = "movies";
     private MoviesInteractor mMoviesInteractor;
     private MovieListPresenter mMovieListPresenter;
+    private BottomBarPresenter mBottomBarPresenter;
     private CompositeSubscription mCompositeSubscription;
-
-    private BottomNavigationView mBottomNavigationView;
 
     List<Movie> mMovies;
 
@@ -53,7 +51,6 @@ public class MovieListFragment extends Fragment {
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMoviesInteractor = new MoviesInteractor(new MovieListRouter(getFragmentManager()));
-
     }
 
     @Override
@@ -65,36 +62,8 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mBottomNavigationView = view.findViewById(R.id.bottom_navigation);
-        mBottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.bn_top_rated: {
-                                changeFragment(0);
-                                break;
-                            }
-                            case R.id.bn_most_popular: {
-                                changeFragment(1);
-                                break;
-                            }
-                            case R.id.bn_my_favorites: {
-                                changeFragment(2);
-                                break;
-                            }
-
-                            default: {
-                                throw new IllegalArgumentException("Unknown navigation");
-                            }
-                        }
-                        return true;
-                    }
-                }
-        );
-
-
-
+        mBottomBarPresenter = new BottomBarPresenter(view);
+        mBottomBarPresenter.setOnNavigationItemSelectedListener(setBottomNavListener());
         mMovieListPresenter = new MovieListPresenter(view);
 
         mMovies = new ArrayList<>();
@@ -114,40 +83,10 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String sortType = prefs.getString(getContext().getString(R.string.pref_sort_key),
-                getContext().getString(R.string.pref_sort_top_rated));
-
+        final String sortType = getPreferredSort(getContext());
         mCompositeSubscription = new CompositeSubscription();
-
-        switch (sortType) {
-            case "top_rated": {
-                changeFragment(0);
-                mBottomNavigationView.setSelectedItemId(R.id.bn_top_rated);
-                break;
-            }
-            case "popular": {
-                changeFragment(1);
-                mBottomNavigationView.setSelectedItemId(R.id.bn_most_popular);
-                break;
-            }
-            case "my_favorites": {
-                changeFragment(2);
-                mBottomNavigationView.setSelectedItemId(R.id.bn_my_favorites);
-                break;
-            }
-            default: {
-                throw new IllegalArgumentException("Unknown navigation: " + sortType);
-            }
-        }
-
-        mCompositeSubscription.add(mMovieListPresenter.getMovieClickStream()
-                .subscribe(new Action1<Movie>() {
-                    @Override
-                    public void call(final Movie movie) {
-                        mMoviesInteractor.onMovieClicked(movie, getContext());
-                    }
-                }));
+        setViewToSortType(mCompositeSubscription, sortType);
+        setMovieClickInteractor(mCompositeSubscription);
     }
 
     @Override
@@ -156,12 +95,39 @@ public class MovieListFragment extends Fragment {
         super.onPause();
     }
 
-    private void changeFragment(int position) {
-        mCompositeSubscription = new CompositeSubscription();
+    private void setViewToSortType(final CompositeSubscription compositeSubscription, final String sortType) {
+        final String topRated = getResources().getString(R.string.pref_sort_top_rated);
+        final String popular = getResources().getString(R.string.pref_sort_popular_rated);
+        final String favorites = getResources().getString(R.string.pref_sort_my_favorites);
+        if (sortType.equals(topRated)) {
+            updateMovieList(compositeSubscription, 0);
+            mBottomBarPresenter.setSelectedItemById(R.id.bn_top_rated);
+        } else if (sortType.equals(popular)) {
+            updateMovieList(compositeSubscription, 1);
+            mBottomBarPresenter.setSelectedItemById(R.id.bn_most_popular);
+        } else if (sortType.equals(favorites)) {
+            updateMovieList(compositeSubscription, 2);
+            mBottomBarPresenter.setSelectedItemById(R.id.bn_my_favorites);
+        } else {
+            throw new IllegalArgumentException("Unknown navigation: " + sortType);
+        }
+    }
 
+    private void setMovieClickInteractor(final CompositeSubscription compositeSubscription) {
+        compositeSubscription.add(mMovieListPresenter.getMovieClickStream()
+                .subscribe(new Action1<Movie>() {
+                    @Override
+                    public void call(final Movie movie) {
+                        mMoviesInteractor.onMovieClicked(movie, getContext());
+                    }
+                }));
+    }
+
+    private void updateMovieList(final CompositeSubscription compositeSubscription, int position) {
+        mMovieListPresenter.setNowLoadingView();
         switch(position) {
             case 0: {
-                mCompositeSubscription.add(mMoviesInteractor.getMovies("top_rated")
+                compositeSubscription.add(mMoviesInteractor.getMovies("top_rated")
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<List<Movie>>() {
                                        @Override
@@ -171,16 +137,17 @@ public class MovieListFragment extends Fragment {
                                    }, new Action1<Throwable>() {
                                        @Override
                                        public void call(final Throwable throwable) {
-                                           Toast.makeText(getContext(), "Failed to fetch movies",Toast.LENGTH_SHORT).show();
+                                           mMovieListPresenter.setErrorView();
                                        }
                                    }
                         ));
                 ((MainActivity) getActivity()).setTitle(getResources().getString(R.string.high_rated_settings));
-                updatePreference(getResources().getString(R.string.pref_sort_top_rated));
+                updatePreference(getContext(),
+                        getResources().getString(R.string.pref_sort_top_rated));
                 break;
             }
             case 1: {
-                mCompositeSubscription.add(mMoviesInteractor.getMovies("popular")
+                compositeSubscription.add(mMoviesInteractor.getMovies("popular")
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<List<Movie>>() {
                                        @Override
@@ -190,16 +157,17 @@ public class MovieListFragment extends Fragment {
                                    }, new Action1<Throwable>() {
                                        @Override
                                        public void call(final Throwable throwable) {
-                                           Toast.makeText(getContext(), "Failed to fetch movies",Toast.LENGTH_SHORT).show();
+                                           mMovieListPresenter.setErrorView();
                                        }
                                    }
                         ));
                 ((MainActivity) getActivity()).setTitle(getResources().getString(R.string.most_popular_settings));
-                updatePreference(getResources().getString(R.string.pref_sort_popular_rated));
+                updatePreference(getContext(),
+                        getResources().getString(R.string.pref_sort_popular_rated));
                 break;
             }
             case 2: {
-                mCompositeSubscription.add(mMoviesInteractor.getFavorites(getContext())
+                compositeSubscription.add(mMoviesInteractor.getFavorites(getContext())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<List<Movie>>() {
                                        @Override
@@ -209,22 +177,42 @@ public class MovieListFragment extends Fragment {
                                    }, new Action1<Throwable>() {
                                        @Override
                                        public void call(final Throwable throwable) {
-                                           Toast.makeText(getContext(), "Failed to fetch movies", Toast.LENGTH_SHORT).show();
+                                           mMovieListPresenter.setErrorView();
                                        }
                                    }
                         ));
                 ((MainActivity) getActivity()).setTitle(getResources().getString(R.string.my_favorites_settings));
-                updatePreference(getResources().getString(R.string.pref_sort_my_favorites));
+                updatePreference(getContext(),
+                        getResources().getString(R.string.pref_sort_my_favorites));
                 break;
             }
         }
     }
 
-    private void updatePreference(final String sortType) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(getString(R.string.pref_sort_key), sortType);
-        editor.apply();
+    private BottomNavigationView.OnNavigationItemSelectedListener setBottomNavListener() {
+        return new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.bn_top_rated: {
+                        updateMovieList(mCompositeSubscription, 0);
+                        break;
+                    }
+                    case R.id.bn_most_popular: {
+                        updateMovieList(mCompositeSubscription,1);
+                        break;
+                    }
+                    case R.id.bn_my_favorites: {
+                        updateMovieList(mCompositeSubscription,2);
+                        break;
+                    }
+                    default: {
+                        throw new IllegalArgumentException("Unknown navigation");
+                    }
+                }
+                return true;
+            }
+        };
     }
 
 }

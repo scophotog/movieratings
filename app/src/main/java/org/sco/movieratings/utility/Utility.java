@@ -20,4 +20,9 @@ public final class Utility {
                 context.getString(R.string.pref_sort_top_rated));
         return sortType;
     }
+
+    public static void updatePreference(final Context context, final String sortType) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putString(context.getString(R.string.pref_sort_key), sortType).apply();
+    }
 }

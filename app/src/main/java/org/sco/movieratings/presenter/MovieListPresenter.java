@@ -1,8 +1,5 @@
 package org.sco.movieratings.presenter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +9,9 @@ import android.widget.TextView;
 import org.sco.movieratings.R;
 import org.sco.movieratings.adapter.MovieListAdapter;
 import org.sco.movieratings.api.models.Movie;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -67,4 +67,14 @@ public class MovieListPresenter {
         return mMovies;
     }
 
+    public void setNowLoadingView() {
+        this.mRecycler.setVisibility(GONE);
+        this.mLoadingView.setVisibility(VISIBLE);
+    }
+
+    public void setErrorView() {
+        this.mLoadingView.setVisibility(GONE);
+        this.mRecycler.setVisibility(GONE);
+        this.mEmptyView.setVisibility(VISIBLE);
+    }
 }
