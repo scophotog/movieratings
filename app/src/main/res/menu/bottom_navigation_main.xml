@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/bn_top_rated"
         android:enabled="true"
-        android:icon="@drawable/ic_is_favorite"
+        android:icon="@drawable/ic_top_rated"
         android:title="@string/high_rated_settings"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/bn_most_popular"
         android:enabled="true"
-        android:icon="@drawable/ic_is_favorite"
+        android:icon="@drawable/ic_most_popular"
         android:title="@string/most_popular_settings"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/bn_my_favorites"
         android:enabled="true"
-        android:icon="@drawable/ic_is_favorite"
+        android:icon="@drawable/ic_my_favorite"
         android:title="@string/my_favorites_settings"
         app:showAsAction="ifRoom" />
 
