@@ -25,7 +25,7 @@ node {
         pattern: '**/reports/lint/lint-result.xml',
         unHealthy: ''
     step([$class: "JUnitResultArchiver",
-        testResults: "**/app/build/test-results/debug/*.xml"])
+        testResults: "**/app/build/test-results/testDebugUnitTest/*.xml"])
   }
 
   stage('Archive') {
