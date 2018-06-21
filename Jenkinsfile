@@ -4,13 +4,8 @@ node {
   }
 
   stage('Build') {
-    try {
-      sh './gradlew --refresh-dependencies clean assembleDebug'
-      archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', fingerprint: true
-      currentBuild.result = 'SUCCESS'
-    } catch(error) {
-      currentBuild.result = 'FAILURE'
-    }
+    sh './gradlew --refresh-dependencies clean assembleDebug'
+    archiveArtifacts artifacts: 'app/build/outputs/apk/debug/*.apk', fingerprint: true
   }
 
   stage('Unit Tests') {
@@ -28,7 +23,4 @@ node {
         testResults: "**/app/build/test-results/testDebugUnitTest/*.xml"])
   }
 
-  stage('Archive') {
-    archiveArtifacts 'app/build/outputs/apk/*'
-  }
 }
