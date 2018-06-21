@@ -17,7 +17,7 @@ node {
     androidLint canComputeNew: false,
         defaultEncoding: '',
         healthy: '',
-        pattern: '**/reports/lint/lint-result.xml',
+        pattern: '**/reports/lint-results-debug.xml',
         unHealthy: ''
     step([$class: "JUnitResultArchiver",
         testResults: "**/app/build/test-results/testDebugUnitTest/*.xml"])
