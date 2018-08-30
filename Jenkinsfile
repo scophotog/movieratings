@@ -4,15 +4,19 @@ node {
   }
 
   stage('Code Analysis') {
-    sh './gradlew lintDebug'
+    sh './gradlew lintDebug -PAPI_KEY="$API_KEY"'
   }
 
   stage('Build') {
-    sh './gradlew --refresh-dependencies clean assembleDebug'
+    sh './gradlew -PAPI_KEY="$API_KEY"' --refresh-dependencies clean assembleDebug assembleAndroidTest'
   }
 
   stage('Unit Tests') {
-    sh './gradlew testDebug'
+    sh './gradlew -PAPI_KEY="$API_KEY"' testDebug'
+  }
+
+  stage('UI Tests') {
+    sh 'ANDROID_SERIAL=emulator-5554;$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82;./gradlew -PAPI_KEY="$API_KEY" connectedAndroidTest'
   }
 
   stage('Archive') {
