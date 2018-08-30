@@ -8,16 +8,25 @@ node {
   }
 
   stage('Build') {
-    sh './gradlew -PAPI_KEY="$API_KEY" --refresh-dependencies clean assembleDebug assembleAndroidTest'
+    sh './gradlew -PAPI_KEY="{$API_KEY}"--refresh-dependencies clean assembleDebug assembleAndroidTest'
   }
 
   stage('Unit Tests') {
-    sh './gradlew -PAPI_KEY="$API_KEY" testDebug'
+    sh './gradlew -PAPI_KEY="{$API_KEY}"testDebug'
   }
 
   stage('UI Tests') {
-    sh 'ANDROID_SERIAL=emulator-5554'
-    sh './gradlew -PAPI_KEY="$API_KEY" connectedAndroidTest'
+    script {
+        try {
+        
+            sh 'ANDROID_SERIAL=emulator-5554'
+            sh './gradlew -PAPI_KEY="${API_KEY}" connectedAndroidTest'
+        }
+        catch (exc) {
+            echo 'Testing failed!'
+            currentBuild.result = 'UNSTABLE'
+        }
+    }
   }
 
   stage('Archive') {
