@@ -8,7 +8,7 @@ node {
   }
 
   stage('Build') {
-    sh './gradlew -PAPI_KEY="$API_KEY" --refresh-dependencies clean assembleDebug assembleAndroidTest'
+    sh './gradlew -PAPI_KEY="$API_KEY" --refresh-dependencies assembleDebug assembleAndroidTest'
   }
 
   stage('Unit Tests') {
@@ -18,7 +18,6 @@ node {
   stage('UI Tests') {
     script {
         try {
-        
             sh 'ANDROID_SERIAL=emulator-5554'
             sh './gradlew -PAPI_KEY="$API_KEY" connectedAndroidTest'
         }
