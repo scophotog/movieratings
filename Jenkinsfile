@@ -17,7 +17,6 @@ node {
 
   stage('UI Tests') {
     sh 'ANDROID_SERIAL=emulator-5554'
-    sh '$ANDROID_HOME/platform-tools/adb wait-for-device shell '''while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82''''
     sh './gradlew -PAPI_KEY="$API_KEY" connectedAndroidTest'
   }
 
