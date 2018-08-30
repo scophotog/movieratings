@@ -1,7 +1,11 @@
 apply plugin: 'com.android.application'
 
 Properties props = new Properties()
-props.load(project.rootProject.file('local.properties').newDataInputStream())
+try {
+    props.load(project.rootProject.file('local.propertiess').newDataInputStream())
+} catch (FileNotFoundException e) {
+    println 'local.properties not found probably CI/CD'
+}
 
 android {
     compileSdkVersion 27
