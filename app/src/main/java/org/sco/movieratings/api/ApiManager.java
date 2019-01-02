@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.support.annotation.NonNull;
-
 import org.sco.movieratings.BuildConfig;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.GsonBuilder;
 
+import androidx.annotation.NonNull;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

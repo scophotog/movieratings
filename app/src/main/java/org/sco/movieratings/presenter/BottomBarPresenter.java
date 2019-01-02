@@ -1,10 +1,12 @@
 package org.sco.movieratings.presenter;
 
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.view.View;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import org.sco.movieratings.R;
+
+import androidx.annotation.NonNull;
 
 public class BottomBarPresenter {
 

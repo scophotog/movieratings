@@ -1,11 +1,10 @@
 package org.sco.movieratings.api;
 
-import android.support.annotation.NonNull;
-
 import org.sco.movieratings.api.response.MoviesResponse;
 import org.sco.movieratings.api.response.PreviewsResponse;
 import org.sco.movieratings.api.response.ReviewsResponse;
 
+import androidx.annotation.NonNull;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import rx.Observable;

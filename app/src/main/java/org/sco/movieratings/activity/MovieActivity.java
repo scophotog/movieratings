@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import org.sco.movieratings.api.models.Movie;
 import org.sco.movieratings.fragment.MovieFragment;
 import org.sco.movieratings.R;
 import org.sco.movieratings.utility.MovieListRouter;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class MovieActivity extends AppCompatActivity {
 

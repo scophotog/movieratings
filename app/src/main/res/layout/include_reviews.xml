@@ -18,12 +18,11 @@
         android:paddingTop="15dp"
         tools:text="Reviews:"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reviews_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="LinearLayoutManager"
-        android:nestedScrollingEnabled="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="vertical"
         app:reverseLayout="false"
         tools:listitem="@layout/review_list_item"/>

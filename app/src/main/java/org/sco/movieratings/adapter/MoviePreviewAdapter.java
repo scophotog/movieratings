@@ -3,7 +3,6 @@ package org.sco.movieratings.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,8 @@ import android.widget.TextView;
 
 import org.sco.movieratings.R;
 import org.sco.movieratings.api.models.Preview;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapter.ViewHolder> {
     private static final String LOG_TAG = MoviePreviewAdapter.class.getSimpleName();
@@ -29,8 +30,8 @@ public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapte
 
         public ViewHolder(View v) {
             super(v);
-            playButton = (ImageView) v.findViewById(R.id.playButton);
-            trailer = (TextView) v.findViewById(R.id.trailerName);
+            playButton = v.findViewById(R.id.playButton);
+            trailer = v.findViewById(R.id.trailerName);
         }
     }
 
@@ -53,8 +54,7 @@ public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapte
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.preview_list_item, parent, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override

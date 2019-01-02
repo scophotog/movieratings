@@ -3,23 +3,26 @@ package org.sco.movieratings.adapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import org.sco.movieratings.BuildConfig;
 import org.sco.movieratings.R;
 import org.sco.movieratings.api.models.Movie;
 
 import com.squareup.picasso.Picasso;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+import androidx.recyclerview.widget.RecyclerView;
 import rx.subjects.PublishSubject;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
     private static final String LOG_TAG = MovieListAdapter.class.getSimpleName();
+
 
     private final String IMAGE_PATH = "http://image.tmdb.org/t/p/w185";
 
@@ -37,12 +40,25 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        @VisibleForTesting
+        protected static final String ROW_TEXT = "ROW_TEXT";
+
+        @VisibleForTesting
+        protected static final String ITEM_TEXT_FORMAT = "item: %d";
+
+        @VisibleForTesting
+        protected String makeItem(int forRow) {
+            return String.format(ITEM_TEXT_FORMAT, forRow);
+        }
+
         public ImageView poster;
         public Movie mMovie;
+        public TextView rowId;
 
         public ViewHolder(View v) {
             super(v);
             poster = (ImageView) v.findViewById(R.id.moviePoster);
+            rowId = (TextView) v.findViewById(R.id.debugText);
             itemView.setOnClickListener(this);
         }
 
@@ -74,6 +90,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.image_not_found)
                 .into(holder.poster);
+
+        if (!BuildConfig.DEBUG) {
+            holder.rowId.setText(holder.makeItem(position));
+            holder.rowId.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override

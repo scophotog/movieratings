@@ -6,12 +6,13 @@ import java.util.List;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.sco.movieratings.db.MovieColumns;
 
 import com.google.gson.annotations.SerializedName;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Created by sargenzi on 1/18/17.

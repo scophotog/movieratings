@@ -2,8 +2,6 @@ package org.sco.movieratings.interactor;
 
 import java.util.List;
 
-import android.support.annotation.NonNull;
-
 import org.sco.movieratings.api.ApiManager;
 import org.sco.movieratings.api.TheMovieDBService;
 import org.sco.movieratings.api.models.Movie;
@@ -12,6 +10,7 @@ import org.sco.movieratings.api.models.Review;
 import org.sco.movieratings.api.response.PreviewsResponse;
 import org.sco.movieratings.api.response.ReviewsResponse;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.functions.Func1;
 

@@ -1,8 +1,5 @@
 package org.sco.movieratings.presenter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +10,9 @@ import org.sco.movieratings.api.models.Movie;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -38,7 +38,7 @@ public class MovieListPresenter {
         this.mRecycler = (RecyclerView) view.findViewById(R.id.movie_list);
         this.mRecycler.setHasFixedSize(true);
         this.mRecycler.setLayoutManager(
-                new GridLayoutManager(view.getContext(), 2, GridLayoutManager.VERTICAL, false)
+                new GridLayoutManager(view.getContext(), 2, RecyclerView.VERTICAL, false)
         );
         this.mRecycler.setAdapter(new MovieListAdapter(clickStream));
     }

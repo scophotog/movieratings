@@ -6,7 +6,6 @@ import java.util.concurrent.Callable;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.sco.movieratings.R;
@@ -19,6 +18,7 @@ import org.sco.movieratings.db.MovieColumns;
 import org.sco.movieratings.db.MovieProvider;
 import org.sco.movieratings.utility.MovieListRouter;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;

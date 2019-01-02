@@ -1,13 +1,14 @@
 package org.sco.movieratings.utility;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 
 import org.sco.movieratings.R;
 import org.sco.movieratings.activity.MovieActivity;
 import org.sco.movieratings.api.models.Movie;
 import org.sco.movieratings.fragment.MovieFragment;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 
 /**
  * Created by sargenzi on 1/20/17.

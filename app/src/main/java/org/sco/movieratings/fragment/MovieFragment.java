@@ -10,22 +10,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import org.sco.movieratings.R;
 import org.sco.movieratings.adapter.MoviePreviewAdapter;
 import org.sco.movieratings.adapter.MovieReviewAdapter;
@@ -37,11 +30,14 @@ import org.sco.movieratings.api.models.Review;
 import org.sco.movieratings.interactor.MovieInteractor;
 import org.sco.movieratings.presenter.MoviePresenter;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callback {
@@ -54,19 +50,19 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
     public static final String REVIEWS_EXTRA = "REVIEWS_EXTRA";
 
 
-    LinearLayout mPreviewLinearLayout;
-    LinearLayout mReviewLinearLayout;
+    private LinearLayout mPreviewLinearLayout;
+    private LinearLayout mReviewLinearLayout;
 
-    ImageButton mMarkAsFavorite;
+    private ImageButton mMarkAsFavorite;
 
-    TextView mPreviewsTitle;
-    TextView mReviewsTitle;
+    private TextView mPreviewsTitle;
+    private TextView mReviewsTitle;
 
     private MoviePreviewAdapter mMoviePreviewAdapter;
     private MovieReviewAdapter mMovieReviewAdapter;
-    RecyclerView mRecyclerViewPreviews;
-    RecyclerView mRecyclerViewReviews;
-    Movie mMovie;
+    private RecyclerView mRecyclerViewPreviews;
+    private RecyclerView mRecyclerViewReviews;
+    private Movie mMovie;
 
     private MovieInteractor mMovieInteractor;
     private CompositeSubscription mCompositeSubscription;

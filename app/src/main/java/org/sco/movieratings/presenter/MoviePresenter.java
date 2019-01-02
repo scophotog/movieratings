@@ -1,9 +1,7 @@
 package org.sco.movieratings.presenter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,6 +9,8 @@ import org.sco.movieratings.R;
 import org.sco.movieratings.api.models.Movie;
 
 import com.squareup.picasso.Picasso;
+
+import androidx.annotation.NonNull;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -21,24 +21,23 @@ import static android.view.View.VISIBLE;
 
 public class MoviePresenter {
 
-    TextView mMovieTitle;
-    ImageView mMoviePoster;
-    TextView mMovieDetails;
-    TextView mMovieReleaseDate;
-    TextView mMovieVoteAverage;
-    TextView mEmptyTextView;
-
+    private TextView mMovieTitle;
+    private ImageView mMoviePoster;
+    private TextView mMovieDetails;
+    private TextView mMovieReleaseDate;
+    private TextView mMovieVoteAverage;
+    private TextView mEmptyTextView;
 
     Context mContext;
     
     public MoviePresenter(@NonNull View view) {
         mContext = view.getContext();
-        mMovieTitle = (TextView) view.findViewById(R.id.movie_title);
-        mMoviePoster = (ImageView) view.findViewById(R.id.poster);
-        mMovieDetails = (TextView) view.findViewById(R.id.movie_details);
-        mMovieReleaseDate = (TextView) view.findViewById(R.id.release_date);
-        mMovieVoteAverage = (TextView) view.findViewById(R.id.vote_average);
-        mEmptyTextView = (TextView) view.getRootView().findViewById(R.id.empty_detail_view);
+        mMovieTitle = view.findViewById(R.id.movie_title);
+        mMoviePoster = view.findViewById(R.id.poster);
+        mMovieDetails = view.findViewById(R.id.movie_details);
+        mMovieReleaseDate = view.findViewById(R.id.release_date);
+        mMovieVoteAverage = view.findViewById(R.id.vote_average);
+        mEmptyTextView = view.getRootView().findViewById(R.id.empty_detail_view);
     }
 
     public void present(@NonNull Movie movie) {
