@@ -28,10 +28,10 @@ public class MoviePreviewAdapter extends RecyclerView.Adapter<MoviePreviewAdapte
         private ImageView playButton;
         private TextView trailer;
 
-        public ViewHolder(View v) {
-            super(v);
-            playButton = v.findViewById(R.id.playButton);
-            trailer = v.findViewById(R.id.trailerName);
+        public ViewHolder(View view) {
+            super(view);
+            playButton = view.findViewById(R.id.playButton);
+            trailer = view.findViewById(R.id.trailerName);
         }
     }
 

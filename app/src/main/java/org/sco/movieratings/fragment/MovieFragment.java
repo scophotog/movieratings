@@ -46,9 +46,8 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
 
     public static final String MOVIE = "movie";
 
-    public static final String PREVIEWS_EXTRA = "PREVIEWS_EXTRA";
-    public static final String REVIEWS_EXTRA = "REVIEWS_EXTRA";
-
+    private static final String PREVIEWS_EXTRA = "PREVIEWS_EXTRA";
+    private static final String REVIEWS_EXTRA = "REVIEWS_EXTRA";
 
     private LinearLayout mPreviewLinearLayout;
     private LinearLayout mReviewLinearLayout;
@@ -84,7 +83,7 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
         super.onCreate(savedInstanceState);
         mMovie = getArguments().getParcelable(MOVIE);
         if (mMovie == null) {
-//            throw new IllegalArgumentException("A movie is required for this view");
+            throw new IllegalArgumentException("A movie is required for this view");
         }
         mMoviePreviewAdapter = new MoviePreviewAdapter(new ArrayList<Preview>(), this);
         mMovieReviewAdapter = new MovieReviewAdapter(new ArrayList<Review>());
@@ -101,17 +100,17 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
         super.onViewCreated(view, savedInstanceState);
         mMoviePresenter = new MoviePresenter(view);
 
-        mMarkAsFavorite = (ImageButton) view.findViewById(R.id.mark_as_favorite);
-        mPreviewsTitle = (TextView) view.findViewById(R.id.previews_title);
-        mReviewsTitle = (TextView) view.findViewById(R.id.reviews_title);
+        mMarkAsFavorite = view.findViewById(R.id.mark_as_favorite);
+        mPreviewsTitle = view.findViewById(R.id.previews_title);
+        mReviewsTitle = view.findViewById(R.id.reviews_title);
 
-        mPreviewLinearLayout = (LinearLayout) view.findViewById(R.id.previews_container);
-        mRecyclerViewPreviews = (RecyclerView) view.findViewById(R.id.preview_recycler);
+        mPreviewLinearLayout = view.findViewById(R.id.previews_container);
+        mRecyclerViewPreviews = view.findViewById(R.id.preview_recycler);
         mRecyclerViewPreviews.setHasFixedSize(false);
         mRecyclerViewPreviews.setAdapter(mMoviePreviewAdapter);
 
-        mReviewLinearLayout = (LinearLayout) view.findViewById(R.id.reviews_container);
-        mRecyclerViewReviews = (RecyclerView) view.findViewById(R.id.reviews_recycler);
+        mReviewLinearLayout = view.findViewById(R.id.reviews_container);
+        mRecyclerViewReviews = view.findViewById(R.id.reviews_recycler);
         mRecyclerViewReviews.setHasFixedSize(false);
         mRecyclerViewReviews.setAdapter(mMovieReviewAdapter);
 

@@ -10,10 +10,6 @@ import org.sco.movieratings.fragment.MovieFragment;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
-/**
- * Created by sargenzi on 1/20/17.
- */
-
 public class MovieListRouter {
 
     private final NavigationManager navigationManager;

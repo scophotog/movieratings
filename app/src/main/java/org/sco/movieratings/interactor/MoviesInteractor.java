@@ -24,10 +24,6 @@ import rx.Subscriber;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by sargenzi on 1/19/17.
- */
-
 public class MoviesInteractor {
 
     private static final String LOG_TAG = MoviesInteractor.class.getSimpleName();

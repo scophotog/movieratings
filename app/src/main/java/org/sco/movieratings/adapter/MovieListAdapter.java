@@ -23,7 +23,6 @@ import rx.subjects.PublishSubject;
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
     private static final String LOG_TAG = MovieListAdapter.class.getSimpleName();
 
-
     private final String IMAGE_PATH = "http://image.tmdb.org/t/p/w185";
 
     private final List<Movie> mMovies;
@@ -55,10 +54,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         public Movie mMovie;
         public TextView rowId;
 
-        public ViewHolder(View v) {
-            super(v);
-            poster = (ImageView) v.findViewById(R.id.moviePoster);
-            rowId = (TextView) v.findViewById(R.id.debugText);
+        public ViewHolder(View view) {
+            super(view);
+            poster = view.findViewById(R.id.moviePoster);
+            rowId = view.findViewById(R.id.debugText);
             itemView.setOnClickListener(this);
         }
 
@@ -95,7 +94,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
             holder.rowId.setText(holder.makeItem(position));
             holder.rowId.setVisibility(View.VISIBLE);
         }
-
     }
 
     @Override

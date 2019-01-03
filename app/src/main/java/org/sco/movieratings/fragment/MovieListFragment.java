@@ -43,7 +43,7 @@ public class MovieListFragment extends Fragment {
     private BottomBarPresenter mBottomBarPresenter;
     private CompositeSubscription mCompositeSubscription;
 
-    List<Movie> mMovies;
+    private List<Movie> mMovies;
 
     public MovieListFragment() {
     }

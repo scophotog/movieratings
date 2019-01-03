@@ -14,10 +14,6 @@ import com.google.gson.annotations.SerializedName;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-/**
- * Created by sargenzi on 1/18/17.
- */
-
 public class Movie implements Serializable, Parcelable {
 
     private String posterPath;

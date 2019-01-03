@@ -5,10 +5,6 @@ import net.simonvt.schematic.annotation.DataType;
 import net.simonvt.schematic.annotation.NotNull;
 import net.simonvt.schematic.annotation.PrimaryKey;
 
-/**
- * Created by sargenzi on 1/16/17.
- */
-
 public interface MovieColumns {
 
     @DataType(DataType.Type.INTEGER) @PrimaryKey

@@ -19,10 +19,6 @@ import rx.subjects.PublishSubject;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-/**
- * Created by sargenzi on 1/20/17.
- */
-
 public class MovieListPresenter {
 
     private final View mLoadingView;
@@ -34,8 +30,8 @@ public class MovieListPresenter {
 
     public MovieListPresenter(@NonNull View view) {
         this.mLoadingView = view.findViewById(R.id.loading);
-        this.mEmptyView = (TextView) view.findViewById(R.id.empty_view);
-        this.mRecycler = (RecyclerView) view.findViewById(R.id.movie_list);
+        this.mEmptyView = view.findViewById(R.id.empty_view);
+        this.mRecycler = view.findViewById(R.id.movie_list);
         this.mRecycler.setHasFixedSize(true);
         this.mRecycler.setLayoutManager(
                 new GridLayoutManager(view.getContext(), 2, RecyclerView.VERTICAL, false)

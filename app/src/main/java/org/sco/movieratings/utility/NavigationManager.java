@@ -9,10 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-/**
- * Created by sargenzi on 1/20/17.
- */
-
 public class NavigationManager {
 
     private final FragmentManager fragmentManager;

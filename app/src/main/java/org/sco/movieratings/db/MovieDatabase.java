@@ -3,10 +3,6 @@ package org.sco.movieratings.db;
 import net.simonvt.schematic.annotation.Database;
 import net.simonvt.schematic.annotation.Table;
 
-/**
- * Created by sargenzi on 1/16/17.
- */
-
 @Database(version = MovieDatabase.VERSION)
 public class MovieDatabase {
     private MovieDatabase() {}

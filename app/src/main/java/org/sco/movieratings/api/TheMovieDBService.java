@@ -9,10 +9,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import rx.Observable;
 
-/**
- * Created by sargenzi on 1/18/17.
- */
-
 public interface TheMovieDBService {
 
     @GET("movie/{list}")

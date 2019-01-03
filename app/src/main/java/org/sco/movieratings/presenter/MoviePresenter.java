@@ -15,10 +15,6 @@ import androidx.annotation.NonNull;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-/**
- * Created by sargenzi on 1/20/17.
- */
-
 public class MoviePresenter {
 
     private TextView mMovieTitle;

@@ -14,10 +14,6 @@ import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.functions.Func1;
 
-/**
- * Created by sargenzi on 1/19/17.
- */
-
 public class MovieInteractor {
 
     private static final String LOG_TAG = MovieInteractor.class.getSimpleName();

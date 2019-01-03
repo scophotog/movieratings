@@ -6,10 +6,6 @@ import android.preference.PreferenceManager;
 
 import org.sco.movieratings.R;
 
-/**
- * Created by sargenzi on 1/10/17.
- */
-
 public final class Utility {
 
     private Utility(){}
