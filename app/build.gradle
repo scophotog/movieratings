@@ -47,8 +47,8 @@ dependencies {
 
     implementation 'com.google.guava:guava:27.0.1-android'
 
-    implementation "io.reactivex:rxjava:$RX_JAVA_VERSION"
-    implementation "io.reactivex:rxandroid:$RX_ANDROID_VERSION"
+    implementation "io.reactivex.rxjava2:rxjava:$RX_JAVA_VERSION"
+    implementation "io.reactivex.rxjava2:rxandroid:$RX_ANDROID_VERSION"
 
     implementation "com.squareup.picasso:picasso:$PICASSO_VERSION"
 
