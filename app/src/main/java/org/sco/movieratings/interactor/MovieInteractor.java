@@ -11,8 +11,8 @@ import org.sco.movieratings.api.response.PreviewsResponse;
 import org.sco.movieratings.api.response.ReviewsResponse;
 
 import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 
 public class MovieInteractor {
 
@@ -33,9 +33,9 @@ public class MovieInteractor {
     @NonNull
     public Observable<List<Review>> getReviews(Movie movie) {
         return apiManager.getService(TheMovieDBService.class).getMovieReviews(movie.getId())
-                .flatMap(new Func1<ReviewsResponse, Observable<List<Review>>>() {
+                .flatMap(new Function<ReviewsResponse, Observable<List<Review>>>() {
                     @Override
-                    public Observable<List<Review>> call(final ReviewsResponse response) {
+                    public Observable<List<Review>> apply(ReviewsResponse response) {
                         if (response != null && response.getReviews() != null) {
                             return Observable.just(response.getReviews());
                         } else {
@@ -49,9 +49,9 @@ public class MovieInteractor {
     @NonNull
     public Observable<List<Preview>> getPreviews(Movie movie) {
         return apiManager.getService(TheMovieDBService.class).getMoviePreviews(movie.getId())
-                .flatMap(new Func1<PreviewsResponse, Observable<List<Preview>>>() {
+                .flatMap(new Function<PreviewsResponse, Observable<List<Preview>>>() {
                     @Override
-                    public Observable<List<Preview>> call(final PreviewsResponse response) {
+                    public Observable<List<Preview>> apply(PreviewsResponse response) throws Exception {
                         if (response != null && response.getPreviews() != null) {
                             return Observable.just(response.getPreviews());
                         } else {

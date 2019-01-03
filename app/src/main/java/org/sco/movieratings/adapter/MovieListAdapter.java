@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.RecyclerView;
-import rx.subjects.PublishSubject;
+import io.reactivex.subjects.PublishSubject;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
     private static final String LOG_TAG = MovieListAdapter.class.getSimpleName();
@@ -84,7 +84,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.mMovie = mMovies.get(position);
-        Picasso.with(holder.itemView.getContext())
+        Picasso.get()
                 .load(IMAGE_PATH + mMovies.get(position).getPosterPath())
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.image_not_found)

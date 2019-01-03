@@ -5,9 +5,9 @@ import org.sco.movieratings.api.response.PreviewsResponse;
 import org.sco.movieratings.api.response.ReviewsResponse;
 
 import androidx.annotation.NonNull;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
-import rx.Observable;
 
 public interface TheMovieDBService {
 

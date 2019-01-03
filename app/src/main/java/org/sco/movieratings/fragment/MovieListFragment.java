@@ -23,9 +23,9 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 import static org.sco.movieratings.utility.Utility.getPreferredSort;
 import static org.sco.movieratings.utility.Utility.updatePreference;
@@ -41,7 +41,7 @@ public class MovieListFragment extends Fragment {
     private MoviesInteractor mMoviesInteractor;
     private MovieListPresenter mMovieListPresenter;
     private BottomBarPresenter mBottomBarPresenter;
-    private CompositeSubscription mCompositeSubscription;
+    private CompositeDisposable compositeDisposable;
 
     private List<Movie> mMovies;
 
@@ -85,59 +85,59 @@ public class MovieListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         final String sortType = getPreferredSort(getContext());
-        mCompositeSubscription = new CompositeSubscription();
-        setViewToSortType(mCompositeSubscription, sortType);
-        setMovieClickInteractor(mCompositeSubscription);
+        compositeDisposable = new CompositeDisposable();
+        setViewToSortType(compositeDisposable, sortType);
+        setMovieClickInteractor(compositeDisposable);
     }
 
     @Override
     public void onPause() {
-        mCompositeSubscription.unsubscribe();
+        compositeDisposable.clear();
         super.onPause();
     }
 
-    private void setViewToSortType(final CompositeSubscription compositeSubscription, final String sortType) {
+    private void setViewToSortType(final CompositeDisposable compositeDisposable, final String sortType) {
         final String topRated = getResources().getString(R.string.pref_sort_top_rated);
         final String popular = getResources().getString(R.string.pref_sort_popular_rated);
         final String favorites = getResources().getString(R.string.pref_sort_my_favorites);
         if (sortType.equals(topRated)) {
-            updateMovieList(compositeSubscription, 0);
+            updateMovieList(compositeDisposable, 0);
             mBottomBarPresenter.setSelectedItemById(R.id.bn_top_rated);
         } else if (sortType.equals(popular)) {
-            updateMovieList(compositeSubscription, 1);
+            updateMovieList(compositeDisposable, 1);
             mBottomBarPresenter.setSelectedItemById(R.id.bn_most_popular);
         } else if (sortType.equals(favorites)) {
-            updateMovieList(compositeSubscription, 2);
+            updateMovieList(compositeDisposable, 2);
             mBottomBarPresenter.setSelectedItemById(R.id.bn_my_favorites);
         } else {
             throw new IllegalArgumentException("Unknown navigation: " + sortType);
         }
     }
 
-    private void setMovieClickInteractor(final CompositeSubscription compositeSubscription) {
-        compositeSubscription.add(mMovieListPresenter.getMovieClickStream()
-                .subscribe(new Action1<Movie>() {
+    private void setMovieClickInteractor(final CompositeDisposable compositeDisposable) {
+        compositeDisposable.add(mMovieListPresenter.getMovieClickStream()
+                .subscribe(new Consumer<Movie>() {
                     @Override
-                    public void call(final Movie movie) {
+                    public void accept(final Movie movie) {
                         mMoviesInteractor.onMovieClicked(movie, getContext());
                     }
                 }));
     }
 
-    private void updateMovieList(final CompositeSubscription compositeSubscription, int position) {
+    private void updateMovieList(final CompositeDisposable compositeDisposable, int position) {
         mMovieListPresenter.setNowLoadingView();
         switch(position) {
             case 0: {
-                compositeSubscription.add(mMoviesInteractor.getMovies("top_rated")
+                compositeDisposable.add(mMoviesInteractor.getMovies("top_rated")
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<List<Movie>>() {
+                        .subscribe(new Consumer<List<Movie>>() {
                                        @Override
-                                       public void call(final List<Movie> movies) {
+                                       public void accept(final List<Movie> movies) {
                                            mMovieListPresenter.present(movies);
                                        }
-                                   }, new Action1<Throwable>() {
+                                   }, new Consumer<Throwable>() {
                                        @Override
-                                       public void call(final Throwable throwable) {
+                                       public void accept(final Throwable throwable) {
                                            mMovieListPresenter.setErrorView();
                                        }
                                    }
@@ -148,16 +148,16 @@ public class MovieListFragment extends Fragment {
                 break;
             }
             case 1: {
-                compositeSubscription.add(mMoviesInteractor.getMovies("popular")
+                compositeDisposable.add(mMoviesInteractor.getMovies("popular")
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<List<Movie>>() {
+                        .subscribe(new Consumer<List<Movie>>() {
                                        @Override
-                                       public void call(final List<Movie> movies) {
+                                       public void accept(final List<Movie> movies) {
                                            mMovieListPresenter.present(movies);
                                        }
-                                   }, new Action1<Throwable>() {
+                                   }, new Consumer<Throwable>() {
                                        @Override
-                                       public void call(final Throwable throwable) {
+                                       public void accept(final Throwable throwable) {
                                            mMovieListPresenter.setErrorView();
                                        }
                                    }
@@ -168,16 +168,16 @@ public class MovieListFragment extends Fragment {
                 break;
             }
             case 2: {
-                compositeSubscription.add(mMoviesInteractor.getFavorites(getContext())
+                compositeDisposable.add(mMoviesInteractor.getFavorites(getContext())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<List<Movie>>() {
+                        .subscribe(new Consumer<List<Movie>>() {
                                        @Override
-                                       public void call(final List<Movie> movies) {
+                                       public void accept(final List<Movie> movies) {
                                            mMovieListPresenter.present(movies);
                                        }
-                                   }, new Action1<Throwable>() {
+                                   }, new Consumer<Throwable>() {
                                        @Override
-                                       public void call(final Throwable throwable) {
+                                       public void accept(final Throwable throwable) {
                                            mMovieListPresenter.setErrorView();
                                        }
                                    }
@@ -196,15 +196,15 @@ public class MovieListFragment extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.bn_top_rated: {
-                        updateMovieList(mCompositeSubscription, 0);
+                        updateMovieList(compositeDisposable, 0);
                         break;
                     }
                     case R.id.bn_most_popular: {
-                        updateMovieList(mCompositeSubscription,1);
+                        updateMovieList(compositeDisposable,1);
                         break;
                     }
                     case R.id.bn_my_favorites: {
-                        updateMovieList(mCompositeSubscription,2);
+                        updateMovieList(compositeDisposable,2);
                         break;
                     }
                     default: {

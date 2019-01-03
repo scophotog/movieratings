@@ -47,7 +47,7 @@ public class MoviePresenter {
         mMovieTitle.setVisibility(VISIBLE);
         mMovieDetails.setText(movie.getOverview());
 
-        Picasso.with(mContext)
+        Picasso.get()
                 .load(IMAGE_PATH + movie.getPosterPath())
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.image_not_found)

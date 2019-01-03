@@ -13,8 +13,8 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import rx.Observable;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -55,7 +55,7 @@ public class MovieListPresenter {
 
     @NonNull
     public Observable<Movie> getMovieClickStream() {
-        return clickStream.asObservable();
+        return clickStream.hide();
     }
 
     @NonNull

@@ -19,10 +19,12 @@ import org.sco.movieratings.db.MovieProvider;
 import org.sco.movieratings.utility.MovieListRouter;
 
 import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class MoviesInteractor {
 
@@ -46,9 +48,9 @@ public class MoviesInteractor {
     @NonNull
     public Observable<List<Movie>> getMovies(String movieList) {
         return apiManager.getService(TheMovieDBService.class).getMovies(movieList)
-                .flatMap(new Func1<MoviesResponse, Observable<List<Movie>>>() {
+                .flatMap(new Function<MoviesResponse, ObservableSource<List<Movie>>>() {
                     @Override
-                    public Observable<List<Movie>> call(final MoviesResponse response) {
+                    public ObservableSource<List<Movie>> apply(MoviesResponse response) {
                         if (response != null && response.getMovies() != null) {
                             return Observable.just(response.getMovies());
                         } else {
@@ -91,7 +93,18 @@ public class MoviesInteractor {
 
     private static <T> Observable<T> makeObservable(final Callable<T> func) {
         return Observable.create(
-                new Observable.OnSubscribe<T>() {
+                new ObservableOnSubscribe<T>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<T> emitter) {
+                        try {
+                            emitter.onNext(func.call());
+                        } catch(Exception e) {
+                            Log.e(LOG_TAG, "Error reading from DB", e);
+                        }
+                    }
+                });
+    }
+/*
                     @Override
                     public void call(Subscriber<? super T> subscriber) {
                         try {
@@ -100,9 +113,7 @@ public class MoviesInteractor {
                             Log.e(LOG_TAG, "Error reading from DB", e);
                         }
                     }
-                });
-    }
-
+ */
     public void onMovieClicked(@NonNull Movie movie, @NonNull Context context) {
          if (((MainActivity) context).findViewById(R.id.movie_detail_container) != null) {
              movieListRouter.startFragment(movie);

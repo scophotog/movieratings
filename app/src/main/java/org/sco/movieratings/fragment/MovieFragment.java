@@ -34,9 +34,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 import static android.view.View.VISIBLE;
 
@@ -64,7 +64,7 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
     private Movie mMovie;
 
     private MovieInteractor mMovieInteractor;
-    private CompositeSubscription mCompositeSubscription;
+    private CompositeDisposable mCompositeDisposable;
     private MoviePresenter mMoviePresenter;
 
     public MovieFragment() {
@@ -273,35 +273,35 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
     }
 
     private void fetchPreviews() {
-        mCompositeSubscription = new CompositeSubscription();
-        mCompositeSubscription.add(mMovieInteractor.getPreviews(mMovie)
+        mCompositeDisposable = new CompositeDisposable();
+        mCompositeDisposable.add(mMovieInteractor.getPreviews(mMovie)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Preview>>() {
-                    @Override
-                    public void call(final List<Preview> previews) {
-                        onPreviewsFetchFinished(previews);
+                .subscribe(new Consumer<List<Preview>>() {
+                   @Override
+                   public void accept(List<Preview> previews) {
+                       onPreviewsFetchFinished(previews);
+                   }
+                   }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            Toast.makeText(getContext(), "Failed to fetch reviews", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(final Throwable throwable) {
-                        Toast.makeText(getContext(), "Failed to fetch reviews", Toast.LENGTH_SHORT).show();
-                    }
-                }
                 ));
     }
 
     private void fetchReviews() {
-        mCompositeSubscription = new CompositeSubscription();
-        mCompositeSubscription.add(mMovieInteractor.getReviews(mMovie)
+        mCompositeDisposable = new CompositeDisposable();
+        mCompositeDisposable.add(mMovieInteractor.getReviews(mMovie)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Review>>() {
+                .subscribe(new Consumer<List<Review>>() {
                                @Override
-                               public void call(final List<Review> reviews) {
+                               public void accept(final List<Review> reviews) {
                                    onReviewsFetchFinished(reviews);
                                }
-                           }, new Action1<Throwable>() {
+                           }, new Consumer<Throwable>() {
                                @Override
-                               public void call(final Throwable throwable) {
+                               public void accept(final Throwable throwable) {
                                    Toast.makeText(getContext(), "Failed to fetch reviews", Toast.LENGTH_SHORT).show();
                                }
                            }
@@ -321,7 +321,7 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
 
     @Override
     public void onPause() {
-        mCompositeSubscription.unsubscribe();
+        mCompositeDisposable.clear();
         super.onPause();
     }
 }
