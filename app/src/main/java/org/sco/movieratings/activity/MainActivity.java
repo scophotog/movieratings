@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import org.sco.movieratings.R;
 
+import com.squareup.picasso.Picasso;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -13,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String mSort;
     private static final String SORT_MODE = "SM";
+    private static boolean picassoInitialized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             mSort = savedInstanceState.getString(SORT_MODE, getString(R.string.pref_sort_top_rated));
+        }
+        if (!picassoInitialized) {
+            Picasso.setSingletonInstance(new Picasso.Builder(getApplicationContext()).build());
+            picassoInitialized = true;
         }
     }
 

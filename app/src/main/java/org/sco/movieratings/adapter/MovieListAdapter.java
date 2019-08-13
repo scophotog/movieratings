@@ -14,6 +14,7 @@ import org.sco.movieratings.R;
 import org.sco.movieratings.api.models.Movie;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.PicassoProvider;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;

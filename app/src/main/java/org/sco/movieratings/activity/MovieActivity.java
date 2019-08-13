@@ -10,12 +10,15 @@ import org.sco.movieratings.fragment.MovieFragment;
 import org.sco.movieratings.R;
 import org.sco.movieratings.utility.MovieListRouter;
 
+import com.squareup.picasso.Picasso;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class MovieActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MovieActivity.class.getSimpleName();
+    private static boolean picassoInitialized = false;
 
     public static MovieActivity newInstance(Movie movie, Context context) {
         MovieActivity activity = new MovieActivity();
@@ -42,6 +45,15 @@ public class MovieActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             MovieListRouter router = new MovieListRouter(getSupportFragmentManager());
             router.startFragment((Movie) getIntent().getParcelableExtra(MovieFragment.MOVIE));
+        }
+
+        if (!picassoInitialized) {
+            try {
+                Picasso.setSingletonInstance(new Picasso.Builder(getApplicationContext()).build());
+                picassoInitialized = true;
+            } catch (RuntimeException e) {
+                picassoInitialized = true;
+            }
         }
     }
 
