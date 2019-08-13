@@ -1,7 +1,4 @@
 node {
-  stage('Checkout') {
-    checkout scm
-  }
 
   stage('Code Analysis') {
     sh './gradlew lintDebug -PAPI_KEY=$API_KEY'
