@@ -1,6 +1,7 @@
 package org.sco.movieratings.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import org.sco.movieratings.R;
 
@@ -29,7 +30,11 @@ public class MainActivity extends AppCompatActivity {
             mSort = savedInstanceState.getString(SORT_MODE, getString(R.string.pref_sort_top_rated));
         }
         if (!picassoInitialized) {
-            Picasso.setSingletonInstance(new Picasso.Builder(getApplicationContext()).build());
+            try {
+                Picasso.setSingletonInstance(new Picasso.Builder(getApplicationContext()).build());
+            } catch (final IllegalStateException e) {
+                Log.e(LOG_TAG, "Picasso was already instanced");
+            }
             picassoInitialized = true;
         }
     }
