@@ -1,15 +1,16 @@
 pipeline {
   agent any
-  parameters { booleanParam(name: 'RUN_UITEST', defaultValue: false, description: 'Run UI Tests?') }
-  
   stages {
     stage('Code Analysis') {
       post {
         always {
           androidLint(pattern: '**/reports/lint-results-debug.xml')
+
         }
+
       }
       steps {
+        echo 'Hello Iniya'
         sh './gradlew lintDebug -PAPI_KEY=$API_KEY'
       }
     }
@@ -17,7 +18,9 @@ pipeline {
       post {
         success {
           archiveArtifacts(artifacts: 'app/build/outputs/apk/debug/*.apk', fingerprint: true)
+
         }
+
       }
       steps {
         sh './gradlew -PAPI_KEY=$API_KEY --refresh-dependencies assembleDebug assembleAndroidTest'
@@ -27,14 +30,21 @@ pipeline {
       post {
         always {
           junit '**/app/build/test-results/testDebugUnitTest/*.xml'
+
         }
+
       }
       steps {
         sh './gradlew -PAPI_KEY=$API_KEY testDebug'
       }
     }
     stage('UI Tests') {
-      when { expression { return params.RUN_UITEST } }
+      when {
+        expression {
+          return params.RUN_UITEST
+        }
+
+      }
       steps {
         script {
           try {
@@ -46,7 +56,11 @@ pipeline {
             currentBuild.result = 'UNSTABLE'
           }
         }
+
       }
     }
+  }
+  parameters {
+    booleanParam(name: 'RUN_UITEST', defaultValue: false, description: 'Run UI Tests?')
   }
 }
