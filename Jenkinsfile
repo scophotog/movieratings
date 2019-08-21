@@ -10,7 +10,6 @@ pipeline {
 
       }
       steps {
-        echo 'Hello Iniya'
         sh './gradlew lintDebug -PAPI_KEY=$API_KEY'
       }
     }
