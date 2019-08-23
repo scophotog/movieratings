@@ -38,24 +38,36 @@ pipeline {
       }
     }
     stage('UI Tests') {
-      when {
-        expression {
-          return params.RUN_UITEST
-        }
+      parallel {
+        stage('UI Tests') {
+          when {
+            expression {
+              return params.RUN_UITEST
+            }
 
-      }
-      steps {
-        script {
-          try {
-            sh 'ANDROID_SERIAL=emulator-5554'
-            sh './gradlew -PAPI_KEY=$API_KEY connectedAndroidTest'
           }
-          catch (exc) {
-            echo 'Testing failed!'
-            currentBuild.result = 'UNSTABLE'
+          steps {
+            script {
+              try {
+                sh 'ANDROID_SERIAL=emulator-5554'
+                sh './gradlew -PAPI_KEY=$API_KEY connectedAndroidTest'
+              }
+              catch (exc) {
+                echo 'Testing failed!'
+                currentBuild.result = 'UNSTABLE'
+              }
+            }
+
           }
         }
-
+        stage('Bugfix UI Tests') {
+          when {
+            branch 'bugfix/*'
+          }
+          steps {
+            echo 'Running Bugfix Tests'
+          }
+        }
       }
     }
   }
