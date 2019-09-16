@@ -1,3 +1,5 @@
+#!/usr/bin/env groovy
+
 pipeline {
   agent any
   stages {
@@ -75,3 +77,4 @@ pipeline {
     booleanParam(name: 'RUN_UITEST', defaultValue: false, description: 'Run UI Tests?')
   }
 }
+
