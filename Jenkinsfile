@@ -1,5 +1,3 @@
-#!/usr/bin/env groovy
-
 pipeline {
   agent any
   stages {
@@ -12,6 +10,10 @@ pipeline {
 
       }
       steps {
+        script {
+          env.getEnvironment().each { name, value -> println "Name: $name -> Value $value" }
+        }
+
         sh './gradlew lintDebug -PAPI_KEY=$API_KEY'
       }
     }
@@ -77,4 +79,3 @@ pipeline {
     booleanParam(name: 'RUN_UITEST', defaultValue: false, description: 'Run UI Tests?')
   }
 }
-
