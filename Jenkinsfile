@@ -14,6 +14,7 @@ pipeline {
           env.getEnvironment().each { name, value -> println "Name: $name -> Value $value" }
         }
 
+        echo "GIT_COMMIT ${GIT_COMMIT}"
         sh './gradlew lintDebug -PAPI_KEY=$API_KEY'
       }
     }
