@@ -13,14 +13,16 @@
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/ic_media_play"
         android:id="@+id/playButton"
-        android:backgroundTint="?android:attr/colorAccent"/>
+        android:backgroundTint="?android:attr/colorAccent"
+        android:contentDescription="@string/play_video" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/trailerName"
         android:textAppearance="?android:textAppearanceMedium"
-        android:paddingLeft="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:gravity="center_vertical"
         tools:text="You Tube: HQ Preview"/>
 

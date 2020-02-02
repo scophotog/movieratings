@@ -28,5 +28,9 @@
     <string name="format_release_date">Release Year: <xliff:g id="year">%1$s</xliff:g></string>
     <!-- Format Rating -->
     <string name="format_rating">Rating: <xliff:g id="temp">%.1f</xliff:g> \u002F 10</string>
+    <string name="poster_description">Movie Poster</string>
+    <string name="mark_as_favorite_description">Mark as Favorite</string>
+    <string name="play_video">Play Video</string>
+    <string name="preview_title">%1$s: %2$s</string>
 
 </resources>

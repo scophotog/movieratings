@@ -1,8 +1,5 @@
 package org.sco.movieratings.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -18,22 +15,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
-import org.sco.movieratings.R;
-import org.sco.movieratings.adapter.MoviePreviewAdapter;
-import org.sco.movieratings.adapter.MovieReviewAdapter;
-import org.sco.movieratings.api.models.Movie;
-import org.sco.movieratings.db.MovieColumns;
-import org.sco.movieratings.db.MovieProvider;
-import org.sco.movieratings.api.models.Preview;
-import org.sco.movieratings.api.models.Review;
-import org.sco.movieratings.interactor.MovieInteractor;
-import org.sco.movieratings.presenter.MoviePresenter;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import org.sco.movieratings.R;
+import org.sco.movieratings.adapter.MoviePreviewAdapter;
+import org.sco.movieratings.adapter.MovieReviewAdapter;
+import org.sco.movieratings.api.models.Movie;
+import org.sco.movieratings.api.models.Preview;
+import org.sco.movieratings.api.models.Review;
+import org.sco.movieratings.db.MovieColumns;
+import org.sco.movieratings.db.MovieProvider;
+import org.sco.movieratings.interactor.MovieInteractor;
+import org.sco.movieratings.presenter.MoviePresenter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -96,7 +98,7 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMoviePresenter = new MoviePresenter(view);
 
@@ -137,7 +139,7 @@ public class MovieFragment extends Fragment implements MoviePreviewAdapter.Callb
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         ArrayList<Preview> previews = mMoviePreviewAdapter.getPreviews();
         if (previews != null && !previews.isEmpty()) {

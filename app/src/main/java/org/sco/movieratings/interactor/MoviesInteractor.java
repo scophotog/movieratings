@@ -1,24 +1,25 @@
 package org.sco.movieratings.interactor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.sco.movieratings.R;
 import org.sco.movieratings.activity.MainActivity;
 import org.sco.movieratings.api.ApiManager;
-import org.sco.movieratings.api.response.MoviesResponse;
 import org.sco.movieratings.api.TheMovieDBService;
 import org.sco.movieratings.api.models.Movie;
+import org.sco.movieratings.api.response.MoviesResponse;
 import org.sco.movieratings.db.MovieColumns;
 import org.sco.movieratings.db.MovieProvider;
 import org.sco.movieratings.utility.MovieListRouter;
 
-import androidx.annotation.NonNull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -43,6 +44,27 @@ public class MoviesInteractor {
     public MoviesInteractor(@NonNull ApiManager apiManager, @NonNull MovieListRouter router) {
         this.apiManager = apiManager;
         this.movieListRouter = router;
+    }
+
+    private static Movie movieFromCursor(Cursor c) {
+        return new Movie(c.getString(c.getColumnIndex(MovieColumns.MOVIE_TITLE)), c.getInt(c.getColumnIndex(MovieColumns.MOVIE_ID)),
+                c.getString(c.getColumnIndex(MovieColumns.POSTER_PATH)), c.getString(c.getColumnIndex(MovieColumns.OVERVIEW)),
+                c.getString(c.getColumnIndex(MovieColumns.RELEASE_DATE)), c.getDouble(c.getColumnIndex(MovieColumns.POPULARITY)),
+                c.getDouble(c.getColumnIndex(MovieColumns.RATING)));
+    }
+
+    private static <T> Observable<T> makeObservable(final Callable<T> func) {
+        return Observable.create(
+                new ObservableOnSubscribe<T>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<T> emitter) {
+                        try {
+                            emitter.onNext(func.call());
+                        } catch (Exception e) {
+                            Log.e(LOG_TAG, "Error reading from DB", e);
+                        }
+                    }
+                });
     }
 
     @NonNull
@@ -81,7 +103,7 @@ public class MoviesInteractor {
 
                 if (c != null && c.moveToFirst()) {
                     do {
-                        out.add(Movie.fromCursor(c));
+                        out.add(movieFromCursor(c));
                     } while (c.moveToNext());
                 } else {
                     Log.e(LOG_TAG, "Cursor: Null");
@@ -91,35 +113,12 @@ public class MoviesInteractor {
         };
     }
 
-    private static <T> Observable<T> makeObservable(final Callable<T> func) {
-        return Observable.create(
-                new ObservableOnSubscribe<T>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<T> emitter) {
-                        try {
-                            emitter.onNext(func.call());
-                        } catch(Exception e) {
-                            Log.e(LOG_TAG, "Error reading from DB", e);
-                        }
-                    }
-                });
-    }
-/*
-                    @Override
-                    public void call(Subscriber<? super T> subscriber) {
-                        try {
-                            subscriber.onNext(func.call());
-                        } catch(Exception e) {
-                            Log.e(LOG_TAG, "Error reading from DB", e);
-                        }
-                    }
- */
     public void onMovieClicked(@NonNull Movie movie, @NonNull Context context) {
-         if (((MainActivity) context).findViewById(R.id.movie_detail_container) != null) {
-             movieListRouter.startFragment(movie);
-         } else {
-             movieListRouter.startActivity(movie, context);
-         }
+        if (((MainActivity) context).findViewById(R.id.movie_detail_container) != null) {
+            movieListRouter.startFragment(movie);
+        } else {
+            movieListRouter.startActivity(movie, context);
+        }
     }
 
 }

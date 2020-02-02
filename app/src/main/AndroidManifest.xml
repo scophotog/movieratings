@@ -25,13 +25,6 @@
                 android:name="android.support.PARENT_ACTIVTY"
                 android:value="org.sco.movieratings.MainActivity" />
         </activity>
-        <activity android:name=".activity.SettingsActivity"
-                  android:label="@string/settings_activity"
-                  android:parentActivityName=".activity.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVTY"
-                android:value="org.sco.movieratings.MainActivity" />
-        </activity>
         <provider
             android:authorities="org.sco.movieratings.db.MovieProvider"
             android:name="org.sco.movieratings.db.generated.MovieProvider"
