@@ -3,6 +3,8 @@ package org.sco.movieratings.fragment
 import android.content.ActivityNotFoundException
 import android.content.ContentValues
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -239,7 +241,7 @@ class MovieFragment : Fragment(), MoviePreviewAdapter.Callback {
 
     class MyViewListener : View.OnClickListener {
         override fun onClick(v: View) {
-            val intent = Intent(v.context, MainActivity::class.java)
+            val intent = Intent(v.context, MainActivity::class.java).setFlags(FLAG_ACTIVITY_SINGLE_TOP)
             updatePreference(v.context, v.context.getString(R.string.pref_sort_my_favorites))
             v.context.startActivity(intent)
         }

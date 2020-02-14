@@ -5,64 +5,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="?android:attr/windowBackground"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/bb_selector"
-        app:itemTextColor="@color/bb_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintLeft_toRightOf="parent"
-        app:menu="@menu/bottom_navigation_main" />
-
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
         <ProgressBar
-            android:id="@+id/loading"
-            style="?android:progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            tools:visibility="gone" />
+                android:id="@+id/loading"
+                style="?android:progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                tools:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/movie_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:reverseLayout="false"
-            app:spanCount="2"
-            tools:layout_editor_absoluteX="0dp"
-            tools:listitem="@layout/grid_item_movie"
-            tools:visibility="visible" />
+                android:id="@+id/movie_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:reverseLayout="false"
+                app:spanCount="2"
+                tools:layout_editor_absoluteX="0dp"
+                tools:listitem="@layout/movie_card"
+                tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/no_movies"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:visibility="gone"
-            tools:visibility="gone" />
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/no_movies"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:visibility="gone"
+                tools:visibility="gone" />
     </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/windowBackground"
+            app:itemBackground="@color/colorPrimary"
+            app:itemIconTint="@color/bb_selector"
+            app:itemTextColor="@color/bb_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_navigation_main" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

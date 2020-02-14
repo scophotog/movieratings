@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RatingBar
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import io.reactivex.subjects.PublishSubject
@@ -17,7 +19,7 @@ class MovieListAdapter(val movies: List<Movie>, val clickStream: PublishSubject<
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviePosterViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.grid_item_movie, parent, false)
+            .inflate(R.layout.movie_card, parent, false)
         return MoviePosterViewHolder(itemView)
     }
 
@@ -37,10 +39,14 @@ class MovieListAdapter(val movies: List<Movie>, val clickStream: PublishSubject<
             holder.itemView.setOnClickListener() {
                 clickStream.onNext(movie)
             }
+            holder.title.text = movie.title
+            holder.rating.rating = movie.voteAverage.toFloat() / 2
         }
     }
 
     class MoviePosterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var poster: ImageView = view.findViewById(R.id.moviePoster)
+        var title: TextView = view.findViewById(R.id.movieTitle)
+        var rating: RatingBar = view.findViewById(R.id.ratingBar)
     }
 }
