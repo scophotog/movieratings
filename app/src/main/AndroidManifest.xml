@@ -27,7 +27,7 @@
         </activity>
         <provider
             android:authorities="org.sco.movieratings.db.MovieProvider"
-            android:name="org.sco.movieratings.db.generated.MovieProvider"
+            android:name="org.sco.movieratings.db.MovieProvider"
             android:exported="false"/>
     </application>
 

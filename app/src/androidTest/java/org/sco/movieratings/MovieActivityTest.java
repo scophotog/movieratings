@@ -46,20 +46,12 @@ public class MovieActivityTest {
     }
 
     private Movie makeMovie() {
-        return new Movie("/",
-                false,
-                "Foo Two",
-                "1/1/2000",
-                new ArrayList<Integer>(),
-                0,
-                "Foo Bar",
-                "English",
-                "Foo Bar Title",
+        return new Movie("Foo",
+                123,
                 "http://foo.bar",
+                "Stuff and junk",
+                "01/01/2020",
                 5.0,
-                5,
-                true,
-                5.0);
-
+                5);
     }
 }

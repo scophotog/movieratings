@@ -12,8 +12,7 @@ import org.sco.movieratings.api.ApiManager;
 import org.sco.movieratings.api.TheMovieDBService;
 import org.sco.movieratings.api.models.Movie;
 import org.sco.movieratings.api.response.MoviesResponse;
-import org.sco.movieratings.db.MovieColumns;
-import org.sco.movieratings.db.MovieProvider;
+import org.sco.movieratings.db.MovieContract;
 import org.sco.movieratings.utility.MovieListRouter;
 
 import java.util.ArrayList;
@@ -47,10 +46,13 @@ public class MoviesInteractor {
     }
 
     private static Movie movieFromCursor(Cursor c) {
-        return new Movie(c.getString(c.getColumnIndex(MovieColumns.MOVIE_TITLE)), c.getInt(c.getColumnIndex(MovieColumns.MOVIE_ID)),
-                c.getString(c.getColumnIndex(MovieColumns.POSTER_PATH)), c.getString(c.getColumnIndex(MovieColumns.OVERVIEW)),
-                c.getString(c.getColumnIndex(MovieColumns.RELEASE_DATE)), c.getDouble(c.getColumnIndex(MovieColumns.POPULARITY)),
-                c.getDouble(c.getColumnIndex(MovieColumns.RATING)));
+        return new Movie(c.getString(c.getColumnIndex(MovieContract.MovieEntry.MOVIE_TITLE)),
+                c.getInt(c.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID)),
+                c.getString(c.getColumnIndex(MovieContract.MovieEntry.POSTER_PATH)),
+                c.getString(c.getColumnIndex(MovieContract.MovieEntry.OVERVIEW)),
+                c.getString(c.getColumnIndex(MovieContract.MovieEntry.RELEASE_DATE)),
+                c.getDouble(c.getColumnIndex(MovieContract.MovieEntry.POPULARITY)),
+                c.getDouble(c.getColumnIndex(MovieContract.MovieEntry.RATING)));
     }
 
     private static <T> Observable<T> makeObservable(final Callable<T> func) {
@@ -73,7 +75,7 @@ public class MoviesInteractor {
                 .flatMap(new Function<MoviesResponse, ObservableSource<List<Movie>>>() {
                     @Override
                     public ObservableSource<List<Movie>> apply(MoviesResponse response) {
-                        if (response != null && response.getMovies() != null) {
+                        if (response != null) {
                             return Observable.just(response.getMovies());
                         } else {
                             return Observable.error(new IllegalArgumentException("Failed to get list of movies"));
@@ -94,9 +96,9 @@ public class MoviesInteractor {
             @Override
             public List<Movie> call() {
                 List<Movie> out = new ArrayList<>();
-                Cursor c = context.getContentResolver().query(MovieProvider.Movies.CONTENT_URI,
+                Cursor c = context.getContentResolver().query(MovieContract.CONTENT_URI,
                         null,
-                        MovieColumns.IS_FAVORITE + " = 1",
+                        MovieContract.MovieEntry.IS_FAVORITE + " = 1",
                         null,
                         null,
                         null);
