@@ -146,7 +146,7 @@ class MovieListFragment: Fragment() {
                 )
             }
             2 -> {
-                compositeDisposable.add(moviesInteractor.getFavorites(context)
+                compositeDisposable.add(moviesInteractor.getFavorites(context!!)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         { movies -> movieListPresenter.present(movies) },

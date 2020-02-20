@@ -89,7 +89,6 @@ class MovieProvider: ContentProvider() {
         val match = uriMatcher.match(uri)
         Log.d(TAG, "update: match is $match")
         val count: Int
-        var selectionCriteria: String
 
         when(match) {
             MOVIES -> {
@@ -108,7 +107,6 @@ class MovieProvider: ContentProvider() {
         Log.d(TAG, "delete: match is $match")
 
         val count: Int
-        var selectionCriteria: String
 
         when(match) {
             MOVIES -> {

@@ -1,15 +1,16 @@
 package org.sco.movieratings.api;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.sco.movieratings.BuildConfig;
+import androidx.annotation.NonNull;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.GsonBuilder;
 
-import androidx.annotation.NonNull;
+import org.sco.movieratings.BuildConfig;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;

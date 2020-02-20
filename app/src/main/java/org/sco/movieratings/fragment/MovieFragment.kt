@@ -3,7 +3,6 @@ package org.sco.movieratings.fragment
 import android.content.ActivityNotFoundException
 import android.content.ContentValues
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.net.Uri
 import android.os.Bundle
