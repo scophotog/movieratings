@@ -1,8 +1,7 @@
 package org.sco.movieratings.interactor
 
-import io.reactivex.Observable
+import io.reactivex.Single
 import org.sco.movieratings.api.ApiManager
-import org.sco.movieratings.api.TheMovieDBService
 import org.sco.movieratings.api.models.Movie
 import org.sco.movieratings.api.models.Preview
 import org.sco.movieratings.api.models.Review
@@ -14,19 +13,19 @@ class MovieInteractor {
 
     val apiManager = ApiManager()
 
-    fun getReviews(movie: Movie): Observable<List<Review>> {
-        return apiManager.getService(TheMovieDBService::class.java).getMovieReviews(movie.id)
+    fun getReviews(movie: Movie): Single<List<Review>> {
+        return apiManager.provideMoviesService().getMovieReviews(movie.id)
             .retry(RETRY_ON_ERROR_COUNT)
             .flatMap { response ->
-                Observable.just(response.reviews)
+                Single.just(response.reviews)
             }
     }
 
-    fun getPreviews(movie: Movie): Observable<List<Preview>> {
-        return apiManager.getService(TheMovieDBService::class.java).getMoviePreviews(movie.id)
+    fun getPreviews(movie: Movie): Single<List<Preview>> {
+        return apiManager.provideMoviesService().getMoviePreviews(movie.id)
             .retry(RETRY_ON_ERROR_COUNT)
             .flatMap { response ->
-                Observable.just(response.previews)
+                Single.just(response.previews)
             }
     }
 

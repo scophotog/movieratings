@@ -15,10 +15,10 @@ class MovieListPresenter(view: View) {
         view.findViewById<View>(R.id.loading)
     }
     private val emptyView: TextView by lazy {
-        view.findViewById<TextView>(R.id.empty_view)
+        view.findViewById<TextView>(R.id.emptyView)
     }
     private val recycler: RecyclerView by lazy {
-        view.findViewById<RecyclerView>(R.id.movie_list)
+        view.findViewById<RecyclerView>(R.id.movieList)
     }
     private val clickStream = PublishSubject.create<Movie>()
     val movies: ArrayList<Movie> = ArrayList()

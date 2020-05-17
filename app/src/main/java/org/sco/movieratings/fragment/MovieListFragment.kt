@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import org.sco.movieratings.R
 import org.sco.movieratings.activity.MainActivity
 import org.sco.movieratings.api.models.Movie
@@ -18,22 +19,25 @@ import org.sco.movieratings.presenter.MovieListPresenter
 import org.sco.movieratings.utility.MovieListRouter
 import org.sco.movieratings.utility.Utility.getPreferredSort
 import org.sco.movieratings.utility.Utility.updatePreference
+import org.sco.movieratings.viewModel.MovieListViewModel
 
 private const val LOG = "MovieListFragment"
 private const val SAVED_MOVIES = "movies"
 
-class MovieListFragment: Fragment() {
+class MovieListFragment : Fragment() {
 
     private lateinit var moviesInteractor: MoviesInteractor
     private lateinit var movieListPresenter: MovieListPresenter
     private lateinit var bottomBarPresenter: BottomBarPresenter
     private lateinit var compositeDisposable: CompositeDisposable
 
+    private lateinit var movieListViewModel: MovieListViewModel
     private lateinit var movies: ArrayList<Movie>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        moviesInteractor = MoviesInteractor(MovieListRouter(fragmentManager!!))
+        moviesInteractor = MoviesInteractor(MovieListRouter(parentFragmentManager))
+        movieListViewModel = ViewModelProvider(this).get(MovieListViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -51,10 +55,10 @@ class MovieListFragment: Fragment() {
         movieListPresenter = MovieListPresenter(view)
 
         if (savedInstanceState != null) {
-            movies = savedInstanceState.getParcelableArrayList<Movie>(SAVED_MOVIES) as ArrayList<Movie>
+            movies =
+                savedInstanceState.getParcelableArrayList<Movie>(SAVED_MOVIES) as ArrayList<Movie>
             movieListPresenter.present(movies)
         }
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -64,9 +68,9 @@ class MovieListFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val sortType = getPreferredSort(context!!)
+        val sortType = getPreferredSort(requireContext())
+        setViewToSortType(sortType!!)
         compositeDisposable = CompositeDisposable()
-        setViewToSortType(compositeDisposable, sortType!!)
         setMovieClickInteractor(compositeDisposable)
     }
 
@@ -75,24 +79,21 @@ class MovieListFragment: Fragment() {
         super.onPause()
     }
 
-    private fun setViewToSortType(
-        compositeDisposable: CompositeDisposable,
-        sortType: String
-    ) {
+    private fun setViewToSortType(sortType: String) {
         val topRated = resources.getString(R.string.pref_sort_top_rated)
         val popular = resources.getString(R.string.pref_sort_popular_rated)
         val favorites = resources.getString(R.string.pref_sort_my_favorites)
         when (sortType) {
             topRated -> {
-                updateMovieList(compositeDisposable, 0)
+                updateMovieList(0)
                 bottomBarPresenter.setSelectedItemById(R.id.bn_top_rated)
             }
             popular -> {
-                updateMovieList(compositeDisposable, 1)
+                updateMovieList(1)
                 bottomBarPresenter.setSelectedItemById(R.id.bn_most_popular)
             }
             favorites -> {
-                updateMovieList(compositeDisposable, 2)
+                updateMovieList(2)
                 bottomBarPresenter.setSelectedItemById(R.id.bn_my_favorites)
             }
             else -> {
@@ -104,74 +105,67 @@ class MovieListFragment: Fragment() {
     private fun setMovieClickInteractor(compositeDisposable: CompositeDisposable) {
         compositeDisposable.add(
             movieListPresenter.movieClickStream
-                .subscribe(Consumer<Movie> { movie ->
+                .subscribe { movie ->
                     moviesInteractor.onMovieClicked(
                         movie,
-                        context!!
+                        requireContext()
                     )
-                })
+                }
         )
     }
 
-    private fun updateMovieList(
-        compositeDisposable: CompositeDisposable,
-        position: Int
-    ) {
+    private fun updateMovieList(position: Int) {
         movieListPresenter.setNowLoadingView()
+
         when (position) {
             0 -> {
-                compositeDisposable.add(moviesInteractor.getMovies("top_rated")
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        { movies -> movieListPresenter.present(movies) },
-                        { movieListPresenter.setErrorView() }
-                    ))
+                movieListViewModel.refreshTopRatedMovies()
                 (activity as MainActivity?)!!.setTitle(resources.getString(R.string.high_rated_settings))
                 updatePreference(
-                    context!!,
+                    requireContext(),
                     resources.getString(R.string.pref_sort_top_rated)
                 )
             }
             1 -> {
-                compositeDisposable.add(moviesInteractor.getMovies("popular")
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        { movies -> movieListPresenter.present(movies) },
-                        { movieListPresenter.setErrorView() }
-                    ))
+                movieListViewModel.refreshPopularMovies()
                 (activity as MainActivity?)!!.setTitle(resources.getString(R.string.most_popular_settings))
                 updatePreference(
-                    context!!,
+                    requireContext(),
                     resources.getString(R.string.pref_sort_popular_rated)
                 )
             }
             2 -> {
-                compositeDisposable.add(moviesInteractor.getFavorites(context!!)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        { movies -> movieListPresenter.present(movies) },
-                        { movieListPresenter.setErrorView() }
-                    ))
+                movieListViewModel.refreshFavoriteMovies(requireContext())
                 (activity as MainActivity?)!!.setTitle(resources.getString(R.string.my_favorites_settings))
                 updatePreference(
-                    context!!,
+                    requireContext(),
                     resources.getString(R.string.pref_sort_my_favorites)
                 )
             }
         }
+
+        movieListViewModel.movies.observe(viewLifecycleOwner, Observer { movies ->
+            movies?.let {
+                if (it.isNotEmpty()) {
+                    movieListPresenter.present(it)
+                } else {
+                    movieListPresenter.setErrorView()
+                }
+            }
+        })
     }
 
     private fun setBottomNavListener(): BottomNavigationView.OnNavigationItemSelectedListener {
         return BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.bn_top_rated -> {
-                    updateMovieList(compositeDisposable, 0)
+                    updateMovieList(0)
                 }
                 R.id.bn_most_popular -> {
-                    updateMovieList(compositeDisposable, 1)
+                    updateMovieList(1)
                 }
                 R.id.bn_my_favorites -> {
-                    updateMovieList(compositeDisposable, 2)
+                    updateMovieList(2)
                 }
                 else -> {
                     throw IllegalArgumentException("Unknown navigation")
