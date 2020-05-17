@@ -44,7 +44,7 @@ class MovieListViewModel() : ViewModel() {
         loadingState.value = true
         disposable.add(
             moviesService.getMovies(movieListType, context)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<List<Movie>>() {
                     override fun onSuccess(movieList: List<Movie>) {
