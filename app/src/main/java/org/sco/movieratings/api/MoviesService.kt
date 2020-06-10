@@ -1,13 +1,15 @@
 package org.sco.movieratings.api
 
 import android.content.Context
-import io.reactivex.Single
+import io.reactivex.Observable
 import org.sco.movieratings.api.models.Movie
+import org.sco.movieratings.api.response.MoviesResponse
 import org.sco.movieratings.api.response.PreviewsResponse
 import org.sco.movieratings.api.response.ReviewsResponse
-import org.sco.movieratings.fragment.MovieType
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class MoviesService {
 
     @Inject
@@ -20,31 +22,23 @@ class MoviesService {
         DaggerApiComponent.create().inject(this)
     }
 
-    fun getMovies(movieListType: MovieType, context: Context?): Single<List<Movie>> {
-        return when(movieListType) {
-            MovieType.POPULAR -> getPopularMovies()
-            MovieType.TOP_RATED -> getTopRatedMovies()
-            MovieType.FAVORITE -> getFavoriteMovies(context!!)
-        }
-    }
-
-    fun getMovieReviews(id: Int): Single<ReviewsResponse> {
+    fun getMovieReviews(id: Int): Observable<ReviewsResponse> {
         return api.getMovieReviews(id)
     }
 
-    fun getMoviePreviews(id: Int): Single<PreviewsResponse> {
+    fun getMoviePreviews(id: Int): Observable<PreviewsResponse> {
         return api.getMoviePreviews(id)
     }
 
-    private fun getTopRatedMovies(): Single<List<Movie>> {
-        return api.getTopRatedMovies().map { it.movies }
+    fun getTopRatedMovies(): Observable<MoviesResponse> {
+        return api.getTopRatedMovies()
     }
 
-    private fun getPopularMovies(): Single<List<Movie>> {
-        return api.getPopularMovies().map { it.movies }
+    fun getPopularMovies(): Observable<MoviesResponse> {
+        return api.getPopularMovies()
     }
 
-    private fun getFavoriteMovies(context: Context): Single<List<Movie>> {
+    fun getFavoriteMovies(context: Context): Observable<List<Movie>> {
         return db.getFavoriteMovies(context)
     }
 }

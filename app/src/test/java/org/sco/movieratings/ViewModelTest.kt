@@ -2,7 +2,7 @@ package org.sco.movieratings
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import io.reactivex.Single
+import io.reactivex.Observable
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
@@ -33,7 +33,7 @@ class ViewModelTest {
     @InjectMocks
     var movieListViewModel = MovieListViewModel()
 
-    private var testSingle: Single<List<Movie>>? = null
+    private var testSingle: Observable<List<Movie>>? = null
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -46,7 +46,7 @@ class ViewModelTest {
 
     @Test
     fun getPopularMovies() {
-        testSingle = Single.just(listOf(getTestMovie()))
+        testSingle = Observable.just(listOf(getTestMovie()))
 
         `when`(moviesService.getMovies(MovieType.POPULAR, null)).thenReturn(testSingle)
         movieListViewModel.refreshPopularMovies()
@@ -58,7 +58,7 @@ class ViewModelTest {
 
     @Test
     fun getTopRatedMovies() {
-        testSingle = Single.just(listOf(getTestMovie()))
+        testSingle = Observable.just(listOf(getTestMovie()))
 
         `when`(moviesService.getMovies(MovieType.TOP_RATED, null)).thenReturn(testSingle)
         movieListViewModel.refreshTopRatedMovies()
@@ -70,7 +70,7 @@ class ViewModelTest {
 
     @Test
     fun getFavoriteMovies() {
-        testSingle = Single.just(listOf(getTestMovie()))
+        testSingle = Observable.just(listOf(getTestMovie()))
 
         `when`(moviesService.getMovies(MovieType.FAVORITE, mockContext)).thenReturn(testSingle)
         movieListViewModel.refreshFavoriteMovies(mockContext)
@@ -82,7 +82,7 @@ class ViewModelTest {
 
     @Test
     fun noMoviesFound() {
-        testSingle = Single.error(Throwable())
+        testSingle = Observable.error(Throwable())
         `when`(moviesService.getMovies(MovieType.FAVORITE, mockContext)).thenReturn(testSingle)
         movieListViewModel.refreshFavoriteMovies(mockContext)
         assertEquals(null, movieListViewModel.movies.value?.size)

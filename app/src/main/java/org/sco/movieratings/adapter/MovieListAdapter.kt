@@ -13,7 +13,7 @@ import org.sco.movieratings.R
 import org.sco.movieratings.api.models.Movie
 
 private const val TAG = "MovieListAdapter"
-private const val IMAGE_PATH = "http://image.tmdb.org/t/p/w185"
+private const val IMAGE_PATH = "https://image.tmdb.org/t/p/w185"
 
 class MovieListAdapter(val movies: List<Movie>, val clickStream: PublishSubject<Movie>) : RecyclerView.Adapter<MovieListAdapter.MoviePosterViewHolder>() {
 

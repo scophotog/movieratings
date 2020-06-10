@@ -1,7 +1,6 @@
 package org.sco.movieratings.api
 
 import io.reactivex.Observable
-import io.reactivex.Single
 import org.sco.movieratings.api.response.MoviesResponse
 import org.sco.movieratings.api.response.PreviewsResponse
 import org.sco.movieratings.api.response.ReviewsResponse
@@ -14,15 +13,15 @@ interface TheMovieDBService {
     fun getMovies(@Path("list") list: String): Observable<MoviesResponse>
 
     @GET("movie/top_rated")
-    fun getTopRatedMovies(): Single<MoviesResponse>
+    fun getTopRatedMovies(): Observable<MoviesResponse>
 
     @GET("movie/popular")
-    fun getPopularMovies(): Single<MoviesResponse>
+    fun getPopularMovies(): Observable<MoviesResponse>
 
     @GET("movie/{id}/videos")
-    fun getMoviePreviews(@Path("id") movieId: Int): Single<PreviewsResponse>
+    fun getMoviePreviews(@Path("id") movieId: Int): Observable<PreviewsResponse>
 
     @GET("movie/{id}/reviews")
-    fun getMovieReviews(@Path("id") movieId: Int): Single<ReviewsResponse>
+    fun getMovieReviews(@Path("id") movieId: Int): Observable<ReviewsResponse>
 
 }

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -14,12 +13,11 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import org.sco.movieratings.R
 import org.sco.movieratings.activity.MainActivity
 import org.sco.movieratings.adapter.MoviePreviewAdapter
@@ -28,14 +26,13 @@ import org.sco.movieratings.api.models.Movie
 import org.sco.movieratings.api.models.Preview
 import org.sco.movieratings.api.models.Review
 import org.sco.movieratings.db.MovieContract
-import org.sco.movieratings.interactor.MovieInteractor
 import org.sco.movieratings.presenter.MoviePresenter
 import org.sco.movieratings.utility.Utility.updatePreference
+import org.sco.movieratings.viewModel.MovieDetailsViewModel
 
 private const val TAG = "MovieFragment"
 private const val PREVIEWS_EXTRA = "PREVIEWS_EXTRA"
 private const val REVIEWS_EXTRA = "REVIEWS_EXTRA"
-
 
 class MovieFragment : Fragment(), MoviePreviewAdapter.Callback {
 
@@ -49,9 +46,9 @@ class MovieFragment : Fragment(), MoviePreviewAdapter.Callback {
     private lateinit var movieReviewAdapter: MovieReviewAdapter
     private lateinit var recyclerviewPreviews: RecyclerView
     private lateinit var recyclerviewReviews: RecyclerView
-    private lateinit var movieInteractor: MovieInteractor
-    private lateinit var compositeDisposable: CompositeDisposable
     private lateinit var moviePresenter: MoviePresenter
+
+    private lateinit var movieDetailsViewModel: MovieDetailsViewModel
 
     companion object {
         const val MOVIE = "movie"
@@ -71,7 +68,7 @@ class MovieFragment : Fragment(), MoviePreviewAdapter.Callback {
         movie = args.getParcelable(MOVIE) ?: throw IllegalArgumentException("A movie is required for this view")
         moviePreviewAdapter = MoviePreviewAdapter(ArrayList(), this)
         movieReviewAdapter = MovieReviewAdapter(ArrayList())
-        movieInteractor = MovieInteractor()
+        movieDetailsViewModel = ViewModelProvider(this).get(MovieDetailsViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -112,16 +109,29 @@ class MovieFragment : Fragment(), MoviePreviewAdapter.Callback {
         movieView()
     }
 
-    override fun onPause() {
-        compositeDisposable.clear()
-        super.onPause()
-    }
-
     private fun movieView() {
         moviePresenter.present(movie)
         updateFavoriteButton()
-        fetchPreviews()
-        fetchReviews()
+        movieDetailsViewModel.refreshPreviews(movie)
+        movieDetailsViewModel.previewList.observe(viewLifecycleOwner, Observer { previews ->
+            previews?.let {
+                if (it.isNotEmpty()) {
+                    onPreviewsFetchFinished(it)
+                } else {
+                    // TODO: Handle Error State
+                }
+            }
+        })
+        movieDetailsViewModel.refreshReviews(movie)
+        movieDetailsViewModel.reviewList.observe(viewLifecycleOwner, Observer { reviews ->
+            reviews?.let {
+                if (it.isNotEmpty()) {
+                    onReviewsFetchFinished(it)
+                } else {
+                    // TODO: Handle Error State
+                }
+            }
+        })
     }
 
     private fun isFavorite():Boolean {
@@ -212,30 +222,6 @@ class MovieFragment : Fragment(), MoviePreviewAdapter.Callback {
         if (previews.isNotEmpty()) {
             previewLinearLayout.visibility = VISIBLE
         }
-    }
-
-    private fun fetchReviews() {
-        compositeDisposable = CompositeDisposable()
-        compositeDisposable.add(movieInteractor.getReviews(movie)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({reviews -> onReviewsFetchFinished(reviews) },
-                {
-                    Toast.makeText(context, "Failed to fetch reviews", Toast.LENGTH_SHORT).show()
-                    Log.e(TAG, it.message.toString())
-                }
-            ))
-    }
-
-    private fun fetchPreviews() {
-        compositeDisposable = CompositeDisposable()
-        compositeDisposable.add(movieInteractor.getPreviews(movie)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ previews -> onPreviewsFetchFinished(previews) },
-                {
-                    Toast.makeText(context, "Failed to fetch previews", Toast.LENGTH_SHORT).show()
-                    Log.e(TAG, it.message.toString())
-                }
-            ))
     }
 
     class MyViewListener : View.OnClickListener {

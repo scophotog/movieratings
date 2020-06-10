@@ -3,7 +3,7 @@ package org.sco.movieratings.api
 import android.content.Context
 import android.database.Cursor
 import android.util.Log
-import io.reactivex.Single
+import io.reactivex.Observable
 import org.sco.movieratings.api.models.Movie
 import org.sco.movieratings.db.MovieContract
 import java.util.*
@@ -11,7 +11,7 @@ import java.util.*
 const val TAG = "DBService"
 class DBService {
 
-    fun getFavoriteMovies(context: Context): Single<List<Movie>> {
+    fun getFavoriteMovies(context: Context): Observable<List<Movie>> {
         val out: MutableList<Movie> = ArrayList()
         val c = context.contentResolver.query(
             MovieContract.CONTENT_URI,
@@ -28,7 +28,7 @@ class DBService {
         } else {
             Log.e(TAG, "Cursor: Null")
         }
-        return Single.just(out)
+        return Observable.just(out)
     }
 
     private fun movieFromCursor(c: Cursor): Movie {

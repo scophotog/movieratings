@@ -3,14 +3,16 @@ package org.sco.movieratings.viewModel
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.functions.Function
+import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import org.sco.movieratings.api.DaggerApiComponent
 import org.sco.movieratings.api.MoviesService
 import org.sco.movieratings.api.models.Movie
-import org.sco.movieratings.fragment.MovieType
+import org.sco.movieratings.api.response.MoviesResponse
 import javax.inject.Inject
 
 class MovieListViewModel() : ViewModel() {
@@ -29,36 +31,67 @@ class MovieListViewModel() : ViewModel() {
     private val disposable = CompositeDisposable()
 
     fun refreshPopularMovies() {
-        fetchMovies(MovieType.POPULAR, null)
+        disposable.add(getMovies(moviesService.getPopularMovies()))
     }
 
     fun refreshTopRatedMovies() {
-        fetchMovies(MovieType.TOP_RATED, null)
+        disposable.add(getMovies(moviesService.getTopRatedMovies()))
     }
 
     fun refreshFavoriteMovies(context: Context) {
-        fetchMovies(MovieType.FAVORITE, context)
+        disposable.add(getFavorites(context))
     }
 
-    private fun fetchMovies(movieListType: MovieType, context: Context?) {
-        loadingState.value = true
-        disposable.add(
-            moviesService.getMovies(movieListType, context)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<List<Movie>>() {
-                    override fun onSuccess(movieList: List<Movie>) {
-                        movies.value = movieList
-                        moviesLoadError.value = false
-                        loadingState.value = false
-                    }
+    private fun getMovies(observable: Observable<MoviesResponse>): DisposableObserver<Movie> {
+        val movieList = ArrayList<Movie>()
+        return observable
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMap {
+                Observable.fromIterable(it.movies)
+            }
+            .subscribeWith(object : DisposableObserver<Movie>() {
+                override fun onComplete() {
+                    loadingState.value = false
+                    movies.value = movieList
+                }
 
-                    override fun onError(e: Throwable) {
-                        moviesLoadError.value = true
-                        loadingState.value = false
-                    }
-                })
-        )
+                override fun onNext(movie: Movie) {
+                    movieList.add(movie)
+                    moviesLoadError.value = false
+                }
+
+                override fun onError(e: Throwable) {
+                    moviesLoadError.value = true
+                    loadingState.value = false
+                }
+            })
+    }
+
+    private fun getFavorites(context: Context): DisposableObserver<Movie> {
+        val movieList = ArrayList<Movie>()
+        return moviesService.getFavoriteMovies(context)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMap(Function<List<Movie>, Observable<Movie>>() {
+                Observable.fromIterable(it)
+            })
+            .subscribeWith(object : DisposableObserver<Movie>() {
+                override fun onComplete() {
+                    loadingState.value = false
+                    movies.value = movieList
+                }
+
+                override fun onNext(movie: Movie) {
+                    movieList.add(movie)
+                    moviesLoadError.value = false
+                }
+
+                override fun onError(e: Throwable) {
+                    moviesLoadError.value = true
+                    loadingState.value = false
+                }
+            })
     }
 
     override fun onCleared() {
@@ -66,3 +99,4 @@ class MovieListViewModel() : ViewModel() {
         disposable.clear()
     }
 }
+
