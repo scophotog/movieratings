@@ -1,44 +1,45 @@
 package org.sco.movieratings.api
 
-import android.content.Context
-import io.reactivex.Observable
-import org.sco.movieratings.api.models.Movie
-import org.sco.movieratings.api.response.MoviesResponse
-import org.sco.movieratings.api.response.PreviewsResponse
-import org.sco.movieratings.api.response.ReviewsResponse
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import org.sco.movieratings.api.response.*
+import java.lang.RuntimeException
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class MoviesService {
+class MoviesService @Inject constructor(
+    private val api: TheMovieDBService
+) {
 
-    @Inject
-    lateinit var api: TheMovieDBService
-
-    @Inject
-    lateinit var db: DBService
-
-    init {
-        DaggerApiComponent.create().inject(this)
+    suspend fun getMovieReviews(id: Int): Flow<Result<List<Review>>> {
+        return flow {
+            emit(Result.success(api.getMovieReviews(id).reviews!!))
+        }.catch {
+            emit(Result.failure(RuntimeException("Something went wrong")))
+        }
     }
 
-    fun getMovieReviews(id: Int): Observable<ReviewsResponse> {
-        return api.getMovieReviews(id)
+    suspend fun getMoviePreviews(id: Int): Flow<Result<List<Preview>>> {
+        return flow {
+            emit(Result.success(api.getMoviePreviews(id).previews!!))
+        }.catch {
+            emit(Result.failure(RuntimeException("Something went wrong")))
+        }
     }
 
-    fun getMoviePreviews(id: Int): Observable<PreviewsResponse> {
-        return api.getMoviePreviews(id)
+    suspend fun getTopRatedMovies(): Flow<Result<List<Movie>>> {
+        return flow {
+            emit(Result.success(api.getTopRatedMovies().movies!!))
+        }.catch {
+            emit(Result.failure(RuntimeException("Something went wrong")))
+        }
     }
 
-    fun getTopRatedMovies(): Observable<MoviesResponse> {
-        return api.getTopRatedMovies()
-    }
-
-    fun getPopularMovies(): Observable<MoviesResponse> {
-        return api.getPopularMovies()
-    }
-
-    fun getFavoriteMovies(context: Context): Observable<List<Movie>> {
-        return db.getFavoriteMovies(context)
+    suspend fun getPopularMovies(): Flow<Result<List<Movie>>> {
+        return flow {
+            emit(Result.success(api.getPopularMovies().movies!!))
+        }.catch {
+            emit(Result.failure(RuntimeException("Something went wrong")))
+        }
     }
 }

@@ -2,10 +2,6 @@ package org.sco.movieratings
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import io.reactivex.Observable
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.Schedulers
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -15,9 +11,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.sco.movieratings.api.MoviesService
-import org.sco.movieratings.api.models.Movie
-import org.sco.movieratings.fragment.MovieType
-import org.sco.movieratings.viewModel.MovieListViewModel
+import org.sco.movieratings.viewmodel.MovieListViewModel
 
 class ViewModelTest {
 
@@ -33,21 +27,13 @@ class ViewModelTest {
     @InjectMocks
     var movieListViewModel = MovieListViewModel()
 
-    private var testSingle: Observable<List<Movie>>? = null
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-
-        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
-        RxJavaPlugins.setComputationSchedulerHandler { Schedulers.trampoline() }
-        RxJavaPlugins.setNewThreadSchedulerHandler { Schedulers.trampoline() }
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
     }
 
     @Test
     fun getPopularMovies() {
-        testSingle = Observable.just(listOf(getTestMovie()))
-
         `when`(moviesService.getMovies(MovieType.POPULAR, null)).thenReturn(testSingle)
         movieListViewModel.refreshPopularMovies()
 

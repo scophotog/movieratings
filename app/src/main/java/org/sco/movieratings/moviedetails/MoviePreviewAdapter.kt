@@ -1,4 +1,4 @@
-package org.sco.movieratings.adapter
+package org.sco.movieratings.moviedetails
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.sco.movieratings.R
-import org.sco.movieratings.api.models.Preview
+import org.sco.movieratings.api.response.Preview
 
 private const val TAG = "MoviePreviewAdapter"
 

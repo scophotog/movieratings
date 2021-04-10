@@ -1,6 +1,5 @@
 package org.sco.movieratings.api
 
-import io.reactivex.Observable
 import org.sco.movieratings.api.response.MoviesResponse
 import org.sco.movieratings.api.response.PreviewsResponse
 import org.sco.movieratings.api.response.ReviewsResponse
@@ -10,18 +9,18 @@ import retrofit2.http.Path
 interface TheMovieDBService {
 
     @GET("movie/{list}")
-    fun getMovies(@Path("list") list: String): Observable<MoviesResponse>
+    suspend fun getMovies(@Path("list") list: String): MoviesResponse
 
     @GET("movie/top_rated")
-    fun getTopRatedMovies(): Observable<MoviesResponse>
+    suspend fun getTopRatedMovies(): MoviesResponse
 
     @GET("movie/popular")
-    fun getPopularMovies(): Observable<MoviesResponse>
+    suspend fun getPopularMovies(): MoviesResponse
 
     @GET("movie/{id}/videos")
-    fun getMoviePreviews(@Path("id") movieId: Int): Observable<PreviewsResponse>
+    suspend fun getMoviePreviews(@Path("id") movieId: Int): PreviewsResponse
 
     @GET("movie/{id}/reviews")
-    fun getMovieReviews(@Path("id") movieId: Int): Observable<ReviewsResponse>
+    suspend fun getMovieReviews(@Path("id") movieId: Int): ReviewsResponse
 
 }

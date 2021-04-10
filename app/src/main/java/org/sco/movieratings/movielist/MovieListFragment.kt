@@ -1,81 +1,57 @@
-package org.sco.movieratings.fragment
+package org.sco.movieratings.movielist
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import io.reactivex.disposables.CompositeDisposable
+import dagger.hilt.android.AndroidEntryPoint
 import org.sco.movieratings.R
-import org.sco.movieratings.activity.MainActivity
-import org.sco.movieratings.api.models.Movie
-import org.sco.movieratings.interactor.MoviesInteractor
-import org.sco.movieratings.presenter.BottomBarPresenter
-import org.sco.movieratings.presenter.MovieListPresenter
-import org.sco.movieratings.utility.MovieListRouter
+import org.sco.movieratings.databinding.FragmentMovieListBinding
 import org.sco.movieratings.utility.Utility.getPreferredSort
 import org.sco.movieratings.utility.Utility.updatePreference
-import org.sco.movieratings.viewModel.MovieListViewModel
+import org.sco.movieratings.viewmodel.MovieListViewModel
+import org.sco.movieratings.viewmodel.MovieListViewModelFactory
+import org.sco.movieratings.db.MovieSchema
+import javax.inject.Inject
 
 private const val LOG = "MovieListFragment"
-private const val SAVED_MOVIES = "movies"
+private const val SORT_MODE = "sortMode"
 
+@AndroidEntryPoint
 class MovieListFragment : Fragment() {
 
-    private lateinit var moviesInteractor: MoviesInteractor
     private lateinit var movieListPresenter: MovieListPresenter
     private lateinit var bottomBarPresenter: BottomBarPresenter
-    private lateinit var compositeDisposable: CompositeDisposable
 
-    private lateinit var movieListViewModel: MovieListViewModel
-    private lateinit var movies: ArrayList<Movie>
+    @Inject
+    lateinit var viewModelFactory: MovieListViewModelFactory
+    private lateinit var viewModel: MovieListViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        moviesInteractor = MoviesInteractor(MovieListRouter(parentFragmentManager))
-        movieListViewModel = ViewModelProvider(this).get(MovieListViewModel::class.java)
-    }
+    private lateinit var binding: FragmentMovieListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_movie_list, container, false)
-    }
+    ): View {
+        binding = FragmentMovieListBinding.inflate(inflater)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(MovieListViewModel::class.java)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        bottomBarPresenter = BottomBarPresenter(view)
+        bottomBarPresenter = BottomBarPresenter(binding)
         bottomBarPresenter.setOnNavigationItemSelectedListener(setBottomNavListener())
-        movieListPresenter = MovieListPresenter(view)
+        movieListPresenter = MovieListPresenter(binding)
 
-        if (savedInstanceState != null) {
-            movies =
-                savedInstanceState.getParcelableArrayList<Movie>(SAVED_MOVIES) as ArrayList<Movie>
-            movieListPresenter.present(movies)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelableArrayList(SAVED_MOVIES, movieListPresenter.movies)
+        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         val sortType = getPreferredSort(requireContext())
         setViewToSortType(sortType!!)
-        compositeDisposable = CompositeDisposable()
-        setMovieClickInteractor(compositeDisposable)
-    }
-
-    override fun onPause() {
-        compositeDisposable.clear()
-        super.onPause()
     }
 
     private fun setViewToSortType(sortType: String) {
@@ -101,57 +77,55 @@ class MovieListFragment : Fragment() {
         }
     }
 
-    private fun setMovieClickInteractor(compositeDisposable: CompositeDisposable) {
-        compositeDisposable.add(
-            movieListPresenter.movieClickStream
-                .subscribe { movie ->
-                    moviesInteractor.onMovieClicked(
-                        movie,
-                        requireContext()
-                    )
-                }
-        )
-    }
-
     private fun updateMovieList(position: Int) {
         movieListPresenter.setNowLoadingView()
 
         when (position) {
             0 -> {
-                movieListViewModel.refreshTopRatedMovies()
-                (activity as MainActivity?)!!.setTitle(resources.getString(R.string.high_rated_settings))
+                viewModel.topRatedMovies.observe(viewLifecycleOwner, { moviesResult ->
+                    if (moviesResult.isSuccess) {
+                        val movieList = moviesResult.getOrNull()!!.map { movie -> MovieSchema(movie.id, movie.title , movie.posterPath, movie.overview, movie.releaseDate, movie.popularity, movie.voteAverage) }
+                        movieListPresenter.present(movieList, findNavController())
+                    } else {
+                        movieListPresenter.setErrorView()
+                    }
+                })
+                binding.toolbar.toolbar.title = resources.getString(R.string.high_rated_settings)
                 updatePreference(
                     requireContext(),
                     resources.getString(R.string.pref_sort_top_rated)
                 )
             }
             1 -> {
-                movieListViewModel.refreshPopularMovies()
-                (activity as MainActivity?)!!.setTitle(resources.getString(R.string.most_popular_settings))
+                viewModel.popularMovies.observe(viewLifecycleOwner, { moviesResult ->
+                    if (moviesResult.isSuccess) {
+                        val movieList = moviesResult.getOrNull()!!.map { movie -> MovieSchema(movie.id, movie.title, movie.posterPath, movie.overview, movie.releaseDate, movie.popularity, movie.voteAverage) }
+                        movieListPresenter.present(movieList, findNavController())
+                    } else {
+                        movieListPresenter.setErrorView()
+                    }
+                })
+                binding.toolbar.toolbar.title = resources.getString(R.string.most_popular_settings)
                 updatePreference(
                     requireContext(),
                     resources.getString(R.string.pref_sort_popular_rated)
                 )
             }
             2 -> {
-                movieListViewModel.refreshFavoriteMovies(requireContext())
-                (activity as MainActivity?)!!.setTitle(resources.getString(R.string.my_favorites_settings))
+                viewModel.favoriteMovies.observe(viewLifecycleOwner, { moviesResult ->
+                    if (moviesResult.isNotEmpty()) {
+                        movieListPresenter.present(moviesResult, findNavController())
+                    } else {
+                        movieListPresenter.setErrorView()
+                    }
+                })
+                binding.toolbar.toolbar.title = resources.getString(R.string.my_favorites_settings)
                 updatePreference(
                     requireContext(),
                     resources.getString(R.string.pref_sort_my_favorites)
                 )
             }
         }
-
-        movieListViewModel.movies.observe(viewLifecycleOwner, Observer { movies ->
-            movies?.let {
-                if (it.isNotEmpty()) {
-                    movieListPresenter.present(it)
-                } else {
-                    movieListPresenter.setErrorView()
-                }
-            }
-        })
     }
 
     private fun setBottomNavListener(): BottomNavigationView.OnNavigationItemSelectedListener {
@@ -174,4 +148,11 @@ class MovieListFragment : Fragment() {
         }
     }
 
+    companion object {
+        @JvmStatic
+        fun newInstance() =
+            MovieListFragment().apply {
+                arguments = Bundle().apply {}
+            }
+    }
 }

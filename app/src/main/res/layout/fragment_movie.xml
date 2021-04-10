@@ -109,9 +109,11 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"/>
 
-                <include layout="@layout/include_previews"/>
+                <include layout="@layout/include_previews"
+                    android:id="@+id/previews_container"/>
 
-                <include layout="@layout/include_reviews"/>
+                <include layout="@layout/include_reviews"
+                    android:id="@+id/reviews_container"/>
 
             </LinearLayout>
 

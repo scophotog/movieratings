@@ -1,4 +1,4 @@
-package org.sco.movieratings.adapter
+package org.sco.movieratings.movielist
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +8,16 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import io.reactivex.subjects.PublishSubject
 import org.sco.movieratings.R
-import org.sco.movieratings.api.models.Movie
+import org.sco.movieratings.db.MovieSchema
 
 private const val TAG = "MovieListAdapter"
-private const val IMAGE_PATH = "https://image.tmdb.org/t/p/w185"
+private const val IMAGE_PATH = "https://image.tmdb.org/t/p/w500"
 
-class MovieListAdapter(val movies: List<Movie>, val clickStream: PublishSubject<Movie>) : RecyclerView.Adapter<MovieListAdapter.MoviePosterViewHolder>() {
+class MovieListAdapter(
+    val movies: List<MovieSchema>,
+    val listener: (MovieSchema) -> Unit
+) : RecyclerView.Adapter<MovieListAdapter.MoviePosterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviePosterViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -37,7 +39,7 @@ class MovieListAdapter(val movies: List<Movie>, val clickStream: PublishSubject<
                 .into(holder.poster)
 
             holder.itemView.setOnClickListener() {
-                clickStream.onNext(movie)
+                listener(movie)
             }
             holder.title.text = movie.title
             holder.rating.rating = movie.voteAverage.toFloat() / 2
