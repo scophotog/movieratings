@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.sco.movieratings.databinding.FragmentMovieListBinding
 import org.sco.movieratings.db.MovieSchema
-import org.sco.movieratings.movielist.MovieListAdapter
-import org.sco.movieratings.movielist.MovieListFragmentDirections
 
 class MovieListPresenter(private val binding: FragmentMovieListBinding) {
     init {

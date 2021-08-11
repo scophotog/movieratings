@@ -1,44 +1,51 @@
 package org.sco.movieratings.repository
 
-import kotlinx.coroutines.flow.*
-import org.sco.movieratings.api.MoviesService
-import org.sco.movieratings.db.MovieDao
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import org.sco.movieratings.api.response.Preview
+import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.db.MovieSchema
+import org.sco.movieratings.usecase.GetMoviePreviews
+import org.sco.movieratings.usecase.GetMovieReviews
+import org.sco.movieratings.usecase.GetPopularMoviesUseCase
+import org.sco.movieratings.usecase.GetTopRatedMoviesUseCase
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
-    private val service: MoviesService,
-    private val mapper: MovieMapper,
-    private val movieDao: MovieDao
+    private val popularMoviesUseCase: GetPopularMoviesUseCase,
+    private val topRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+    private val moviePreviews: GetMoviePreviews,
+    private val movieReviews: GetMovieReviews
 ) {
-    suspend fun getPopularMovies(): Flow<Result<List<MovieSchema>>> =
-        service.getPopularMovies().map {
-            if (it.isSuccess) {
-                Result.success(mapper(it.getOrDefault(emptyList())))
-            } else {
-                Result.failure(it.exceptionOrNull()?: throw Exception("Ooops"))
+    suspend fun getPopularMovies(): Flow<List<MovieSchema>> =
+        flow {
+            val movies = popularMoviesUseCase.invoke()
+            if (movies.isSuccess) {
+                emit(movies.getOrDefault(emptyList()))
             }
         }
 
-    suspend fun getTopRatedMovies(): Flow<Result<List<MovieSchema>>> =
-        service.getTopRatedMovies().map {
-            if (it.isSuccess && it.getOrNull() != null) {
-                Result.success(mapper(it.getOrDefault(emptyList())))
-            } else {
-                Result.failure(it.exceptionOrNull()?: throw Exception("Ooops"))
+    suspend fun getTopRatedMovies(): Flow<List<MovieSchema>> =
+        flow {
+            val movies = topRatedMoviesUseCase.invoke()
+            if (movies.isSuccess) {
+                emit(movies.getOrDefault(emptyList()))
             }
         }
 
-    fun getFavoriteMovies() : Flow<List<MovieSchema>> =
-        movieDao.getFavorites()
+    suspend fun getMovieReviews(movieId: Int): Flow<List<Review>> =
+        flow {
+            val reviews = movieReviews.invoke(movieId)
+            if (reviews.isSuccess) {
+                emit(reviews.getOrDefault(emptyList()))
+            }
+        }
 
-    fun isFavorite(movieSchema: MovieSchema) : Flow<MovieSchema?> =
-        movieDao.findFavorite(movieSchema.id)
-
-    suspend fun addToFavorites(movieSchema: MovieSchema) =
-        movieDao.addFavorite(movieSchema)
-
-    suspend fun removeFromFavorites(movie: MovieSchema) =
-        movieDao.removeFavorite(movie)
-
+    suspend fun getMoviePreviews(movieId: Int): Flow<List<Preview>> =
+        flow {
+            val previews = moviePreviews.invoke(movieId)
+            if (previews.isSuccess) {
+                emit(previews.getOrDefault(emptyList()))
+            }
+        }
 }

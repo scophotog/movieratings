@@ -10,7 +10,7 @@ import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -20,11 +20,8 @@ import org.sco.movieratings.R
 import org.sco.movieratings.api.response.Preview
 import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.databinding.FragmentMovieBinding
-import org.sco.movieratings.utility.Utility.updatePreference
 import org.sco.movieratings.db.MovieSchema
-import javax.inject.Inject
-
-private const val TAG = "MovieFragment"
+import org.sco.movieratings.utility.Utility.updatePreference
 
 @AndroidEntryPoint
 class MovieFragment : Fragment(), MoviePreviewAdapter.Callback {
@@ -33,9 +30,7 @@ class MovieFragment : Fragment(), MoviePreviewAdapter.Callback {
     private lateinit var movieReviewAdapter: MovieReviewAdapter
     private lateinit var moviePresenter: MoviePresenter
 
-    @Inject
-    lateinit var viewModelFactory: MovieDetailsViewModelFactory
-    private lateinit var viewModel: MovieDetailsViewModel
+    private val viewModel: MovieDetailsViewModel by viewModels()
 
     private val args: MovieFragmentArgs by navArgs()
     private lateinit var movie: MovieSchema
@@ -64,7 +59,6 @@ class MovieFragment : Fragment(), MoviePreviewAdapter.Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MovieDetailsViewModel::class.java)
         moviePreviewAdapter = MoviePreviewAdapter(ArrayList(), this)
         movieReviewAdapter = MovieReviewAdapter(ArrayList())
 
@@ -101,21 +95,13 @@ class MovieFragment : Fragment(), MoviePreviewAdapter.Callback {
 
         viewModel.getPreviews(movie.id).observe(viewLifecycleOwner, { previews ->
             previews?.let {
-                if (it.isSuccess) {
-                    onPreviewsFetchFinished(it.getOrNull()!!)
-                } else {
-                    // TODO: Handle Error State
-                }
+                onPreviewsFetchFinished(it)
             }
         })
 
         viewModel.getReviews(movie.id).observe(viewLifecycleOwner, { reviews ->
             reviews?.let {
-                if (it.isSuccess) {
-                    onReviewsFetchFinished(it.getOrNull()!!)
-                } else {
-                    // TODO: Handle Error State
-                }
+                onReviewsFetchFinished(it)
             }
         })
         viewModel.checkIfFavorite(movie)

@@ -11,7 +11,6 @@ import com.squareup.picasso.Picasso
 import org.sco.movieratings.R
 import org.sco.movieratings.db.MovieSchema
 
-private const val TAG = "MovieListAdapter"
 private const val IMAGE_PATH = "https://image.tmdb.org/t/p/w500"
 
 class MovieListAdapter(

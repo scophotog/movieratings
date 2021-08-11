@@ -1,6 +1,6 @@
 package org.sco.movieratings.movielist
 
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import org.sco.movieratings.databinding.FragmentMovieListBinding
 
 class BottomBarPresenter(private val binding: FragmentMovieListBinding) {
@@ -9,7 +9,7 @@ class BottomBarPresenter(private val binding: FragmentMovieListBinding) {
         binding.bottomNavigation.selectedItemId = itemId
     }
 
-    fun setOnNavigationItemSelectedListener(listener: BottomNavigationView.OnNavigationItemSelectedListener) {
-        binding.bottomNavigation.setOnNavigationItemSelectedListener(listener)
+    fun setOnItemSelectedListener(listener: NavigationBarView.OnItemSelectedListener) {
+        binding.bottomNavigation.setOnItemSelectedListener(listener)
     }
 }

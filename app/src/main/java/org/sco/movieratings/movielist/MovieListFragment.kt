@@ -4,22 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
 import org.sco.movieratings.R
 import org.sco.movieratings.databinding.FragmentMovieListBinding
+import org.sco.movieratings.db.MovieSchema
 import org.sco.movieratings.utility.Utility.getPreferredSort
 import org.sco.movieratings.utility.Utility.updatePreference
-import org.sco.movieratings.viewmodel.MovieListViewModel
-import org.sco.movieratings.viewmodel.MovieListViewModelFactory
-import org.sco.movieratings.db.MovieSchema
-import javax.inject.Inject
-
-private const val LOG = "MovieListFragment"
-private const val SORT_MODE = "sortMode"
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
@@ -27,9 +22,7 @@ class MovieListFragment : Fragment() {
     private lateinit var movieListPresenter: MovieListPresenter
     private lateinit var bottomBarPresenter: BottomBarPresenter
 
-    @Inject
-    lateinit var viewModelFactory: MovieListViewModelFactory
-    private lateinit var viewModel: MovieListViewModel
+    private val viewModel: MovieListViewModel by viewModels()
 
     private lateinit var binding: FragmentMovieListBinding
 
@@ -39,12 +32,13 @@ class MovieListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMovieListBinding.inflate(inflater)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MovieListViewModel::class.java)
 
         bottomBarPresenter = BottomBarPresenter(binding)
-        bottomBarPresenter.setOnNavigationItemSelectedListener(setBottomNavListener())
+        bottomBarPresenter.setOnItemSelectedListener(setBottomNavListener())
         movieListPresenter = MovieListPresenter(binding)
-
+        viewModel.isLoading.observe(viewLifecycleOwner, {
+            binding.loading.isVisible = it
+        })
         return binding.root
     }
 
@@ -83,12 +77,7 @@ class MovieListFragment : Fragment() {
         when (position) {
             0 -> {
                 viewModel.topRatedMovies.observe(viewLifecycleOwner, { moviesResult ->
-                    if (moviesResult.isSuccess) {
-                        val movieList = moviesResult.getOrNull()!!.map { movie -> MovieSchema(movie.id, movie.title , movie.posterPath, movie.overview, movie.releaseDate, movie.popularity, movie.voteAverage) }
-                        movieListPresenter.present(movieList, findNavController())
-                    } else {
-                        movieListPresenter.setErrorView()
-                    }
+                    presentMovies(moviesResult)
                 })
                 binding.toolbar.toolbar.title = resources.getString(R.string.high_rated_settings)
                 updatePreference(
@@ -98,12 +87,7 @@ class MovieListFragment : Fragment() {
             }
             1 -> {
                 viewModel.popularMovies.observe(viewLifecycleOwner, { moviesResult ->
-                    if (moviesResult.isSuccess) {
-                        val movieList = moviesResult.getOrNull()!!.map { movie -> MovieSchema(movie.id, movie.title, movie.posterPath, movie.overview, movie.releaseDate, movie.popularity, movie.voteAverage) }
-                        movieListPresenter.present(movieList, findNavController())
-                    } else {
-                        movieListPresenter.setErrorView()
-                    }
+                    presentMovies(moviesResult)
                 })
                 binding.toolbar.toolbar.title = resources.getString(R.string.most_popular_settings)
                 updatePreference(
@@ -113,11 +97,7 @@ class MovieListFragment : Fragment() {
             }
             2 -> {
                 viewModel.favoriteMovies.observe(viewLifecycleOwner, { moviesResult ->
-                    if (moviesResult.isNotEmpty()) {
-                        movieListPresenter.present(moviesResult, findNavController())
-                    } else {
-                        movieListPresenter.setErrorView()
-                    }
+                    presentMovies(moviesResult)
                 })
                 binding.toolbar.toolbar.title = resources.getString(R.string.my_favorites_settings)
                 updatePreference(
@@ -128,8 +108,16 @@ class MovieListFragment : Fragment() {
         }
     }
 
-    private fun setBottomNavListener(): BottomNavigationView.OnNavigationItemSelectedListener {
-        return BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private fun presentMovies(moviesResult: List<MovieSchema>) {
+        if (moviesResult.isEmpty()) {
+            movieListPresenter.setErrorView()
+        } else {
+            movieListPresenter.present(moviesResult, findNavController())
+        }
+    }
+
+    private fun setBottomNavListener(): NavigationBarView.OnItemSelectedListener {
+        return NavigationBarView.OnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.bn_top_rated -> {
                     updateMovieList(0)

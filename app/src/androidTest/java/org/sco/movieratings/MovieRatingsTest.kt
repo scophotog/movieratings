@@ -1,75 +1,119 @@
-package org.sco.movieratings;
+package org.sco.movieratings
 
-import android.widget.TextView;
+import android.widget.TextView
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.core.AllOf.allOf
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.contrib.RecyclerViewActions;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.LargeTest;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.core.AllOf.allOf;
-
-@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4::class)
 @LargeTest
-public class MovieRatingsTest {
+class MovieRatingsTest {
+
+    @get:Rule
+    var activityRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    public void viewTopRated() {
-        onView(withId(R.id.bn_top_rated)).check(matches(isDisplayed()));
-        onView(withId(R.id.bn_top_rated)).perform(click());
-        onView(allOf(instanceOf(TextView.class),
-                withParent(withId(R.id.toolbar))))
-                .check(matches(withText("Movie Ratings Top Rated")));
+    fun viewTopRated() {
+        onView(withId(R.id.bn_top_rated))
+            .check(matches(isDisplayed()))
+        onView(withId(R.id.bn_top_rated)).perform(click())
+        onView(
+            allOf(
+                instanceOf(
+                    TextView::class.java
+                ),
+                withParent(withId(R.id.toolbar))
+            )
+        )
+            .check(matches(withText("Top Rated")))
     }
 
     @Test
-    public void viewMostPopular() {
-        onView(withId(R.id.bn_most_popular)).check(matches(isDisplayed()));
-        onView(withId(R.id.bn_most_popular)).perform(click());
-        onView(allOf(instanceOf(TextView.class),
-                withParent(withId(R.id.toolbar))))
-                .check(matches(withText("Movie Ratings Most Popular")));
+    fun viewMostPopular() {
+        onView(withId(R.id.bn_most_popular))
+            .check(matches(isDisplayed()))
+        onView(withId(R.id.bn_most_popular)).perform(click())
+        onView(
+            allOf(
+                instanceOf(
+                    TextView::class.java
+                ),
+                withParent(withId(R.id.toolbar))
+            )
+        )
+            .check(matches(withText("Most Popular")))
     }
 
     @Test
-    public void viewFavorites() {
-        onView(withId(R.id.bn_my_favorites)).check(matches(isDisplayed()));
-        onView(withId(R.id.bn_my_favorites)).perform(click());
-        onView(allOf(instanceOf(TextView.class),
-                withParent(withId(R.id.toolbar))))
-                .check(matches(withText("Movie Ratings Favorites")));
+    fun viewFavorites() {
+        onView(withId(R.id.bn_my_favorites))
+            .check(matches(isDisplayed()))
+        onView(withId(R.id.bn_my_favorites)).perform(click())
+        onView(
+            allOf(
+                instanceOf(
+                    TextView::class.java
+                ),
+                withParent(withId(R.id.toolbar))
+            )
+        )
+            .check(matches(withText("Favorites")))
     }
 
     @Test
-    public void addFavorite() {
-        onView(withId(R.id.bn_top_rated)).perform(click());
-        onView(withId(R.id.movieList)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.mark_as_favorite)).perform(click());
-        Espresso.pressBack();
-        onView(withId(R.id.bn_my_favorites)).perform(click());
-        onView(allOf(instanceOf(TextView.class),
-                withParent(withId(R.id.toolbar))))
-                .check(matches(withText("Movie Ratings Favorites")));
-        onView(withId(R.id.moviePoster)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.movieList)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.mark_as_favorite)).perform(click());
-        Espresso.pressBack();
-        onView(withId(R.id.bn_my_favorites)).perform(click());
-        onView(allOf(instanceOf(TextView.class),
-                withParent(withId(R.id.toolbar))))
-                .check(matches(withText("Movie Ratings Favorites")));
-        onView(withId(R.id.emptyView)).check(matches(withText("No movies :(")));
+    fun addFavorite() {
+        onView(withId(R.id.bn_top_rated)).perform(click())
+        onView(withId(R.id.movieList)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                0,
+                click()
+            )
+        )
+        onView(withId(R.id.mark_as_favorite)).perform(click())
+        pressBack()
+        onView(withId(R.id.bn_my_favorites)).perform(click())
+        onView(
+            allOf(
+                instanceOf(
+                    TextView::class.java
+                ),
+                withParent(withId(R.id.toolbar))
+            )
+        )
+            .check(matches(withText("Favorites")))
+        onView(withId(R.id.moviePoster))
+            .check(matches(isDisplayed()))
+        onView(withId(R.id.movieList)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                0,
+                click()
+            )
+        )
+        onView(withId(R.id.mark_as_favorite)).perform(click())
+        pressBack()
+        onView(withId(R.id.bn_my_favorites)).perform(click())
+        onView(
+            allOf(
+                instanceOf(
+                    TextView::class.java
+                ),
+                withParent(withId(R.id.toolbar))
+            )
+        )
+            .check(matches(withText("Favorites")))
+        onView(withId(R.id.emptyView))
+            .check(matches(withText("No movies :(")))
     }
 }
