@@ -12,14 +12,12 @@ import org.sco.movieratings.BuildConfig
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.IOException
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object MovieDBModule {
-
-    @Provides
-    fun provideBaseUrl() = TheMovieDBService.BASE_URL
 
     @Singleton
     @Provides
@@ -36,28 +34,14 @@ object MovieDBModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(apiKey: Interceptor): OkHttpClient {
+    fun provideOkHttpClient(@Named("api_key") apiKey: Interceptor? = null): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        return OkHttpClient.Builder()
-            .addInterceptor(apiKey)
-            .addInterceptor(interceptor)
-            .build()
-    }
-
-    @Singleton
-    @Provides
-    fun provideApiKey(): Interceptor {
-        return object : Interceptor {
-            @Throws(IOException::class)
-            override fun intercept(chain: Interceptor.Chain): Response {
-                var request = chain.request()
-                val url = request.url.newBuilder()
-                    .addQueryParameter("api_key", BuildConfig.MOVIE_DB_API_KEY)
-                    .build()
-                request = request.newBuilder().url(url).build()
-                return chain.proceed(request)
-            }
+        val builder = OkHttpClient.Builder()
+        builder.addInterceptor(interceptor)
+        if (apiKey != null) {
+            builder.addInterceptor(apiKey)
         }
+        return builder.build()
     }
 }

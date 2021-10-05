@@ -11,12 +11,11 @@ import com.squareup.picasso.Picasso
 import org.sco.movieratings.R
 import org.sco.movieratings.db.MovieSchema
 
-private const val IMAGE_PATH = "https://image.tmdb.org/t/p/w500"
+class MovieListAdapter constructor(private val imagePath: String) :
+    RecyclerView.Adapter<MovieListAdapter.MoviePosterViewHolder>() {
 
-class MovieListAdapter(
-    val movies: List<MovieSchema>,
-    val listener: (MovieSchema) -> Unit
-) : RecyclerView.Adapter<MovieListAdapter.MoviePosterViewHolder>() {
+    var movies: List<MovieSchema> = emptyList()
+    var listener: (MovieSchema) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviePosterViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -32,7 +31,7 @@ class MovieListAdapter(
         if (movies.isNotEmpty()) {
             val movie = movies[position]
             Picasso.get()
-                .load(IMAGE_PATH + movie.posterPath)
+                .load(imagePath + movie.posterPath)
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.image_not_found)
                 .into(holder.poster)

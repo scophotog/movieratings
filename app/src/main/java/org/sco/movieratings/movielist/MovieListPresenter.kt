@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.sco.movieratings.databinding.FragmentMovieListBinding
 import org.sco.movieratings.db.MovieSchema
 
-class MovieListPresenter(private val binding: FragmentMovieListBinding) {
+class MovieListPresenter(private val binding: FragmentMovieListBinding, private val adapter: MovieListAdapter) {
     init {
         binding.movieList.setHasFixedSize(true)
         binding.movieList.layoutManager = GridLayoutManager(binding.root.context, 2, RecyclerView.VERTICAL, false)
@@ -25,12 +25,14 @@ class MovieListPresenter(private val binding: FragmentMovieListBinding) {
                 emptyView.visibility = View.GONE
             }
 
-            movieList.swapAdapter(MovieListAdapter(movies
-            ) { movie ->
+            adapter.movies = movies
+            adapter.listener = { movie ->
                 val action: NavDirections =
                     MovieListFragmentDirections.actionMovieListFragmentToMovieFragment(movie)
                 navController.navigate(action)
-            }, true)
+            }
+
+            movieList.swapAdapter(adapter, true)
         }
     }
 

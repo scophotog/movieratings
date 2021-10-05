@@ -15,6 +15,7 @@ import org.sco.movieratings.databinding.FragmentMovieListBinding
 import org.sco.movieratings.db.MovieSchema
 import org.sco.movieratings.utility.Utility.getPreferredSort
 import org.sco.movieratings.utility.Utility.updatePreference
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
@@ -26,6 +27,9 @@ class MovieListFragment : Fragment() {
 
     private lateinit var binding: FragmentMovieListBinding
 
+    @Inject
+    lateinit var movieListAdapter: MovieListAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,7 +39,7 @@ class MovieListFragment : Fragment() {
 
         bottomBarPresenter = BottomBarPresenter(binding)
         bottomBarPresenter.setOnItemSelectedListener(setBottomNavListener())
-        movieListPresenter = MovieListPresenter(binding)
+        movieListPresenter = MovieListPresenter(binding, movieListAdapter)
         viewModel.isLoading.observe(viewLifecycleOwner, {
             binding.loading.isVisible = it
         })
