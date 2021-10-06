@@ -1,25 +1,17 @@
-package org.sco.movieratings.e2e
+package org.sco.e2etests
 
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.LargeTest
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.sco.espresso.robots.movieDetails
+import org.sco.espresso.robots.movieList
 import org.sco.movieratings.MainActivity
-import org.sco.movieratings.robots.movieDetails
-import org.sco.movieratings.robots.movieList
 
-@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-@LargeTest
 class MovieRatingsTest {
-
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     var activityRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
@@ -27,7 +19,7 @@ class MovieRatingsTest {
     @Test
     fun viewTopRated() {
         movieList {
-            tapMostPopular()
+            tapTopRated()
             checkTitleMatches("Top Rated")
         }
     }
@@ -75,8 +67,6 @@ class MovieRatingsTest {
         movieList {
             tapFavorites()
             checkTitleMatches("Favorites")
-            checkMovieIsDisplayed()
-            tapMovieInPosition(0)
             checkEmptyListDisplayed()
         }
     }

@@ -15,7 +15,7 @@ if (apiKey == null) {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion = '30.0.2'
 
     buildFeatures {
@@ -24,8 +24,8 @@ android {
 
     defaultConfig {
         applicationId "org.sco.movieratings"
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -123,5 +123,5 @@ dependencies {
     androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0"
     androidTestImplementation("androidx.navigation:navigation-testing:2.3.5")
 
-
+    androidTestImplementation(project(":espresso"))
 }

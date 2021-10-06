@@ -1,4 +1,4 @@
-package org.sco.movieratings.mocked
+package org.sco.movieratings
 
 import dagger.Module
 import dagger.Provides
