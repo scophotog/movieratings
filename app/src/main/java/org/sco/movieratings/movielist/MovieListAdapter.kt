@@ -1,11 +1,10 @@
 package org.sco.movieratings.movielist
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import androidx.navigation.NavDirections
+import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -13,15 +12,16 @@ import org.sco.movieratings.R
 import org.sco.movieratings.databinding.MovieCardBinding
 import org.sco.movieratings.db.MovieSchema
 
-class MovieListAdapter() :
+class MovieListAdapter :
     RecyclerView.Adapter<MovieListAdapter.MoviePosterViewHolder>() {
 
     var movies: List<MovieSchema> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviePosterViewHolder {
         return MoviePosterViewHolder(
-            MovieCardBinding.inflate(
+            DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
+                R.layout.movie_card,
                 parent,
                 false
             )
@@ -42,12 +42,17 @@ class MovieListAdapter() :
         private val binding: MovieCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
-            binding.setClickListener { view ->
-                binding.movie?.let { movie ->
-                    val action: NavDirections =
-                        MovieListFragmentDirections.actionMovieListFragmentToMovieFragment(movie)
-                    val navController = Navigation.findNavController(view)
-                    navController.navigate(action)
+            with(binding) {
+                setClickListener { view ->
+                    movie?.let { movie ->
+                        Navigation.findNavController(view).run {
+                            navigate(
+                                MovieListFragmentDirections.actionMovieListFragmentToMovieFragment(
+                                    movie
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -58,18 +63,14 @@ class MovieListAdapter() :
                 executePendingBindings()
             }
         }
-
-        companion object {
-            @BindingAdapter("posterUrl")
-            @JvmStatic
-            fun bindPosterUrl(view: ImageView, imageUrl: String?) {
-                Log.d("MovieListAdapter", "bindPosterUrl: $imageUrl")
-                Picasso.get()
-                    .load(imageUrl)
-                    .placeholder(R.drawable.loading)
-                    .error(R.drawable.image_not_found)
-                    .into(view)
-            }
-        }
     }
+}
+
+@BindingAdapter("imageUrl")
+fun ImageView.bindPosterUrl(imageUrl: String?) {
+    Picasso.get()
+        .load(imageUrl)
+        .placeholder(R.drawable.loading)
+        .error(R.drawable.image_not_found)
+        .into(this)
 }

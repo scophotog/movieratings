@@ -10,9 +10,6 @@
         <variable
             name="movie"
             type="org.sco.movieratings.db.MovieSchema" />
-        <variable
-            name="posterUrl"
-            type="String"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,7 +27,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/poster_description"
             android:scaleType="centerCrop"
-            app:posterUrl="@{movie.posterPath}"
+            app:imageUrl="@{movie.posterPath}"
             app:layout_constraintBottom_toTopOf="@+id/movieTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.51"
