@@ -13,6 +13,5 @@ object MovieListFragmentModule {
 
     @Provides
     @FragmentScoped
-    fun provideMovieListAdapter(@Named("image_path") imagePath: String) =
-        MovieListAdapter(imagePath)
+    fun provideMovieListAdapter() = MovieListAdapter()
 }

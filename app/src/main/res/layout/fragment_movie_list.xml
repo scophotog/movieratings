@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <include layout="@layout/include_toolbar"
-        android:id="@+id/toolbar"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/bb_selector"
-        app:itemTextColor="@color/bb_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_navigation_main" />
+        <include layout="@layout/include_toolbar"
+            android:id="@+id/toolbar"/>
 
-    <FrameLayout
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/windowBackground"
+            app:itemBackground="@color/colorPrimary"
+            app:itemIconTint="@color/bb_selector"
+            app:itemTextColor="@color/bb_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_navigation_main" />
+
+        <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -32,7 +35,7 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintVertical_bias="0.0">
 
-        <ProgressBar
+            <ProgressBar
                 android:id="@+id/loading"
                 style="?android:progressBarStyle"
                 android:layout_width="wrap_content"
@@ -40,7 +43,7 @@
                 android:layout_gravity="center"
                 tools:visibility="gone" />
 
-        <androidx.recyclerview.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/movieList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,11 +55,12 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 app:reverseLayout="false"
                 app:spanCount="2"
+                tools:context="org.sco.movieratings.MainActivity"
                 tools:layout_editor_absoluteX="0dp"
                 tools:listitem="@layout/movie_card"
                 tools:visibility="visible" />
 
-        <TextView
+            <TextView
                 android:id="@+id/emptyView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,7 +70,9 @@
                 android:textAppearance="?android:textAppearanceMedium"
                 android:visibility="gone"
                 tools:visibility="gone" />
-    </FrameLayout>
+        </FrameLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+
 

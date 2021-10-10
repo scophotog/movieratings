@@ -116,7 +116,7 @@ class MovieListFragment : Fragment() {
         if (moviesResult.isEmpty()) {
             movieListPresenter.setErrorView()
         } else {
-            movieListPresenter.present(moviesResult, findNavController())
+            movieListPresenter.present(moviesResult)
         }
     }
 

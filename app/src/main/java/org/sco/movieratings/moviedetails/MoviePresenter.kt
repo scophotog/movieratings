@@ -16,8 +16,7 @@ import org.sco.movieratings.utility.Utility
 
 class MoviePresenter(
     private val previewsAdapter: MoviePreviewAdapter,
-    private val reviewsAdapter: MovieReviewAdapter,
-    private val imagePath: String
+    private val reviewsAdapter: MovieReviewAdapter
 ) {
 
     lateinit var binding: FragmentMovieBinding
@@ -27,7 +26,7 @@ class MoviePresenter(
         this.navController = navController
         with(binding) {
             binding.movie = movie
-            Picasso.get().load(imagePath + movie.posterPath)
+            Picasso.get().load(movie.posterPath)
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.image_not_found)
                 .into(poster)

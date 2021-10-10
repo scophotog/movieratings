@@ -15,5 +15,5 @@ data class MovieSchema(
     var overview: String,
     var releaseDate: String,
     var popularity: Double,
-    var voteAverage: Double
+    var voteAverage: Float
 ) : Parcelable

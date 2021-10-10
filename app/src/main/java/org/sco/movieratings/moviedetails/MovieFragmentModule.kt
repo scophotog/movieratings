@@ -23,8 +23,7 @@ object MovieFragmentModule {
     @FragmentScoped
     fun provideMoviePresenter(
         previewAdapter: MoviePreviewAdapter,
-        reviewAdapter: MovieReviewAdapter,
-        @Named("image_path") imagePath: String
+        reviewAdapter: MovieReviewAdapter
     ) =
-        MoviePresenter(previewAdapter, reviewAdapter, imagePath)
+        MoviePresenter(previewAdapter, reviewAdapter)
 }

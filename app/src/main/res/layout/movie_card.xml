@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="clickListener"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="movie"
+            type="org.sco.movieratings.db.MovieSchema" />
+        <variable
+            name="posterUrl"
+            type="String"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/posterLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:onClick="@{clickListener}"
         android:padding="8dp">
 
-    <ImageView
+        <ImageView
             android:id="@+id/moviePoster"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/poster_description"
             android:scaleType="centerCrop"
+            app:posterUrl="@{movie.posterPath}"
             app:layout_constraintBottom_toTopOf="@+id/movieTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.51"
@@ -23,26 +39,29 @@
             app:layout_constraintVertical_bias="0.0"
             tools:srcCompat="@drawable/movie_poster" />
 
-    <TextView
+        <TextView
             android:id="@+id/movieTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textStyle="bold"
+            android:text="@{movie.title}"
             app:layout_constraintBottom_toTopOf="@+id/ratingBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/moviePoster"
             tools:text="Movie Title" />
 
-    <RatingBar
+        <RatingBar
             android:id="@+id/ratingBar"
             style="@style/Widget.AppCompat.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:isIndicator="true"
-            android:numStars="5"
+            android:numStars="10"
             android:stepSize="0.5"
+            android:rating="@{movie.voteAverage}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/movieTitle" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

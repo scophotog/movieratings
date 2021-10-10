@@ -14,7 +14,7 @@ class MovieListPresenter(private val binding: FragmentMovieListBinding, private 
         binding.movieList.layoutManager = GridLayoutManager(binding.root.context, 2, RecyclerView.VERTICAL, false)
     }
 
-    fun present(movies: List<MovieSchema>, navController: NavController) {
+    fun present(movies: List<MovieSchema>) {
         with(binding) {
             loading.visibility = View.GONE
             if (movies.isEmpty()) {
@@ -26,11 +26,6 @@ class MovieListPresenter(private val binding: FragmentMovieListBinding, private 
             }
 
             adapter.movies = movies
-            adapter.listener = { movie ->
-                val action: NavDirections =
-                    MovieListFragmentDirections.actionMovieListFragmentToMovieFragment(movie)
-                navController.navigate(action)
-            }
 
             movieList.swapAdapter(adapter, true)
         }
@@ -50,6 +45,4 @@ class MovieListPresenter(private val binding: FragmentMovieListBinding, private 
             emptyView.visibility = View.VISIBLE
         }
     }
-
-
 }
