@@ -8,20 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import org.sco.movieratings.R
 import org.sco.movieratings.api.response.Review
 
-private const val LOG = "MovieReviewAdapter"
+class MovieReviewAdapter : RecyclerView.Adapter<MovieReviewAdapter.MovieReviewViewHolder>() {
 
-class MovieReviewAdapter(val reviews: ArrayList<Review>) : RecyclerView.Adapter<MovieReviewAdapter.MovieReviewViewHolder>() {
-
-    class MovieReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var author: TextView = view.findViewById(R.id.review_author)
-        var content: TextView = view.findViewById(R.id.review_content)
-    }
-
-    fun add(reviewList: List<Review>) {
-        reviews.clear()
-        reviews.addAll(reviewList)
-        notifyDataSetChanged()
-    }
+    var reviews: List<Review> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieReviewViewHolder {
         return MovieReviewViewHolder(LayoutInflater.from(parent.context)
@@ -37,4 +26,10 @@ class MovieReviewAdapter(val reviews: ArrayList<Review>) : RecyclerView.Adapter<
         holder.author.text = review.author
         holder.content.text = review.content
     }
+
+    class MovieReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var author: TextView = view.findViewById(R.id.review_author)
+        var content: TextView = view.findViewById(R.id.review_content)
+    }
+
 }

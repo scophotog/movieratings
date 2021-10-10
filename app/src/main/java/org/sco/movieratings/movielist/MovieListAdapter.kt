@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso
 import org.sco.movieratings.R
 import org.sco.movieratings.db.MovieSchema
 
-class MovieListAdapter constructor(private val imagePath: String) :
+class MovieListAdapter(private val imagePath: String) :
     RecyclerView.Adapter<MovieListAdapter.MoviePosterViewHolder>() {
 
     var movies: List<MovieSchema> = emptyList()
