@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import org.sco.movieratings.R
 import org.sco.movieratings.databinding.FragmentMovieListBinding
-import org.sco.movieratings.db.MovieSchema
 import org.sco.movieratings.utility.Utility.getPreferredSort
 import org.sco.movieratings.utility.Utility.updatePreference
 import javax.inject.Inject
@@ -40,16 +40,16 @@ class MovieListFragment : Fragment() {
         bottomBarPresenter = BottomBarPresenter(binding)
         bottomBarPresenter.setOnItemSelectedListener(setBottomNavListener())
         movieListPresenter = MovieListPresenter(binding, movieListAdapter)
-        viewModel.isLoading.observe(viewLifecycleOwner, {
-            binding.loading.isVisible = it
-        })
+        subscribeUi()
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         val sortType = getPreferredSort(requireContext())
-        setViewToSortType(sortType!!)
+        if (sortType != null) {
+            setViewToSortType(sortType)
+        }
     }
 
     private fun setViewToSortType(sortType: String) {
@@ -58,15 +58,12 @@ class MovieListFragment : Fragment() {
         val favorites = resources.getString(R.string.pref_sort_my_favorites)
         when (sortType) {
             topRated -> {
-                updateMovieList(0)
                 bottomBarPresenter.setSelectedItemById(R.id.bn_top_rated)
             }
             popular -> {
-                updateMovieList(1)
                 bottomBarPresenter.setSelectedItemById(R.id.bn_most_popular)
             }
             favorites -> {
-                updateMovieList(2)
                 bottomBarPresenter.setSelectedItemById(R.id.bn_my_favorites)
             }
             else -> {
@@ -75,34 +72,31 @@ class MovieListFragment : Fragment() {
         }
     }
 
-    private fun updateMovieList(position: Int) {
-        movieListPresenter.setNowLoadingView()
-
-        when (position) {
-            0 -> {
-                viewModel.topRatedMovies.observe(viewLifecycleOwner, { moviesResult ->
-                    presentMovies(moviesResult)
-                })
-                binding.toolbar.toolbar.title = resources.getString(R.string.high_rated_settings)
-                updatePreference(
-                    requireContext(),
-                    resources.getString(R.string.pref_sort_top_rated)
-                )
+    private fun subscribeUi() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.viewState.collect {
+                presentMovies(it)
             }
-            1 -> {
-                viewModel.popularMovies.observe(viewLifecycleOwner, { moviesResult ->
-                    presentMovies(moviesResult)
-                })
+        }
+    }
+
+    private fun setTitleBar() {
+        when(viewModel.movieListType.value) {
+            MovieListViewModel.MovieListType.POPULAR -> {
                 binding.toolbar.toolbar.title = resources.getString(R.string.most_popular_settings)
                 updatePreference(
                     requireContext(),
                     resources.getString(R.string.pref_sort_popular_rated)
                 )
             }
-            2 -> {
-                viewModel.favoriteMovies.observe(viewLifecycleOwner, { moviesResult ->
-                    presentMovies(moviesResult)
-                })
+            MovieListViewModel.MovieListType.TOP -> {
+                binding.toolbar.toolbar.title = resources.getString(R.string.high_rated_settings)
+                updatePreference(
+                    requireContext(),
+                    resources.getString(R.string.pref_sort_top_rated)
+                )
+            }
+            MovieListViewModel.MovieListType.FAVORITE -> {
                 binding.toolbar.toolbar.title = resources.getString(R.string.my_favorites_settings)
                 updatePreference(
                     requireContext(),
@@ -112,11 +106,13 @@ class MovieListFragment : Fragment() {
         }
     }
 
-    private fun presentMovies(moviesResult: List<MovieSchema>) {
-        if (moviesResult.isEmpty()) {
+    private fun presentMovies(moviesResult: MovieListViewModel.MovieViewState) {
+        setTitleBar()
+        binding.loading.isVisible = moviesResult.loading
+        if (moviesResult.movies.isEmpty()) {
             movieListPresenter.setErrorView()
         } else {
-            movieListPresenter.present(moviesResult)
+            movieListPresenter.present(moviesResult.movies)
         }
     }
 
@@ -124,13 +120,13 @@ class MovieListFragment : Fragment() {
         return NavigationBarView.OnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.bn_top_rated -> {
-                    updateMovieList(0)
+                    viewModel.setMovieListType(MovieListViewModel.MovieListType.TOP)
                 }
                 R.id.bn_most_popular -> {
-                    updateMovieList(1)
+                    viewModel.setMovieListType(MovieListViewModel.MovieListType.POPULAR)
                 }
                 R.id.bn_my_favorites -> {
-                    updateMovieList(2)
+                    viewModel.setMovieListType(MovieListViewModel.MovieListType.FAVORITE)
                 }
                 else -> {
                     throw IllegalArgumentException("Unknown navigation")
