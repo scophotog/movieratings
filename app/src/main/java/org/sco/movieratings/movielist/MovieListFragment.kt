@@ -48,27 +48,7 @@ class MovieListFragment : Fragment() {
         super.onResume()
         val sortType = getPreferredSort(requireContext())
         if (sortType != null) {
-            setViewToSortType(sortType)
-        }
-    }
-
-    private fun setViewToSortType(sortType: String) {
-        val topRated = resources.getString(R.string.pref_sort_top_rated)
-        val popular = resources.getString(R.string.pref_sort_popular_rated)
-        val favorites = resources.getString(R.string.pref_sort_my_favorites)
-        when (sortType) {
-            topRated -> {
-                bottomBarPresenter.setSelectedItemById(R.id.bn_top_rated)
-            }
-            popular -> {
-                bottomBarPresenter.setSelectedItemById(R.id.bn_most_popular)
-            }
-            favorites -> {
-                bottomBarPresenter.setSelectedItemById(R.id.bn_my_favorites)
-            }
-            else -> {
-                throw IllegalArgumentException("Unknown navigation: $sortType")
-            }
+            bottomBarPresenter.setViewToSortType(sortType)
         }
     }
 
@@ -77,42 +57,44 @@ class MovieListFragment : Fragment() {
             viewModel.viewState.collect {
                 presentMovies(it)
             }
+            viewModel.movieListType.collect {
+                setTitleBar(it)
+            }
         }
     }
 
-    private fun setTitleBar() {
-        when(viewModel.movieListType.value) {
+    private fun presentMovies(moviesResult: MovieListViewModel.MovieViewState) {
+        binding.loading.isVisible = moviesResult.loading
+        if (moviesResult.movies.isEmpty()) {
+            movieListPresenter.setErrorView()
+        } else {
+            movieListPresenter.present(moviesResult.movies)
+        }
+    }
+
+    private fun setTitleBar(value: MovieListViewModel.MovieListType) {
+        when(value) {
             MovieListViewModel.MovieListType.POPULAR -> {
-                binding.toolbar.toolbar.title = resources.getString(R.string.most_popular_settings)
+                binding.toolbar.toolbar.setTitle(R.string.most_popular_settings)
                 updatePreference(
                     requireContext(),
                     resources.getString(R.string.pref_sort_popular_rated)
                 )
             }
             MovieListViewModel.MovieListType.TOP -> {
-                binding.toolbar.toolbar.title = resources.getString(R.string.high_rated_settings)
+                binding.toolbar.toolbar.setTitle(R.string.high_rated_settings)
                 updatePreference(
                     requireContext(),
                     resources.getString(R.string.pref_sort_top_rated)
                 )
             }
             MovieListViewModel.MovieListType.FAVORITE -> {
-                binding.toolbar.toolbar.title = resources.getString(R.string.my_favorites_settings)
+                binding.toolbar.toolbar.setTitle(R.string.my_favorites_settings)
                 updatePreference(
                     requireContext(),
                     resources.getString(R.string.pref_sort_my_favorites)
                 )
             }
-        }
-    }
-
-    private fun presentMovies(moviesResult: MovieListViewModel.MovieViewState) {
-        setTitleBar()
-        binding.loading.isVisible = moviesResult.loading
-        if (moviesResult.movies.isEmpty()) {
-            movieListPresenter.setErrorView()
-        } else {
-            movieListPresenter.present(moviesResult.movies)
         }
     }
 
