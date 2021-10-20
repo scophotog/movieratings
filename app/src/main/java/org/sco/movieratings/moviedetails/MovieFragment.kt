@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import org.sco.movieratings.databinding.FragmentMovieBinding
 import org.sco.movieratings.db.MovieSchema
 import javax.inject.Inject
@@ -61,8 +63,14 @@ class MovieFragment : Fragment() {
         }
 
         viewModel.checkIfFavorite(movie).observe(viewLifecycleOwner, {
-            binding.markAsFavorite.isSelected = it != null
+            binding.markAsFavorite.isSelected = it
         })
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.isFavorite.collect {
+                binding.markAsFavorite.isSelected = it
+            }
+        }
 
         viewModel.getPreviews(movie.id).observe(viewLifecycleOwner, { previews ->
             previews?.let {

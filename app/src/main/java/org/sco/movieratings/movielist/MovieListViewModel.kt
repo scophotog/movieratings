@@ -1,42 +1,41 @@
 package org.sco.movieratings.movielist
 
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.sco.movieratings.db.MovieSchema
-import org.sco.movieratings.repository.FavoritesRepository
 import org.sco.movieratings.repository.MovieRepository
+import org.sco.movieratings.utility.Result
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
-    private val favoritesRepository: FavoritesRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val movieListType: MutableStateFlow<MovieListType> = MutableStateFlow(
+    private val _movieListType: MutableStateFlow<MovieListType> = MutableStateFlow(
         savedStateHandle.get(MOVIE_LIST_SAVED_STATE_KEY) ?: MovieListType.POPULAR
     )
+    val movieListType : StateFlow<MovieListType> =  _movieListType
 
-    private val _viewState = MutableStateFlow(MovieViewState())
-    val viewState: StateFlow<MovieViewState> get() = _viewState
+    private val _viewState: MutableStateFlow<Result<List<MovieSchema>>> = MutableStateFlow(Result.Empty)
+    val viewState : StateFlow<Result<List<MovieSchema>>> = _viewState
 
     fun setMovieListType(listType: MovieListType) {
-        movieListType.update { listType }
+        _movieListType.update { listType }
         savedStateHandle.set(MOVIE_LIST_SAVED_STATE_KEY, listType)
         viewModelScope.launch {
-            _viewState.value = _viewState.value.copy(loading = true)
-            val movies = when(listType) {
-                MovieListType.POPULAR -> movieRepository.getPopularMovies()
-                MovieListType.TOP -> movieRepository.getTopRatedMovies()
-                MovieListType.FAVORITE -> favoritesRepository.getFavoriteMovies()
-            }
-            movies.collect {
-                _viewState.value = _viewState.value.copy(loading = false, movies = it)
+            _viewState.value = Result.InProgress
+            movieRepository.getMovieList(listType).catch { e ->
+                _viewState.value = Result.Error(e)
+            }.collect {
+                _viewState.value = Result.Success(it)
             }
         }
     }
@@ -49,9 +48,5 @@ class MovieListViewModel @Inject constructor(
         private const val MOVIE_LIST_SAVED_STATE_KEY = "MOVIE_LIST_SAVED_STATE_KEY"
     }
 
-    data class MovieViewState(
-        val loading: Boolean = true,
-        val movies: List<MovieSchema> = emptyList()
-    )
 }
 

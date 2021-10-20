@@ -1,45 +1,51 @@
 package org.sco.movieratings.moviedetails
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.sco.movieratings.api.response.Preview
 import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.db.MovieSchema
-import org.sco.movieratings.repository.FavoritesRepository
 import org.sco.movieratings.repository.MovieRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
-    private val movieRepository: MovieRepository,
-    private val favoritesRepository: FavoritesRepository
+    private val movieRepository: MovieRepository
 ) : ViewModel() {
 
-    fun getReviews(movieId: Int) = liveData<List<Review>> {
+    fun getReviews(movieId: Int): LiveData<List<Review>> = liveData {
         emitSource(movieRepository.getMovieReviews(movieId).asLiveData())
     }
 
-    fun getPreviews(movieId: Int) = liveData<List<Preview>> {
+    fun getPreviews(movieId: Int): LiveData<List<Preview>> = liveData {
         emitSource(movieRepository.getMoviePreviews(movieId).asLiveData())
     }
 
-    fun checkIfFavorite(movieSchema: MovieSchema) = liveData<MovieSchema?> {
-        emitSource(favoritesRepository.isFavorite(movieSchema).asLiveData())
+    private val _isFavorite: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isFavorite : StateFlow<Boolean> = _isFavorite
+
+    fun checkIfFavorite(movieSchema: MovieSchema): LiveData<Boolean> = liveData {
+        movieRepository.isFavorite(movieSchema).collect {
+            emit(it)
+            _isFavorite.value = it
+        }
     }
 
     fun addToFavorite(movieSchema: MovieSchema) {
         viewModelScope.launch {
-            favoritesRepository.addToFavorites(movieSchema)
+            movieRepository.addToFavorites(movieSchema)
+            _isFavorite.value = true
         }
     }
 
-    fun removeFromFavorites(movie: MovieSchema) {
+    fun removeFromFavorites(movieSchema: MovieSchema) {
         viewModelScope.launch {
-            favoritesRepository.removeFromFavorites(movie)
+            movieRepository.removeFromFavorites(movieSchema)
+            _isFavorite.value = false
         }
     }
 

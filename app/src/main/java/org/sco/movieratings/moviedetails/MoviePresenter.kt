@@ -59,12 +59,14 @@ class MoviePresenter(
         }
     }
 
-    fun setMarkAsFavoriteAction() {
+    private fun setMarkAsFavoriteAction() {
         binding.markAsFavorite.setOnClickListener {
             if (it.isSelected) {
                 onRemoveFavorite()
+                it.isSelected = false
             } else {
                 onAddFavorite()
+                it.isSelected = true
             }
         }
     }

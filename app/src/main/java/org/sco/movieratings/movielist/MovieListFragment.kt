@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +12,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import org.sco.movieratings.R
 import org.sco.movieratings.databinding.FragmentMovieListBinding
+import org.sco.movieratings.db.MovieSchema
+import org.sco.movieratings.utility.Result
 import org.sco.movieratings.utility.Utility.getPreferredSort
 import org.sco.movieratings.utility.Utility.updatePreference
 import javax.inject.Inject
@@ -55,20 +56,27 @@ class MovieListFragment : Fragment() {
     private fun subscribeUi() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.viewState.collect {
-                presentMovies(it)
+                when (it) {
+                    Result.Empty,
+                    is Result.Error -> movieListPresenter.setErrorView()
+                    Result.InProgress -> movieListPresenter.setNowLoadingView()
+                    is Result.Success -> presentMovies(it.extractData ?: emptyList())
+                }
+
             }
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.movieListType.collect {
                 setTitleBar(it)
             }
         }
     }
 
-    private fun presentMovies(moviesResult: MovieListViewModel.MovieViewState) {
-        binding.loading.isVisible = moviesResult.loading
-        if (moviesResult.movies.isEmpty()) {
+    private fun presentMovies(moviesResult: List<MovieSchema>) {
+        if (moviesResult.isEmpty()) {
             movieListPresenter.setErrorView()
         } else {
-            movieListPresenter.present(moviesResult.movies)
+            movieListPresenter.present(moviesResult)
         }
     }
 
