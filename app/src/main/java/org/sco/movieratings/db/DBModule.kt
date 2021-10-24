@@ -15,13 +15,8 @@ class DBModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(
-        @ApplicationContext app: Context
-    ) = Room.databaseBuilder(
-        app,
-        MovieDatabase::class.java,
-        "move_database"
-    ).build()
+    fun provideDatabase(@ApplicationContext context: Context) =
+        MovieDatabase.getInstance(context)
 
     @Singleton
     @Provides
