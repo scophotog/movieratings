@@ -2,19 +2,19 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.5.31'
+        kotlin_version = '1.6.10'
         minSdkVersion = 21
         targetSdkVersion = 30
         compileSdkVersion = 31
-        nav_version = '2.4.0-alpha10'
-        hilt_version = '2.38.1'
+        nav_version = '2.5.0-alpha01'
+        hilt_version = '2.40.5'
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.2'
+        classpath 'com.android.tools.build:gradle:7.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
@@ -33,5 +33,3 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-apply plugin: 'android-reporting'

@@ -3,29 +3,25 @@ package org.sco.movieratings.api
 import org.sco.movieratings.api.response.MoviesResponse
 import org.sco.movieratings.api.response.PreviewsResponse
 import org.sco.movieratings.api.response.ReviewsResponse
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
+import javax.inject.Inject
+import javax.inject.Singleton
 
-interface TheMovieDBService {
+@Singleton
+class TheMovieDBService @Inject constructor(private val movieApi: TheMovieDBApi) {
 
-    companion object {
-        const val BASE_URL = "https://api.themoviedb.org/3/"
+    suspend fun getPopularMovies(): Result<MoviesResponse> {
+        return apiCall { movieApi.getPopularMovies() }
     }
 
-    @GET("movie/{list}")
-    suspend fun getMovies(@Path("list") list: String): Response<MoviesResponse?>
+    suspend fun getTopRatedMovies(): Result<MoviesResponse> {
+        return apiCall { movieApi.getTopRatedMovies() }
+    }
 
-    @GET("movie/top_rated")
-    suspend fun getTopRatedMovies(): Response<MoviesResponse?>
+    suspend fun getMoviePreviews(movieId: Int): Result<PreviewsResponse> {
+        return apiCall { movieApi.getMoviePreviews(movieId) }
+    }
 
-    @GET("movie/popular")
-    suspend fun getPopularMovies(): Response<MoviesResponse?>
-
-    @GET("movie/{id}/videos")
-    suspend fun getMoviePreviews(@Path("id") movieId: Int): Response<PreviewsResponse?>
-
-    @GET("movie/{id}/reviews")
-    suspend fun getMovieReviews(@Path("id") movieId: Int): Response<ReviewsResponse?>
-
+    suspend fun getMovieReviews(movieId: Int): Result<ReviewsResponse> {
+        return apiCall { movieApi.getMovieReviews(movieId) }
+    }
 }

@@ -10,5 +10,5 @@ import dagger.hilt.components.SingletonComponent
 object BaseUrlModule {
 
     @Provides
-    fun provideBaseUrl() = TheMovieDBService.BASE_URL
+    fun provideBaseUrl() = TheMovieDBApi.BASE_URL
 }

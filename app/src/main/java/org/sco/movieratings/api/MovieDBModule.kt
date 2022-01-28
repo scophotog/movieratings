@@ -18,8 +18,8 @@ object MovieDBModule {
 
     @Singleton
     @Provides
-    fun provideMovieDBAPI(retrofit: Retrofit): TheMovieDBService =
-        retrofit.create(TheMovieDBService::class.java)
+    fun provideMovieDBAPI(retrofit: Retrofit): TheMovieDBApi =
+        retrofit.create(TheMovieDBApi::class.java)
 
     @Singleton
     @Provides

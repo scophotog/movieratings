@@ -15,7 +15,9 @@ import org.sco.movieratings.usecase.GetMovieReviews
 import org.sco.movieratings.usecase.GetPopularMoviesUseCase
 import org.sco.movieratings.usecase.GetTopRatedMoviesUseCase
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class MovieRepository @Inject constructor(
     private val popularMoviesUseCase: GetPopularMoviesUseCase,
     private val topRatedMoviesUseCase: GetTopRatedMoviesUseCase,
@@ -32,18 +34,27 @@ class MovieRepository @Inject constructor(
         }
     }
 
-    private fun getPopularMovies(): Flow<List<MovieSchema>> =
+    private val popularMoviesCache: MutableList<MovieSchema> = mutableListOf()
+    private val topMoviesCache: MutableList<MovieSchema> = mutableListOf()
+    private val movieReviewsMap: MutableMap<Int, List<Review>> = mutableMapOf()
+    private val moviePreviewsMap: MutableMap<Int, List<Preview>> = mutableMapOf()
+
+    private fun getPopularMovies(refresh: Boolean = false): Flow<List<MovieSchema>> =
         flow {
-            popularMoviesUseCase.invoke()
-                .onSuccess { movies -> emit(movies) }
-                .onFailure { e -> throw IllegalStateException("Error getting popular movies", e) }
+            if (refresh || popularMoviesCache.isEmpty()) {
+                popularMoviesCache.clear()
+                popularMoviesCache.addAll(popularMoviesUseCase())
+            }
+            emit(popularMoviesCache)
         }.flowOn(Dispatchers.IO)
 
-    private fun getTopRatedMovies(): Flow<List<MovieSchema>> =
+    private fun getTopRatedMovies(refresh: Boolean = false): Flow<List<MovieSchema>> =
         flow {
-            topRatedMoviesUseCase.invoke()
-                .onSuccess { movies -> emit(movies) }
-                .onFailure { e -> throw IllegalStateException("Error getting top movies", e) }
+            if (refresh || topMoviesCache.isEmpty()) {
+                topMoviesCache.clear()
+                topMoviesCache.addAll(topRatedMoviesUseCase())
+            }
+            emit(topMoviesCache)
         }.flowOn(Dispatchers.IO)
 
     private fun getFavoriteMovies(): Flow<List<MovieSchema>> =
@@ -51,18 +62,19 @@ class MovieRepository @Inject constructor(
 
     fun getMovieReviews(movieId: Int): Flow<List<Review>> =
         flow {
-            movieReviews.invoke(movieId)
-                .onSuccess { reviews -> emit(reviews) }
-                .onFailure { e -> throw IllegalStateException("Error getting reviews", e) }
+            if (!movieReviewsMap.containsKey(movieId)) {
+                movieReviewsMap[movieId] = movieReviews.invoke(movieId)
+            }
+            emit(movieReviewsMap.getValue(movieId))
         }.flowOn(Dispatchers.IO)
 
     fun getMoviePreviews(movieId: Int): Flow<List<Preview>> =
         flow {
-            moviePreviews.invoke(movieId)
-                .onSuccess { previews -> emit(previews) }
-                .onFailure { e -> throw IllegalStateException("Error getting previews", e) }
+            if (!moviePreviewsMap.containsKey(movieId)) {
+                moviePreviewsMap[movieId] = moviePreviews.invoke(movieId)
+            }
+            emit(moviePreviewsMap.getValue(movieId))
         }.flowOn(Dispatchers.IO)
-
 
     fun isFavorite(movieSchema: MovieSchema): Flow<Boolean> =
         flow {
