@@ -7,7 +7,7 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import coil.load
 import org.sco.movieratings.R
 import org.sco.movieratings.databinding.MovieCardBinding
 import org.sco.movieratings.db.MovieSchema
@@ -69,14 +69,11 @@ class MovieListAdapter :
 @BindingAdapter("imageUrl")
 fun ImageView.bindPosterUrl(imageUrl: String?) {
     if (imageUrl.isNullOrBlank()) {
-        Picasso.get()
-            .load(R.drawable.image_not_found)
-            .into(this)
+        load(R.drawable.image_not_found)
     } else {
-        Picasso.get()
-            .load(imageUrl)
-            .placeholder(R.drawable.loading)
-            .error(R.drawable.image_not_found)
-            .into(this)
+        load(imageUrl) {
+            placeholder(R.drawable.loading)
+            error(R.drawable.image_not_found)
+        }
     }
 }

@@ -6,11 +6,11 @@ import org.sco.movieratings.R
 class MovieDetailsRobot {
 
     fun markAsFavorite() {
-        clickElementWithId(R.id.mark_as_favorite)
+        clickElementWithId(R.id.favorite_fab)
     }
 
     fun unMarkAsFavorite() {
-        clickElementWithId(R.id.mark_as_favorite)
+        clickElementWithId(R.id.favorite_fab)
     }
 
 }

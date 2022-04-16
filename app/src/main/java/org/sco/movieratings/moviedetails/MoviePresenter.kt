@@ -5,8 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.view.View
 import androidx.navigation.NavController
+import coil.load
 import com.google.android.material.snackbar.Snackbar
-import com.squareup.picasso.Picasso
 import org.sco.movieratings.R
 import org.sco.movieratings.api.response.Preview
 import org.sco.movieratings.api.response.Review
@@ -28,13 +28,12 @@ class MoviePresenter(
             binding.movie = movie
             movie.posterPath.apply {
                 if (isNullOrEmpty()) {
-                    Picasso.get().load(R.drawable.image_not_found)
-                        .into(poster)
+                    poster.load(R.drawable.image_not_found)
                 } else {
-                    Picasso.get().load(movie.posterPath)
-                        .placeholder(R.drawable.loading)
-                        .error(R.drawable.image_not_found)
-                        .into(poster)
+                    poster.load(movie.posterPath) {
+                        placeholder(R.drawable.loading)
+                        error(R.drawable.image_not_found)
+                    }
                 }
             }
             setMarkAsFavoriteAction()
