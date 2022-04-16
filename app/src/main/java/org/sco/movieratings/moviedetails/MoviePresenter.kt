@@ -67,7 +67,7 @@ class MoviePresenter(
     }
 
     private fun setMarkAsFavoriteAction() {
-        binding.markAsFavorite.setOnClickListener {
+        binding.favoriteFab.setOnClickListener {
             if (it.isSelected) {
                 onRemoveFavorite()
                 it.isSelected = false

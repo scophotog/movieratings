@@ -62,7 +62,7 @@ class MovieFragment : Fragment() {
         moviePresenter.binding = binding
         moviePresenter.present(movie, findNavController())
 
-        binding.markAsFavorite.setOnClickListener { v ->
+        binding.favoriteFab.setOnClickListener { v ->
             if (v.isSelected) {
                 viewModel.removeFromFavorites(movie)
                 moviePresenter.onRemoveFavorite()
@@ -74,12 +74,12 @@ class MovieFragment : Fragment() {
         }
 
         viewModel.checkIfFavorite(movie).observe(viewLifecycleOwner) {
-            binding.markAsFavorite.isSelected = it
+            binding.favoriteFab.isSelected = it
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.isFavorite.collect {
-                binding.markAsFavorite.isSelected = it
+                binding.favoriteFab.isSelected = it
             }
         }
 
