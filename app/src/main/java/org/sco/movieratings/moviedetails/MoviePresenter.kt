@@ -26,10 +26,17 @@ class MoviePresenter(
         this.navController = navController
         with(binding) {
             binding.movie = movie
-            Picasso.get().load(movie.posterPath)
-                .placeholder(R.drawable.loading)
-                .error(R.drawable.image_not_found)
-                .into(poster)
+            movie.posterPath.apply {
+                if (isNullOrEmpty()) {
+                    Picasso.get().load(R.drawable.image_not_found)
+                        .into(poster)
+                } else {
+                    Picasso.get().load(movie.posterPath)
+                        .placeholder(R.drawable.loading)
+                        .error(R.drawable.image_not_found)
+                        .into(poster)
+                }
+            }
             setMarkAsFavoriteAction()
         }
     }

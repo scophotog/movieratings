@@ -27,7 +27,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/poster_description"
             android:scaleType="centerCrop"
-            app:imageUrl="@{movie.posterPath}"
+            app:imageUrl='@{movie.posterPath != null ? movie.posterPath : ""}'
             app:layout_constraintBottom_toTopOf="@+id/movieTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.51"

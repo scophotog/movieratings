@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -34,7 +35,14 @@ class MovieFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMovieBinding.inflate(inflater, container, false)
+
+        (activity as AppCompatActivity).apply {
+            setSupportActionBar(binding.toolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+
         return binding.root
+
     }
 
     override fun onDestroyView() {
@@ -44,6 +52,9 @@ class MovieFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.toolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
         presentMovie(args.movie)
     }
 
@@ -62,9 +73,9 @@ class MovieFragment : Fragment() {
             }
         }
 
-        viewModel.checkIfFavorite(movie).observe(viewLifecycleOwner, {
+        viewModel.checkIfFavorite(movie).observe(viewLifecycleOwner) {
             binding.markAsFavorite.isSelected = it
-        })
+        }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.isFavorite.collect {
@@ -72,17 +83,17 @@ class MovieFragment : Fragment() {
             }
         }
 
-        viewModel.getPreviews(movie.id).observe(viewLifecycleOwner, { previews ->
+        viewModel.getPreviews(movie.id).observe(viewLifecycleOwner) { previews ->
             previews?.let {
                 moviePresenter.setPreviews(it)
             }
-        })
+        }
 
-        viewModel.getReviews(movie.id).observe(viewLifecycleOwner, { reviews ->
+        viewModel.getReviews(movie.id).observe(viewLifecycleOwner) { reviews ->
             reviews?.let {
                 moviePresenter.setReviews(it)
             }
-        })
+        }
     }
 
     companion object {

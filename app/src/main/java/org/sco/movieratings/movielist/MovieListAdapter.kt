@@ -68,9 +68,15 @@ class MovieListAdapter :
 
 @BindingAdapter("imageUrl")
 fun ImageView.bindPosterUrl(imageUrl: String?) {
-    Picasso.get()
-        .load(imageUrl)
-        .placeholder(R.drawable.loading)
-        .error(R.drawable.image_not_found)
-        .into(this)
+    if (imageUrl.isNullOrBlank()) {
+        Picasso.get()
+            .load(R.drawable.image_not_found)
+            .into(this)
+    } else {
+        Picasso.get()
+            .load(imageUrl)
+            .placeholder(R.drawable.loading)
+            .error(R.drawable.image_not_found)
+            .into(this)
+    }
 }

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/bn_home"
+        android:enabled="true"
+        android:icon="@drawable/ic_home"
+        android:title="@string/home_settings"
+        app:showAsAction="always" />
+
     <item android:id="@+id/bn_top_rated"
         android:enabled="true"
         android:icon="@drawable/ic_top_rated"
