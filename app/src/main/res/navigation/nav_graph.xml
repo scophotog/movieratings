@@ -2,17 +2,19 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/movieListFragment">
+    app:startDestination="@id/view_pager_fragment">
 
     <fragment
-        android:id="@+id/movieListFragment"
-        android:name="org.sco.movieratings.movielist.MovieListFragment"
-        android:label="MovieListFragment"
-        tools:layout="@layout/fragment_movie_list">
+        android:id="@+id/view_pager_fragment"
+        android:name="org.sco.movieratings.MovieViewPagerFragment"
+        tools:layout="@layout/fragment_view_pager">
         <action
-            android:id="@+id/action_movieListFragment_to_movieFragment"
+            android:id="@+id/action_view_pager_fragment_to_movie_detail_fragment"
             app:destination="@id/movieFragment" />
+        <argument
+            android:name="tab"
+            app:argType="string"
+            app:nullable="true"/>
     </fragment>
 
     <fragment
@@ -24,5 +26,15 @@
             android:name="movie"
             app:argType="org.sco.movieratings.db.MovieSchema"
             app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/movie_list_fragment"
+        android:name="org.sco.movieratings.movielist.MovieListFragment"
+        android:label="Movie List"
+        tools:layout="@layout/fragment_movie_list">
+        <argument
+            android:name="movieListType"
+            app:argType="string"/>
     </fragment>
 </navigation>

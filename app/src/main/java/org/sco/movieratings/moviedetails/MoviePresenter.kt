@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import coil.load
 import com.google.android.material.snackbar.Snackbar
@@ -25,7 +26,8 @@ class MoviePresenter(
     fun present(movie: MovieSchema, navController: NavController) {
         this.navController = navController
         with(binding) {
-            binding.movie = movie
+            toolbar.title = movie.title
+            releaseDate.text = movie.releaseDate
             movie.posterPath.apply {
                 if (isNullOrEmpty()) {
                     poster.load(R.drawable.image_not_found)
@@ -34,6 +36,11 @@ class MoviePresenter(
                         placeholder(R.drawable.loading)
                         error(R.drawable.image_not_found)
                     }
+                }
+            }
+            movie.backdropPath.apply {
+                if (!isNullOrEmpty()) {
+                    backdrop.load(movie.backdropPath)
                 }
             }
             setMarkAsFavoriteAction()
@@ -90,7 +97,7 @@ class MoviePresenter(
 
     private fun snackBarAction() {
         Utility.updatePreference(binding.root.context, binding.root.context.getString(R.string.pref_sort_my_favorites))
-        navController.navigate(R.id.movieListFragment)
+        navController.navigate(R.id.view_pager_fragment, bundleOf("tab" to "favorite"))
     }
 
     private fun startYouTube(preview: Preview) {

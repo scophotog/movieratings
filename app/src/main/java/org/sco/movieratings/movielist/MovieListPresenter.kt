@@ -1,8 +1,6 @@
 package org.sco.movieratings.movielist
 
 import android.view.View
-import androidx.navigation.NavController
-import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.sco.movieratings.databinding.FragmentMovieListBinding

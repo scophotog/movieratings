@@ -9,7 +9,7 @@ import org.sco.movieratings.api.response.Preview
 import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.db.MovieDao
 import org.sco.movieratings.db.MovieSchema
-import org.sco.movieratings.movielist.MovieListViewModel
+import org.sco.movieratings.movielist.MovieListType
 import org.sco.movieratings.usecase.GetMoviePreviews
 import org.sco.movieratings.usecase.GetMovieReviews
 import org.sco.movieratings.usecase.GetPopularMoviesUseCase
@@ -26,11 +26,11 @@ class MovieRepository @Inject constructor(
     private val movieDao: MovieDao,
 ) {
 
-    fun getMovieList(listType: MovieListViewModel.MovieListType): Flow<List<MovieSchema>> {
+    fun getMovieList(listType: MovieListType): Flow<List<MovieSchema>> {
         return when (listType) {
-            MovieListViewModel.MovieListType.POPULAR -> getPopularMovies()
-            MovieListViewModel.MovieListType.TOP -> getTopRatedMovies()
-            MovieListViewModel.MovieListType.FAVORITE -> getFavoriteMovies()
+            MovieListType.POPULAR -> getPopularMovies()
+            MovieListType.TOP -> getTopRatedMovies()
+            MovieListType.FAVORITE -> getFavoriteMovies()
         }
     }
 

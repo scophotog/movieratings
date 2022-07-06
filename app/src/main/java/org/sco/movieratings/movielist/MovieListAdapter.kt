@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import org.sco.movieratings.MovieViewPagerFragmentDirections
 import org.sco.movieratings.R
 import org.sco.movieratings.databinding.MovieCardBinding
 import org.sco.movieratings.db.MovieSchema
@@ -47,9 +48,7 @@ class MovieListAdapter :
                     movie?.let { movie ->
                         Navigation.findNavController(view).run {
                             navigate(
-                                MovieListFragmentDirections.actionMovieListFragmentToMovieFragment(
-                                    movie
-                                )
+                                MovieViewPagerFragmentDirections.actionViewPagerFragmentToMovieDetailFragment(movie)
                             )
                         }
                     }

@@ -19,5 +19,6 @@ class Movie(
     @field:Json(name = "release_date") var releaseDate: String? = null,
     @field:Json(name = "popularity") var popularity: Double? = null,
     @field:Json(name = "vote_average") var voteAverage: Double? = null,
-    @field:Json(name = "vote_count") var voteCount: Int? = null
+    @field:Json(name = "vote_count") var voteCount: Int? = null,
+    @field:Json(name = "backdrop_path") var backdropPath: String? = null
 )

@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
-
 @Entity
 @Parcelize
 data class MovieSchema(
@@ -15,5 +14,6 @@ data class MovieSchema(
     var overview: String,
     var releaseDate: String,
     var popularity: Double,
-    var voteAverage: Float
+    var voteAverage: Float,
+    var backdropPath: String? = null
 ) : Parcelable

@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import org.sco.movieratings.databinding.FragmentMovieBinding
 import org.sco.movieratings.db.MovieSchema
 import javax.inject.Inject
