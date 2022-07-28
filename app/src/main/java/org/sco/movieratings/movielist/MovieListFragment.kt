@@ -4,19 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.MaterialTheme
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import org.sco.movieratings.databinding.FragmentMovieListBinding
-import org.sco.movieratings.db.MovieSchema
-import org.sco.movieratings.utility.Result
+import org.sco.movieratings.movielist.compose.MovieList
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
-
-    private lateinit var movieListPresenter: MovieListPresenter
 
     private val viewModel: MovieListViewModel by viewModels()
 
@@ -31,32 +28,15 @@ class MovieListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMovieListBinding.inflate(inflater)
-        movieListPresenter = MovieListPresenter(binding, movieListAdapter)
-        subscribeUi()
-        return binding.root
-    }
-
-    private fun subscribeUi() {
         setMovieListType()
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.viewState.collect {
-                when (it) {
-                    Result.Empty,
-                    is Result.Error -> movieListPresenter.setErrorView()
-                    Result.InProgress -> movieListPresenter.setNowLoadingView()
-                    is Result.Success -> presentMovies(it.extractData ?: emptyList())
+        binding.apply {
+            composeView.setContent {
+                MaterialTheme {
+                    MovieList()
                 }
-
             }
         }
-    }
-
-    private fun presentMovies(moviesResult: List<MovieSchema>) {
-        if (moviesResult.isEmpty()) {
-            movieListPresenter.setErrorView()
-        } else {
-            movieListPresenter.present(moviesResult)
-        }
+        return binding.root
     }
 
     private fun setMovieListType() {

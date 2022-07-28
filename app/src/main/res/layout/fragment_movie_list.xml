@@ -1,48 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ProgressBar
-                android:id="@+id/loading"
-                style="?android:progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                tools:visibility="gone" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/movieList"
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/compose_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:reverseLayout="false"
-                app:spanCount="2"
-                tools:context="org.sco.movieratings.MainActivity"
-                tools:layout_editor_absoluteX="0dp"
-                tools:listitem="@layout/movie_card"
-                tools:visibility="visible" />
+                android:layout_height="match_parent"/>
 
-            <TextView
-                android:id="@+id/emptyView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/no_movies"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:visibility="gone"
-                tools:visibility="gone" />
         </FrameLayout>
 
 </layout>
