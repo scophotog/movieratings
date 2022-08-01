@@ -8,8 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.sco.movieratings.databinding.FragmentMovieBinding
 import org.sco.movieratings.db.MovieSchema
@@ -19,8 +17,6 @@ import javax.inject.Inject
 class MovieFragment : Fragment() {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
-
-    private val args: MovieFragmentArgs by navArgs()
 
     private var _binding: FragmentMovieBinding? = null
     private val binding get() = _binding!!
@@ -54,12 +50,12 @@ class MovieFragment : Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
-        presentMovie(args.movie)
+//        presentMovie(args.movie)
     }
 
     private fun presentMovie(movie: MovieSchema) {
         moviePresenter.binding = binding
-        moviePresenter.present(movie, findNavController())
+//        moviePresenter.present(movie, findNavController())
 
         binding.favoriteFab.setOnClickListener { v ->
             if (v.isSelected) {

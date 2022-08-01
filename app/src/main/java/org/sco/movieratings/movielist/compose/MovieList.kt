@@ -1,9 +1,7 @@
 package org.sco.movieratings.movielist.compose
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -14,29 +12,43 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import org.sco.movieratings.R
 import org.sco.movieratings.db.MovieSchema
+import org.sco.movieratings.movielist.MovieListType
 import org.sco.movieratings.movielist.MovieListViewModel
 import org.sco.movieratings.utility.Result
 
 
+// Because view model is annotated with @HiltViewModel you must use hiltViewModel and not viewModel()
 @Composable
 fun MovieList(
-    viewModel: MovieListViewModel = viewModel(),
+    listType: MovieListType,
+    viewModel: MovieListViewModel = hiltViewModel(),
     selectMovie: (Int) -> Unit = { }
 ) {
+    viewModel.setMovieListType(listType)
     Column {
         when (val state = viewModel.viewState.collectAsState().value) {
-            is Result.Empty -> Text(text = "No movies")
-            is Result.Error -> Text(text = "Oh noes")
-            is Result.InProgress -> CircularProgressIndicator()
+            is Result.Empty -> MovieListError(errorMessage = "Oh No no movies")
+            is Result.Error -> MovieListError(errorMessage = "Oh No no movies")
+            is Result.InProgress -> Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center)
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    color = MaterialTheme.colors.onBackground
+                )
+            }
             is Result.Success -> MovieListLoaded(data = state.data, selectMovie = selectMovie)
         }
     }
@@ -121,4 +133,30 @@ fun PreviewNetworkImage() {
     MaterialTheme {
         NetworkImage(MovieSchema.mock().posterPath)
     }
+}
+
+@Composable
+fun MovieListError(
+    errorMessage: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center)
+    ) {
+        Text(
+            text = errorMessage,
+            style = MaterialTheme.typography.h2,
+            color = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.align((Alignment.CenterHorizontally)),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewMovieListError() {
+    MovieListError(errorMessage = "Uh oh no movies")
 }

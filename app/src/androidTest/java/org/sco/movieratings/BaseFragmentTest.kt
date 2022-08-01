@@ -11,7 +11,6 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.sco.movieratings.movielist.MovieListFragment
 import javax.inject.Inject
 
 abstract class BaseFragmentTest {

@@ -28,17 +28,25 @@ class MovieListViewModel @Inject constructor(
     private val _viewState: MutableStateFlow<Result<List<MovieSchema>>> = MutableStateFlow(Result.Empty)
     val viewState : StateFlow<Result<List<MovieSchema>>> = _viewState
 
-    fun setMovieListType(listType: MovieListType) {
-        _movieListSavedType.update { listType }
-        savedStateHandle.set(MOVIE_LIST_SAVED_STATE_KEY, listType)
+    init {
+        fetchMovieList()
+    }
+
+    private fun fetchMovieList() {
+        _viewState.value = Result.InProgress
         viewModelScope.launch {
-            _viewState.value = Result.InProgress
-            movieRepository.getMovieList(listType).catch { e ->
+            movieRepository.getMovieList(_movieListSavedType.value).catch { e ->
                 _viewState.value = Result.Error(e)
             }.collect {
                 _viewState.value = Result.Success(it)
             }
         }
+    }
+
+    fun setMovieListType(listType: MovieListType) {
+        _movieListSavedType.update { listType }
+        savedStateHandle.set(MOVIE_LIST_SAVED_STATE_KEY, listType)
+        fetchMovieList()
     }
 
     companion object {

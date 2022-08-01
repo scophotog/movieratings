@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
 
@@ -20,7 +19,6 @@ android {
 
     buildFeatures {
         viewBinding true
-        dataBinding true
         compose true
     }
 
@@ -95,8 +93,6 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.4.1'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.preference:preference-ktx:1.2.0"
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation "androidx.room:room-runtime:2.4.3"
@@ -111,14 +107,20 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation 'androidx.navigation:navigation-compose:2.5.0'
     implementation "androidx.activity:activity-compose:1.4.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
 
+    // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+
+
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     implementation 'com.squareup.moshi:moshi:1.13.0'
@@ -149,7 +151,6 @@ dependencies {
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:4.9.1"
     androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0"
-    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 
     androidTestImplementation(project(":espresso"))
 }

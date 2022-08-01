@@ -97,7 +97,7 @@ class MoviePresenter(
 
     private fun snackBarAction() {
         Utility.updatePreference(binding.root.context, binding.root.context.getString(R.string.pref_sort_my_favorites))
-        navController.navigate(R.id.view_pager_fragment, bundleOf("tab" to "favorite"))
+//        navController.navigate(R.id.view_pager_fragment, bundleOf("tab" to "favorite"))
     }
 
     private fun startYouTube(preview: Preview) {
