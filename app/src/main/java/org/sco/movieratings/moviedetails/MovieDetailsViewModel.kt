@@ -2,6 +2,7 @@ package org.sco.movieratings.moviedetails
 
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -33,6 +34,9 @@ class MovieDetailsViewModel @Inject constructor(
             _isFavorite.value = it
         }
     }
+
+    fun getMovie(movieId: Int): Flow<MovieSchema?> =
+        movieRepository.getMovie(movieId)
 
     fun addToFavorite(movieSchema: MovieSchema) {
         viewModelScope.launch {

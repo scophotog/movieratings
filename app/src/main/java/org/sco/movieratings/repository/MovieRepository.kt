@@ -1,10 +1,7 @@
 package org.sco.movieratings.repository
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import org.sco.movieratings.api.response.Preview
 import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.db.MovieDao
@@ -34,10 +31,17 @@ class MovieRepository @Inject constructor(
         }
     }
 
+    fun getMovie(movieId: Int): Flow<MovieSchema?> =
+        flow {
+            emit(allMovies.find { movieId == it.id })
+        }.flowOn(Dispatchers.IO)
+
     private val popularMoviesCache: MutableList<MovieSchema> = mutableListOf()
     private val topMoviesCache: MutableList<MovieSchema> = mutableListOf()
     private val movieReviewsMap: MutableMap<Int, List<Review>> = mutableMapOf()
     private val moviePreviewsMap: MutableMap<Int, List<Preview>> = mutableMapOf()
+    private val allMovies: List<MovieSchema>
+        get() = (popularMoviesCache + topMoviesCache)
 
     private fun getPopularMovies(refresh: Boolean = false): Flow<List<MovieSchema>> =
         flow {
