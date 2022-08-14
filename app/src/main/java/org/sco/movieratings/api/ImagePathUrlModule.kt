@@ -19,6 +19,6 @@ object ImagePathUrlModule {
     @Provides
     @Singleton
     @Named("backdrop_path")
-    fun backdropPath() = "https://image.tmdb.org/t/p/w500"
+    fun backdropPath() = "https://image.tmdb.org/t/p/w780"
 
 }

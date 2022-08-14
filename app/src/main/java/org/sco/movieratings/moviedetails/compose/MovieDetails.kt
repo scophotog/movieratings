@@ -1,8 +1,7 @@
 package org.sco.movieratings.moviedetails.compose
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -13,12 +12,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import org.sco.movieratings.R
 import org.sco.movieratings.db.MovieSchema
 import org.sco.movieratings.moviedetails.MovieDetailsViewModel
@@ -38,91 +44,165 @@ fun MovieDetailsLoader(
         movieDetailsViewModel.getMovie(movieId)
     }.collectAsState(initial = null)
 
-    MoviePosterDetails(movieSchema = movieDetail, onNavigateUp)
-}
-
-
-@Preview
-@Composable
-fun PreviewMovieDetails() {
-    MovieDetailsLoader(movieId = 1, onNavigateUp = {})
+    movieDetail?.let {
+        MoviePosterDetails(
+            movieSchema = it,
+            onNavigateUp,
+            onFavoriteIconClick = { movieDetailsViewModel.addToFavorite(it) })
+    }
 }
 
 @Composable
-fun MoviePosterDetails(movieSchema: MovieSchema?, onNavigateUp: () -> Unit) {
+fun MoviePosterDetails(
+    movieSchema: MovieSchema,
+    onNavigateUp: () -> Unit,
+    onFavoriteIconClick: () -> Unit
+) {
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = movieSchema?.title ?: "Movie Details", fontSize = 18.sp) },
-                backgroundColor = MaterialTheme.colors.primary,
-                contentColor = MaterialTheme.colors.onPrimary,
-                navigationIcon = {
-                    IconButton(onClick = onNavigateUp) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
+        floatingActionButton = { FavoriteIcon(onFavoriteIconClick) }
+    ) {
+        Box {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Row(modifier = Modifier.wrapContentHeight()) {
+                    BannerImage(movieSchema = movieSchema, contentDescription = "")
                 }
-            )
-        },
-        floatingActionButton = { FavoriteIcon() }
-    ) { innerPadding ->
-        Column(modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(innerPadding)) {
-            movieSchema?.let {
-                BannerImage(url = it.backdropPath!!, contentDescription = "")
-                Row {
-                    Column {
-                        AsyncImage(model = it.posterPath, contentDescription = null)
+                Row(modifier = Modifier.offset(y = (-100).dp)) {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        MovieDetailsPoster(movieSchema = movieSchema)
                     }
-                    Column {
-                        Text(text = it.title, style = MaterialTheme.typography.h4)
-                        Text(it.releaseDate)
-                        Text(text = it.overview, style = MaterialTheme.typography.body1)
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        MovieDetailsTextLayout(movieSchema = movieSchema)
                     }
                 }
             }
-
+            MovieDetailsTopBar(onNavigateUp = onNavigateUp) // By putting this here you can over lay the top bar
         }
     }
 }
 
 @Composable
-fun FavoriteIcon() {
-    FloatingActionButton(onClick = { }) {
+fun MovieDetailsPoster(movieSchema: MovieSchema) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(movieSchema.posterPath)
+            .build(),
+        placeholder = painterResource(id = R.drawable.movie_poster),
+        contentDescription = null
+    )
+}
+
+@Composable
+fun MovieDetailsTopBar(
+    onNavigateUp: () -> Unit
+) {
+    TopAppBar(
+        title = { Text(text = "Movie Details", fontSize = 18.sp) },
+        backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.5f),
+        contentColor = MaterialTheme.colors.onPrimary,
+        elevation = 0.dp,
+        navigationIcon = {
+            IconButton(onClick = onNavigateUp) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            }
+        }
+    )
+}
+
+@Composable
+fun MovieDetailsTextLayout(movieSchema: MovieSchema) {
+    Column {
+        Text(text = movieSchema.title, style = MaterialTheme.typography.h4)
+        Text(text = "Release Date ${movieSchema.releaseDate}")
+        Spacer(
+            modifier = Modifier
+                .height(10.dp)
+                .fillMaxWidth()
+        )
+        Text(text = "Overview".uppercase(), style = MaterialTheme.typography.h6)
+        Text(text = movieSchema.overview, style = MaterialTheme.typography.body1)
+    }
+}
+
+@Preview
+@Composable
+fun MovieDetailsTextLayout() {
+    MovieDetailsTextLayout(movieSchema = TestData)
+}
+
+// TODO: Get favorite icon to work
+@Composable
+fun FavoriteIcon(onClick: () -> Unit) {
+    FloatingActionButton(onClick = { onClick }) {
         Icon(painter = painterResource(R.drawable.ic_my_favorite), contentDescription = null)
     }
 }
 
 @Preview
 @Composable
-fun PreviewMoviePosterDetails() {
+fun PreviewMoviePosterDetails(@PreviewParameter(LoremIpsum::class) overview: String) {
     MoviePosterDetails(
-        MovieSchema(
+        movieSchema = MovieSchema(
             id = 1,
-            title = "Title",
+            title = "Movie Title",
             posterPath = "url",
             backdropPath = "url",
             popularity = 5.0,
             voteAverage = 5.0f,
             releaseDate = "01/01/2022",
-            overview = "Stuff"
-        )
-    ) {}
+            overview = overview
+        ),
+        onNavigateUp = {},
+        onFavoriteIconClick = {}
+    )
 }
 
 @Composable
-fun BannerImage(url: String, contentDescription: String, modifier: Modifier = Modifier) {
-    AsyncImage(
-        model = url,
-        contentDescription = contentDescription,
-        contentScale = ContentScale.FillWidth,
-        placeholder = painterResource(id = R.drawable.backdrop_sample),
-        modifier = modifier
-    )
+fun BannerImage(
+    movieSchema: MovieSchema,
+    contentDescription: String,
+    modifier: Modifier = Modifier
+) {
+    Box(Modifier.wrapContentHeight()) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(movieSchema.backdropPath)
+                .build(),
+            contentDescription = contentDescription,
+            contentScale = ContentScale.Crop,
+            modifier = modifier.fillMaxSize()
+        )
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.White
+                        ),
+                        startY = 50f
+                    )
+                )
+        )
+    }
 }
 
 @Preview
 @Composable
 fun PreviewBannerImage() {
-    BannerImage(url = "", contentDescription = "")
+    BannerImage(movieSchema = TestData, contentDescription = "")
 }
+
+private val TestData = MovieSchema(
+    id = 1,
+    title = "Fancy Movie",
+    posterPath = "url",
+    backdropPath = "url",
+    popularity = 5.0,
+    voteAverage = 5.0f,
+    releaseDate = "01/01/2022",
+    overview = "Bunch of overview text"
+)
