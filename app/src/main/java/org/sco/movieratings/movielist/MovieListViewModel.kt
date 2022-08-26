@@ -3,7 +3,8 @@ package org.sco.movieratings.movielist
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.sco.movieratings.repository.MovieRepository
 import org.sco.movieratings.utility.MovieListViewState
 import javax.inject.Inject

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
@@ -27,9 +27,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    Scaffold(
-        backgroundColor = MaterialTheme.colors.primaryVariant
-    ) { padding ->
+    Scaffold { padding ->
         NavGraph(navController = navController, modifier = Modifier.padding(padding))
     }
 }

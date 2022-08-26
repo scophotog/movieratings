@@ -7,7 +7,6 @@ import android.net.Uri
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -16,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,15 +30,15 @@ fun MoviePreviewList(moviePreviewList: List<MoviePreview>, modifier: Modifier = 
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier.wrapContentHeight()
     ) {
+        val lineColor = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
         Text(
             text = "Previews",
             style = MaterialTheme.typography.h5,
             modifier = Modifier.fillMaxWidth().drawBehind {
                 val strokeWidth = 4
                 val y = size.height - strokeWidth / 2
-
                 drawLine(
-                    color = Color.Black.copy(alpha = 0.5f),
+                    color = lineColor,
                     Offset(0f, y),
                     Offset(size.width, y),
                     strokeWidth.toFloat()
@@ -94,7 +92,7 @@ fun MoviePreview(previewTitle: String, onRowClick: () -> Unit, modifier: Modifie
             .border(
                 border = BorderStroke(
                     width = 1.dp,
-                    color = Color.Black.copy(alpha = 0.5f)
+                    color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
                 )
             )
             .padding(top = 4.dp, bottom = 4.dp, start = 4.dp)

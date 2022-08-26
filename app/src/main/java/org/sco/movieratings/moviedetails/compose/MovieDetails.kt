@@ -198,7 +198,7 @@ fun BannerImage(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            Color.White
+                            MaterialTheme.colors.background
                         ),
                         startY = 50f
                     )
@@ -225,7 +225,7 @@ fun PreviewBannerImageLocal() {
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            Color.White
+                            MaterialTheme.colors.background
                         ),
                         startY = 50f
                     )
