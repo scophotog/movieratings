@@ -18,56 +18,17 @@ class MovieRatingsTest {
 
     @Test
     fun viewTopRated() {
-        movieList {
-            tapTopRated()
-            checkTitleMatches("Top Rated")
-        }
     }
 
     @Test
     fun viewMostPopular() {
-        movieList {
-            tapMostPopular()
-            checkTitleMatches("Most Popular")
-        }
     }
 
     @Test
     fun viewFavorites() {
-        movieList {
-            tapFavorites()
-            checkTitleMatches("Favorites")
-        }
     }
 
     @Test
     fun addAndRemoveFavorite() {
-        movieList {
-            tapTopRated()
-            tapMovieInPosition(0)
-        }
-
-        movieDetails {
-            markAsFavorite()
-            pressBack()
-        }
-
-        movieList {
-            tapFavorites()
-            checkTitleMatches("Favorites")
-            checkMovieIsDisplayed()
-            tapMovieInPosition(0)
-        }
-
-        movieDetails {
-            unMarkAsFavorite()
-            pressBack()
-        }
-
-        movieList {
-            tapFavorites()
-            checkTitleMatches("Favorites")
-            checkEmptyListDisplayed()
-        }
     }
 }

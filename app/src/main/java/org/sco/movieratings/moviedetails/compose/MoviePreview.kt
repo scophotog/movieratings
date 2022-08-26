@@ -1,8 +1,13 @@
 package org.sco.movieratings.moviedetails.compose
 
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +17,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -41,14 +47,23 @@ fun MoviePreviewList(moviePreviewList: List<MoviePreview>, modifier: Modifier = 
                 )
             })
         for (preview in moviePreviewList) {
-            preview.name?.let {
-                MoviePreview(
-                    previewTitle = it,
-                    onRowClick = {},
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            val context = LocalContext.current
+            MoviePreview(
+                previewTitle = preview.name ?: continue,
+                onRowClick = preview.key?.let { { startYouTube(it, context) } } ?: continue,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
+    }
+}
+
+private fun startYouTube(moviePreviewKey: String, context: Context) {
+    val youTubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$moviePreviewKey"))
+    val youTubeWebIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=$moviePreviewKey"))
+    try {
+        context.startActivity(youTubeIntent)
+    } catch (e: ActivityNotFoundException) {
+        context.startActivity(youTubeWebIntent)
     }
 }
 
@@ -58,7 +73,7 @@ private fun MoviePreviewListPreview() {
     val movieList = mutableListOf<MoviePreview>()
 
     for (i in 1..5) {
-        movieList.add(MoviePreview(name = "Preview $i"))
+        movieList.add(MoviePreview(key = "$i", name = "Preview $i"))
     }
 
     MoviePreviewList(moviePreviewList = movieList)
