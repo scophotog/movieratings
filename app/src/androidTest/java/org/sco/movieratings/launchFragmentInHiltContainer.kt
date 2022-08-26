@@ -12,7 +12,7 @@ import androidx.test.espresso.core.internal.deps.dagger.internal.Preconditions
 
 inline fun <reified T : Fragment> launchFragmentInHiltContainer(
     fragmentArgs: Bundle? = null,
-    @StyleRes themeResId: Int = R.style.AppTheme,
+    @StyleRes themeResId: Int = R.style.Theme_AppCompat,
     fragmentFactory: FragmentFactory? = null,
     crossinline action: Fragment.() -> Unit = {}
 ) {

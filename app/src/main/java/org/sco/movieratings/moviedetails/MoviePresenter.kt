@@ -4,12 +4,11 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import coil.load
 import com.google.android.material.snackbar.Snackbar
 import org.sco.movieratings.R
-import org.sco.movieratings.api.response.Preview
+import org.sco.movieratings.api.response.MoviePreview
 import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.databinding.FragmentMovieBinding
 import org.sco.movieratings.db.MovieSchema
@@ -47,12 +46,12 @@ class MoviePresenter(
         }
     }
 
-    fun setPreviews(previews: List<Preview>) {
+    fun setPreviews(moviePreviews: List<MoviePreview>) {
         with(binding) {
-            if(previews.isNotEmpty()) {
+            if(moviePreviews.isNotEmpty()) {
                 previewsContainer.root.visibility = View.VISIBLE
                 previewsContainer.previewRecycler.setHasFixedSize(false)
-                previewsAdapter.previews = previews
+                previewsAdapter.moviePreviews = moviePreviews
                 previewsContainer.previewRecycler.swapAdapter(previewsAdapter, true)
                 previewsAdapter.previewClickListener = { preview ->
                     startYouTube(preview)
@@ -100,9 +99,9 @@ class MoviePresenter(
 //        navController.navigate(R.id.view_pager_fragment, bundleOf("tab" to "favorite"))
     }
 
-    private fun startYouTube(preview: Preview) {
-        val youTubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:${preview.key}"))
-        val youTubeWebIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=${preview.key}"))
+    private fun startYouTube(moviePreview: MoviePreview) {
+        val youTubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:${moviePreview.key}"))
+        val youTubeWebIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=${moviePreview.key}"))
         try {
             binding.root.context.startActivity(youTubeIntent)
         } catch (e: ActivityNotFoundException) {

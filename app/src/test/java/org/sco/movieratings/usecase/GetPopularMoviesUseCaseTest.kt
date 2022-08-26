@@ -30,7 +30,7 @@ private val movieResponse = MoviesResponse(
 )
 
 class GetPopularMoviesUseCaseTest {
-    private val mapper = MovieMapper("http://img")
+    private val mapper = MovieMapper("http://img", "")
 
     @Test
     fun `service returns successful response`() = runBlockingTest {

@@ -1,8 +1,6 @@
 package org.sco.movieratings
 
 import androidx.navigation.Navigation
-import androidx.navigation.testing.TestNavHostController
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.IdlingRegistry
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -18,7 +16,7 @@ abstract class BaseFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
+//    val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
 
     private lateinit var mockWebServer: MockWebServer
 
@@ -40,14 +38,14 @@ abstract class BaseFragmentTest {
     }
 
     internal fun launchMovieListFragment() {
-        launchFragmentInHiltContainer<MovieListFragment> {
-            navController.setGraph(R.navigation.nav_graph)
-            navController.setCurrentDestination(R.id.movieListFragment)
-            this.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
-                if (viewLifecycleOwner != null) {
-                    Navigation.setViewNavController(this.requireView(), navController)
-                }
-            }
-        }
+//        launchFragmentInHiltContainer<MovieListFragment> {
+//            navController.setGraph(R.navigation.nav_graph)
+//            navController.setCurrentDestination(R.id.movieListFragment)
+//            this.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
+//                if (viewLifecycleOwner != null) {
+//                    Navigation.setViewNavController(this.requireView(), navController)
+//                }
+//            }
+//        }
     }
 }

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.sco.movieratings.api.response.Preview
+import org.sco.movieratings.api.response.MoviePreview
 import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.db.MovieSchema
 import org.sco.movieratings.repository.MovieRepository
@@ -17,13 +17,11 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
-    fun getReviews(movieId: Int): LiveData<List<Review>> = liveData {
-        emitSource(movieRepository.getMovieReviews(movieId).asLiveData())
-    }
+    fun getReviews(movieId: Int): Flow<List<Review>> =
+        movieRepository.getMovieReviews(movieId)
 
-    fun getPreviews(movieId: Int): LiveData<List<Preview>> = liveData {
-        emitSource(movieRepository.getMoviePreviews(movieId).asLiveData())
-    }
+    fun getPreviews(movieId: Int): Flow<List<MoviePreview>> =
+        movieRepository.getMoviePreviews(movieId)
 
     private val _isFavorite: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isFavorite : StateFlow<Boolean> = _isFavorite

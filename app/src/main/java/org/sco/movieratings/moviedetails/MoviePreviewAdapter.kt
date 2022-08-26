@@ -7,13 +7,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.sco.movieratings.R
-import org.sco.movieratings.api.response.Preview
+import org.sco.movieratings.api.response.MoviePreview
 
 class MoviePreviewAdapter :
     RecyclerView.Adapter<MoviePreviewAdapter.MoviePreviewViewHolder>() {
 
-    var previews: List<Preview> = emptyList()
-    var previewClickListener: (Preview) -> Unit = {}
+    var moviePreviews: List<MoviePreview> = emptyList()
+    var previewClickListener: (MoviePreview) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviePreviewViewHolder {
         return MoviePreviewViewHolder(LayoutInflater.from(parent.context)
@@ -21,16 +21,16 @@ class MoviePreviewAdapter :
     }
 
     override fun getItemCount(): Int {
-        return previews.size
+        return moviePreviews.size
     }
 
     override fun onBindViewHolder(holder: MoviePreviewViewHolder, position: Int) {
-        if (previews.isNotEmpty()) {
-            val preview: Preview = previews[position]
+        if (moviePreviews.isNotEmpty()) {
+            val moviePreview: MoviePreview = moviePreviews[position]
             holder.trailer.text =
-                holder.itemView.resources.getString(R.string.preview_title, preview.site, preview.name)
+                holder.itemView.resources.getString(R.string.preview_title, moviePreview.site, moviePreview.name)
             holder.playButton.setOnClickListener {
-                previewClickListener(preview)
+                previewClickListener(moviePreview)
             }
         }
     }

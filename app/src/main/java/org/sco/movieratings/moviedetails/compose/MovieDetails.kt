@@ -11,10 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,10 +22,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.sco.movieratings.R
+import org.sco.movieratings.api.response.MoviePreview
+import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.db.MovieSchema
 import org.sco.movieratings.moviedetails.MovieDetailsViewModel
 
@@ -44,10 +47,20 @@ fun MovieDetailsLoader(
         movieDetailsViewModel.getMovie(movieId)
     }.collectAsState(initial = null)
 
+    val movieReviews by remember(movieDetailsViewModel, movieId) {
+        movieDetailsViewModel.getReviews(movieId)
+    }.collectAsState(initial = null)
+
+    val moviePreviews by remember(movieDetailsViewModel, movieId) {
+        movieDetailsViewModel.getPreviews(movieId)
+    }.collectAsState(initial = null)
+
     movieDetail?.let {
         MoviePosterDetails(
             movieSchema = it,
-            onNavigateUp,
+            onNavigateUp = onNavigateUp,
+            reviewList = movieReviews ?: listOf(),
+            previewList = moviePreviews ?: listOf(),
             onFavoriteIconClick = { movieDetailsViewModel.addToFavorite(it) })
     }
 }
@@ -55,30 +68,31 @@ fun MovieDetailsLoader(
 @Composable
 fun MoviePosterDetails(
     movieSchema: MovieSchema,
+    reviewList: List<Review>,
+    previewList: List<MoviePreview>,
     onNavigateUp: () -> Unit,
     onFavoriteIconClick: () -> Unit
 ) {
     Scaffold(
         floatingActionButton = { FavoriteIcon(onFavoriteIconClick) }
     ) {
-        Box {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Row(modifier = Modifier.wrapContentHeight()) {
-                    BannerImage(movieSchema = movieSchema, contentDescription = "")
+        MovieDetailsTopBar(onNavigateUp = onNavigateUp) // By putting this here you can over lay the top bar
+        BannerImage(movieSchema = movieSchema, contentDescription = "")
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+        ) {
+            Spacer(Modifier.height(125.dp))
+            Row {
+                Column(modifier = Modifier.padding(8.dp)) {
+                    MovieDetailsPoster(movieSchema = movieSchema)
                 }
-                Row(modifier = Modifier.offset(y = (-100).dp)) {
-                    Column(modifier = Modifier.padding(8.dp)) {
-                        MovieDetailsPoster(movieSchema = movieSchema)
-                    }
-                    Column(modifier = Modifier.padding(8.dp)) {
-                        MovieDetailsTextLayout(movieSchema = movieSchema)
-                    }
+                Column(modifier = Modifier.padding(8.dp)) {
+                    MovieDetailsTextLayout(movieSchema = movieSchema)
                 }
             }
-            MovieDetailsTopBar(onNavigateUp = onNavigateUp) // By putting this here you can over lay the top bar
+            MovieReviewList(reviewList, Modifier.padding(horizontal = 8.dp))
+            MoviePreviewList(moviePreviewList = previewList, Modifier.padding(horizontal = 8.dp))
         }
     }
 }
@@ -107,7 +121,8 @@ fun MovieDetailsTopBar(
             IconButton(onClick = onNavigateUp) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "Back")
             }
-        }
+        },
+        modifier = Modifier.zIndex(1f)
     )
 }
 
@@ -135,7 +150,7 @@ fun MovieDetailsTextLayout() {
 // TODO: Get favorite icon to work
 @Composable
 fun FavoriteIcon(onClick: () -> Unit) {
-    FloatingActionButton(onClick = { onClick }) {
+    FloatingActionButton(onClick = { onClick() }) {
         Icon(painter = painterResource(R.drawable.ic_my_favorite), contentDescription = null)
     }
 }
@@ -155,24 +170,53 @@ fun PreviewMoviePosterDetails(@PreviewParameter(LoremIpsum::class) overview: Str
             overview = overview
         ),
         onNavigateUp = {},
-        onFavoriteIconClick = {}
+        onFavoriteIconClick = {},
+        reviewList = listOf(),
+        previewList = listOf()
     )
 }
 
 @Composable
 fun BannerImage(
     movieSchema: MovieSchema,
-    contentDescription: String,
-    modifier: Modifier = Modifier
+    contentDescription: String
 ) {
     Box(Modifier.wrapContentHeight()) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(movieSchema.backdropPath)
+                .crossfade(true)
                 .build(),
             contentDescription = contentDescription,
-            contentScale = ContentScale.Crop,
-            modifier = modifier.fillMaxSize()
+            alignment = Alignment.TopStart,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.White
+                        ),
+                        startY = 50f
+                    )
+                )
+        )
+    }
+}
+
+@Preview(widthDp = 780)
+@Composable
+fun PreviewBannerImageLocal() {
+    Box(Modifier.wrapContentHeight()) {
+        AsyncImage(
+            model = "",
+            placeholder = painterResource(R.drawable.backdrop_780w),
+            contentDescription = null,
+            alignment = Alignment.TopStart,
+            modifier = Modifier.fillMaxWidth()
         )
         Box(
             modifier = Modifier

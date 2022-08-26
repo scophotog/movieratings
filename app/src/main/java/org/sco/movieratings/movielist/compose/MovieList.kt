@@ -52,8 +52,7 @@ private fun MovieListLoader(
         viewModel.fetchMovieList(
             movieListTypeSaveable
         )
-    }
-        .collectAsState(initial = MovieListViewState.Loading)
+    }.collectAsState(initial = MovieListViewState.Loading)
 
     MovieListScaffold(
         viewState = viewState,
@@ -75,8 +74,8 @@ internal fun MovieListScaffold(
         modifier = modifier.fillMaxSize(),
         bottomBar = { BottomNavigationBar(navController) },
         backgroundColor = MaterialTheme.colors.background
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+    ) { innerPadding ->
+        Column(modifier = Modifier.fillMaxWidth().padding(innerPadding)) {
             Crossfade(viewState) { state ->
                 when (state) {
                     MovieListViewState.Empty -> MovieListError(errorMessage = "Oh No no movies")

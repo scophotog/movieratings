@@ -78,17 +78,17 @@ class MovieFragment : Fragment() {
             }
         }
 
-        viewModel.getPreviews(movie.id).observe(viewLifecycleOwner) { previews ->
-            previews?.let {
-                moviePresenter.setPreviews(it)
-            }
-        }
-
-        viewModel.getReviews(movie.id).observe(viewLifecycleOwner) { reviews ->
-            reviews?.let {
-                moviePresenter.setReviews(it)
-            }
-        }
+//        viewModel.getPreviews(movie.id).observe(viewLifecycleOwner) { previews ->
+//            previews?.let {
+//                moviePresenter.setPreviews(it)
+//            }
+//        }
+//
+//        viewModel.getReviews(movie.id).observe(viewLifecycleOwner) { reviews ->
+//            reviews?.let {
+//                moviePresenter.setReviews(it)
+//            }
+//        }
     }
 
     companion object {

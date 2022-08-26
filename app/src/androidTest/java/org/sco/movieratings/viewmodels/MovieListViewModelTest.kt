@@ -21,9 +21,9 @@ class MovieListViewModelTest {
     fun setup() {
         hiltAndroidRule.inject()
         val savedStateHandle: SavedStateHandle = SavedStateHandle().apply {
-            set("MOVIE_LIST_SAVED_STATE_KEY", MovieListViewModel.MovieListType.POPULAR)
+//            set("MOVIE_LIST_SAVED_STATE_KEY", MovieListViewModel.MovieListType.POPULAR)
         }
-        viewModel = MovieListViewModel(movieRepository, savedStateHandle)
+//        viewModel = MovieListViewModel(movieRepository, savedStateHandle)
     }
 
 }
