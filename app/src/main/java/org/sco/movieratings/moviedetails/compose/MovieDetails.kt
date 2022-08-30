@@ -7,10 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -55,13 +52,22 @@ fun MovieDetailsLoader(
         movieDetailsViewModel.getPreviews(movieId)
     }.collectAsState(initial = null)
 
+    val isFavorite by remember(movieDetailsViewModel, movieId) {
+        movieDetailsViewModel.isFavorite
+    }.collectAsState()
+
+    LaunchedEffect(true) {
+        movieDetailsViewModel.checkIsFavorite(movieId)
+    }
+
     movieDetail?.let {
         MoviePosterDetails(
             movieSchema = it,
             onNavigateUp = onNavigateUp,
             reviewList = movieReviews ?: listOf(),
             previewList = moviePreviews ?: listOf(),
-            onFavoriteIconClick = { movieDetailsViewModel.addToFavorite(it) })
+            isFavorite = isFavorite,
+            onFavoriteIconClick = { movieDetailsViewModel.onFavoriteClick(it) })
     }
 }
 
@@ -71,10 +77,11 @@ fun MoviePosterDetails(
     reviewList: List<Review>,
     previewList: List<MoviePreview>,
     onNavigateUp: () -> Unit,
+    isFavorite: Boolean,
     onFavoriteIconClick: () -> Unit
 ) {
     Scaffold(
-        floatingActionButton = { FavoriteIcon(onFavoriteIconClick) }
+        floatingActionButton = { FavoriteIcon(isFavorite, onFavoriteIconClick) }
     ) {
         MovieDetailsTopBar(onNavigateUp = onNavigateUp) // By putting this here you can over lay the top bar
         BannerImage(movieSchema = movieSchema, contentDescription = "")
@@ -149,9 +156,12 @@ fun MovieDetailsTextLayout() {
 
 // TODO: Get favorite icon to work
 @Composable
-fun FavoriteIcon(onClick: () -> Unit) {
+fun FavoriteIcon(isFavorite: Boolean, onClick: () -> Unit) {
     FloatingActionButton(onClick = { onClick() }) {
-        Icon(painter = painterResource(R.drawable.ic_my_favorite), contentDescription = null)
+        Icon(
+            painter = if (isFavorite) painterResource(R.drawable.ic_is_favorite) else painterResource(R.drawable.ic_not_favorite),
+            contentDescription = null
+        )
     }
 }
 
@@ -172,7 +182,8 @@ fun PreviewMoviePosterDetails(@PreviewParameter(LoremIpsum::class) overview: Str
         onNavigateUp = {},
         onFavoriteIconClick = {},
         reviewList = listOf(),
-        previewList = listOf()
+        previewList = listOf(),
+        isFavorite = true
     )
 }
 

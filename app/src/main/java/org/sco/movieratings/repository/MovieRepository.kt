@@ -1,10 +1,7 @@
 package org.sco.movieratings.repository
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import org.sco.movieratings.api.response.MoviePreview
 import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.db.MovieDao
@@ -83,10 +80,8 @@ class MovieRepository @Inject constructor(
             emit(moviePreviewsMap.getValue(movieId))
         }.flowOn(Dispatchers.IO)
 
-    fun isFavorite(movieSchema: MovieSchema): Flow<Boolean> =
-        flow {
-            emit(movieDao.findFavorite(movieSchema.id).firstOrNull() != null)
-        }.flowOn(Dispatchers.IO)
+    suspend fun isFavorite(movieSchema: MovieSchema): Boolean =
+        movieDao.findFavorite(movieSchema.id).firstOrNull() != null
 
     suspend fun addToFavorites(movieSchema: MovieSchema) {
         movieDao.addFavorite(movieSchema)
