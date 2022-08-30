@@ -1,5 +1,6 @@
 package org.sco.movieratings.moviedetails.compose
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -8,9 +9,10 @@ import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
@@ -32,13 +34,19 @@ fun MovieReviewList(reviewList: List<Review>, modifier: Modifier) {
 
 @Composable
 fun MovieReview(review: Review) {
-    Card(elevation = 3.dp) {
+    var isExpanded by remember { mutableStateOf(false) }
+    Card(elevation = 3.dp, modifier = Modifier.clickable {
+        isExpanded = !isExpanded
+    }) {
         Column(Modifier.padding(horizontal = 4.dp)) {
-            Text(text = review.author ?: "Unknown Author", style = MaterialTheme.typography.subtitle1)
+            Text(text = review.author ?: "Unknown Author",
+                style = MaterialTheme.typography.subtitle1)
             Divider(color = Color.Black.copy(alpha = 0.5f), thickness = (0.5).dp)
             Text(
                 text = review.content ?: "No Review Data",
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.body2,
+                maxLines = if (isExpanded) Int.MAX_VALUE else 3,
+                overflow = if (isExpanded) TextOverflow.Clip else TextOverflow.Ellipsis
             )
         }
     }
