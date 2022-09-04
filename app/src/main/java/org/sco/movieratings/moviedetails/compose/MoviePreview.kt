@@ -12,8 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -25,61 +23,10 @@ import org.sco.movieratings.R
 import org.sco.movieratings.api.response.MoviePreview
 
 @Composable
-fun MoviePreviewList(moviePreviewList: List<MoviePreview>, modifier: Modifier = Modifier) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier.wrapContentHeight()
-    ) {
-        val lineColor = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
-        Text(
-            text = "Previews",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.fillMaxWidth().drawBehind {
-                val strokeWidth = 4
-                val y = size.height - strokeWidth / 2
-                drawLine(
-                    color = lineColor,
-                    Offset(0f, y),
-                    Offset(size.width, y),
-                    strokeWidth.toFloat()
-                )
-            })
-        for (preview in moviePreviewList) {
-            val context = LocalContext.current
-            MoviePreview(
-                previewTitle = preview.name ?: continue,
-                onRowClick = preview.key?.let { { startYouTube(it, context) } } ?: continue,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
-}
-
-private fun startYouTube(moviePreviewKey: String, context: Context) {
-    val youTubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$moviePreviewKey"))
-    val youTubeWebIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=$moviePreviewKey"))
-    try {
-        context.startActivity(youTubeIntent)
-    } catch (e: ActivityNotFoundException) {
-        context.startActivity(youTubeWebIntent)
-    }
-}
-
-@Preview
-@Composable
-private fun MoviePreviewListPreview() {
-    val movieList = mutableListOf<MoviePreview>()
-
-    for (i in 1..5) {
-        movieList.add(MoviePreview(key = "$i", name = "Preview $i"))
-    }
-
-    MoviePreviewList(moviePreviewList = movieList)
-}
-
-
-@Composable
-fun MoviePreview(previewTitle: String, onRowClick: () -> Unit, modifier: Modifier = Modifier) {
+fun MoviePreview(moviePreview: MoviePreview, modifier: Modifier = Modifier) {
+    val previewTitle = moviePreview.name ?: return
+    val moviePreviewKey = moviePreview.key ?: return
+    val context = LocalContext.current
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -87,7 +34,7 @@ fun MoviePreview(previewTitle: String, onRowClick: () -> Unit, modifier: Modifie
             .clickable(
                 enabled = true,
                 role = Role.Button,
-                onClick = { onRowClick() }
+                onClick = { startYouTube(moviePreviewKey, context) }
             )
             .border(
                 border = BorderStroke(
@@ -111,8 +58,19 @@ fun MoviePreview(previewTitle: String, onRowClick: () -> Unit, modifier: Modifie
     }
 }
 
+private fun startYouTube(moviePreviewKey: String, context: Context) {
+    val youTubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$moviePreviewKey"))
+    val youTubeWebIntent =
+        Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=$moviePreviewKey"))
+    try {
+        context.startActivity(youTubeIntent)
+    } catch (e: ActivityNotFoundException) {
+        context.startActivity(youTubeWebIntent)
+    }
+}
+
 @Preview
 @Composable
 private fun MoviePreviewPreview() {
-    MoviePreview(previewTitle = "Preview", onRowClick = { })
+    MoviePreview(moviePreview = MoviePreview(name = "Title"))
 }

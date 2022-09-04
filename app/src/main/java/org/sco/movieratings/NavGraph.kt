@@ -10,7 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import org.sco.movieratings.moviedetails.compose.MovieDetails
+import org.sco.movieratings.moviedetails.compose.MovieDetailsScreen
 import org.sco.movieratings.movielist.MovieListType
 import org.sco.movieratings.movielist.compose.MovieList
 
@@ -55,7 +55,7 @@ fun NavGraph(
             arguments = listOf(navArgument(DestinationArgs.MovieId) { type = NavType.IntType })
         ) { navBackStackEntry ->
             val arguments = requireNotNull(navBackStackEntry.arguments)
-            MovieDetails(
+            MovieDetailsScreen(
                 movieId = arguments.getInt(DestinationArgs.MovieId),
                 onNavigateUp = { navController.popBackStack() }
             )

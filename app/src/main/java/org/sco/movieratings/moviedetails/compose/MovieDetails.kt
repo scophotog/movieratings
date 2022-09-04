@@ -2,8 +2,8 @@ package org.sco.movieratings.moviedetails.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -30,7 +30,7 @@ import org.sco.movieratings.db.MovieSchema
 import org.sco.movieratings.moviedetails.MovieDetailsViewModel
 
 @Composable
-fun MovieDetails(movieId: Int, onNavigateUp: () -> Unit) {
+fun MovieDetailsScreen(movieId: Int, onNavigateUp: () -> Unit) {
     MovieDetailsLoader(movieId = movieId, onNavigateUp = onNavigateUp)
 }
 
@@ -61,7 +61,7 @@ fun MovieDetailsLoader(
     }
 
     movieDetail?.let {
-        MoviePosterDetails(
+        MovieDetailsScreen(
             movieSchema = it,
             onNavigateUp = onNavigateUp,
             reviewList = movieReviews ?: listOf(),
@@ -72,7 +72,7 @@ fun MovieDetailsLoader(
 }
 
 @Composable
-fun MoviePosterDetails(
+fun MovieDetailsScreen(
     movieSchema: MovieSchema,
     reviewList: List<Review>,
     previewList: List<MoviePreview>,
@@ -80,26 +80,50 @@ fun MoviePosterDetails(
     isFavorite: Boolean,
     onFavoriteIconClick: () -> Unit
 ) {
-    Scaffold(
-        floatingActionButton = { FavoriteIcon(isFavorite, onFavoriteIconClick) }
-    ) {
-        MovieDetailsTopBar(onNavigateUp = onNavigateUp) // By putting this here you can over lay the top bar
+    Box(modifier = Modifier.fillMaxSize()) {
         BannerImage(movieSchema = movieSchema, contentDescription = "")
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
+        MovieDetailsTopBar(onNavigateUp = onNavigateUp, modifier = Modifier.zIndex(1f))// By putting this here you can over lay the top bar
+        Scaffold(
+            backgroundColor = Color.Transparent,
+            floatingActionButton = { FavoriteIcon(isFavorite, onFavoriteIconClick) }
         ) {
-            Spacer(Modifier.height(125.dp))
-            Row {
-                Column(modifier = Modifier.padding(8.dp)) {
-                    MovieDetailsPoster(movieSchema = movieSchema)
+            LazyColumn(
+                modifier = Modifier.padding(it),
+                contentPadding = PaddingValues(vertical = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item {
+                    MovieDetailsSummary(movieSchema)
                 }
-                Column(modifier = Modifier.padding(8.dp)) {
-                    MovieDetailsTextLayout(movieSchema = movieSchema)
+                item {
+                    HeaderSection("Reviews")
+                }
+                items(reviewList) { review ->
+                    MovieReview(review)
+                }
+                item {
+                    HeaderSection("Previews")
+                }
+                items(previewList) { preview ->
+                    MoviePreview(
+                        moviePreview = preview,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
-            MovieReviewList(reviewList, Modifier.padding(horizontal = 8.dp))
-            MoviePreviewList(moviePreviewList = previewList, Modifier.padding(horizontal = 8.dp))
+        }
+    }
+}
+
+@Composable
+fun MovieDetailsSummary(movieSchema: MovieSchema) {
+    Spacer(Modifier.height(125.dp))
+    Row {
+        Column(Modifier.padding(end = 4.dp)) {
+            MovieDetailsPoster(movieSchema = movieSchema)
+        }
+        Column(Modifier.padding(start = 4.dp)) {
+            MovieDetailsTextLayout(movieSchema = movieSchema)
         }
     }
 }
@@ -117,6 +141,7 @@ fun MovieDetailsPoster(movieSchema: MovieSchema) {
 
 @Composable
 fun MovieDetailsTopBar(
+    modifier: Modifier = Modifier,
     onNavigateUp: () -> Unit
 ) {
     TopAppBar(
@@ -129,7 +154,7 @@ fun MovieDetailsTopBar(
                 Icon(Icons.Default.ArrowBack, contentDescription = "Back")
             }
         },
-        modifier = Modifier.zIndex(1f)
+        modifier = modifier
     )
 }
 
@@ -154,12 +179,13 @@ fun MovieDetailsTextLayout() {
     MovieDetailsTextLayout(movieSchema = TestData)
 }
 
-// TODO: Get favorite icon to work
 @Composable
 fun FavoriteIcon(isFavorite: Boolean, onClick: () -> Unit) {
     FloatingActionButton(onClick = { onClick() }) {
         Icon(
-            painter = if (isFavorite) painterResource(R.drawable.ic_is_favorite) else painterResource(R.drawable.ic_not_favorite),
+            painter = if (isFavorite) painterResource(R.drawable.ic_is_favorite) else painterResource(
+                R.drawable.ic_not_favorite
+            ),
             contentDescription = null
         )
     }
@@ -167,8 +193,8 @@ fun FavoriteIcon(isFavorite: Boolean, onClick: () -> Unit) {
 
 @Preview
 @Composable
-fun PreviewMoviePosterDetails(@PreviewParameter(LoremIpsum::class) overview: String) {
-    MoviePosterDetails(
+fun PreviewMovieDetails(@PreviewParameter(LoremIpsum::class) overview: String) {
+    MovieDetailsScreen(
         movieSchema = MovieSchema(
             id = 1,
             title = "Movie Title",
@@ -189,10 +215,11 @@ fun PreviewMoviePosterDetails(@PreviewParameter(LoremIpsum::class) overview: Str
 
 @Composable
 fun BannerImage(
+    modifier: Modifier = Modifier,
     movieSchema: MovieSchema,
     contentDescription: String
 ) {
-    Box(Modifier.wrapContentHeight()) {
+    Box(modifier.wrapContentHeight()) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(movieSchema.backdropPath)
