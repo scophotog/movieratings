@@ -27,11 +27,11 @@ fun MovieApp() {
                 }
             },
             scaffoldState = appState.scaffoldState
-        ) { padding ->
+        ) { innerPaddingModifier  ->
             NavHost(
                 navController = appState.navController,
                 startDestination = MainDestinations.HOME_ROUTE,
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(innerPaddingModifier)
             ) {
                 movieRatingsNavGraph(
                     onMovieSelected = appState::navigateToMovieDetail,

@@ -38,7 +38,7 @@ fun MovieReview(review: Review) {
                 }
             )
             if (showReadMore) {
-                Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth().padding(top = 4.dp)) {
                     Text(
                         text = if (isExpanded) { "Read Less" } else { "Read More" }
                     )

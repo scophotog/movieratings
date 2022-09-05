@@ -33,41 +33,31 @@ import org.sco.movieratings.movielist.MovieListType
 import org.sco.movieratings.movielist.MovieListViewModel
 import org.sco.movieratings.utility.MovieListViewState
 
-
 @Composable
 fun MovieList(
     modifier: Modifier = Modifier, movieListType: MovieListType, onItemClick: (Int) -> Unit
 ) {
-    MovieListLoader(modifier = modifier, movieListType = movieListType, onItemClick = onItemClick)
-}
-
-@Composable
-private fun MovieListLoader(
-    modifier: Modifier = Modifier,
-    movieListType: MovieListType,
-    onItemClick: (Int) -> Unit,
-    viewModel: MovieListViewModel = hiltViewModel()// Because view model is annotated with @HiltViewModel you must use hiltViewModel and not viewModel()
-) {
+    val viewModel: MovieListViewModel = hiltViewModel()
     val viewState by remember(viewModel, movieListType) {
         viewModel.fetchMovieList(
             movieListType
         )
     }.collectAsState(initial = MovieListViewState.Loading)
 
-    MovieListScaffold(
+    MovieList(
         viewState = viewState,
-        modifier = modifier,
-        onItemClick = onItemClick
+        onMovieClick = onItemClick,
+        modifier = modifier
     )
 }
 
 @Composable
-internal fun MovieListScaffold(
+private fun MovieList(
     modifier: Modifier = Modifier,
     viewState: MovieListViewState,
-    onItemClick: (Int) -> Unit
+    onMovieClick: (Int) -> Unit
 ) {
-    Crossfade(viewState, modifier = modifier) { state ->
+    Crossfade(viewState, modifier = modifier.fillMaxSize()) { state ->
         when (state) {
             MovieListViewState.Empty -> MovieListError(
                 errorMessage = "Oh No no movies",
@@ -76,8 +66,8 @@ internal fun MovieListScaffold(
                     .wrapContentSize(Alignment.Center)
             )
             is MovieListViewState.Loaded -> MovieGridList(
-                data = state.moveList,
-                selectMovie = onItemClick
+                movieList = state.moveList,
+                onMovieClick = onMovieClick
             )
             MovieListViewState.Loading -> CircularProgressIndicator(
                 modifier = Modifier
@@ -90,15 +80,15 @@ internal fun MovieListScaffold(
 }
 
 @Composable
-fun MovieGridList(data: List<MovieSchema>, selectMovie: (Int) -> Unit) {
+fun MovieGridList(movieList: List<MovieSchema>, onMovieClick: (Int) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(data) { item ->
-            MovieItem(item, selectMovie)
+        items(movieList) { movie ->
+            MovieItem(movie, onMovieClick)
         }
     }
 }
@@ -108,10 +98,10 @@ fun MovieGridList(data: List<MovieSchema>, selectMovie: (Int) -> Unit) {
 fun MovieListPreview() {
     MaterialTheme {
         MovieGridList(
-            data = listOf(
+            movieList = listOf(
                 MovieSchema.mock(), MovieSchema.mock(), MovieSchema.mock(), MovieSchema.mock()
             ),
-            selectMovie = { }
+            onMovieClick = { }
         )
     }
 }
@@ -134,8 +124,7 @@ fun MovieItem(
             model = movie.posterPath,
             contentDescription = movie.title,
             placeholder = painterResource(id = R.drawable.movie_poster),
-            contentScale = ContentScale.FillWidth,
-            modifier = modifier
+            contentScale = ContentScale.FillWidth
         )
     }
 }
