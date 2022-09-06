@@ -1,11 +1,8 @@
 package org.sco.movieratings.repository
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import org.sco.movieratings.api.response.Preview
+import kotlinx.coroutines.flow.*
+import org.sco.movieratings.api.response.MoviePreview
 import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.db.MovieDao
 import org.sco.movieratings.db.MovieSchema
@@ -34,10 +31,17 @@ class MovieRepository @Inject constructor(
         }
     }
 
+    fun getMovie(movieId: Int): Flow<MovieSchema?> =
+        flow {
+            emit(allMovies.find { movieId == it.id })
+        }.flowOn(Dispatchers.IO)
+
     private val popularMoviesCache: MutableList<MovieSchema> = mutableListOf()
     private val topMoviesCache: MutableList<MovieSchema> = mutableListOf()
     private val movieReviewsMap: MutableMap<Int, List<Review>> = mutableMapOf()
-    private val moviePreviewsMap: MutableMap<Int, List<Preview>> = mutableMapOf()
+    private val moviePreviewsMap: MutableMap<Int, List<MoviePreview>> = mutableMapOf()
+    private val allMovies: List<MovieSchema>
+        get() = (popularMoviesCache + topMoviesCache)
 
     private fun getPopularMovies(refresh: Boolean = false): Flow<List<MovieSchema>> =
         flow {
@@ -68,7 +72,7 @@ class MovieRepository @Inject constructor(
             emit(movieReviewsMap.getValue(movieId))
         }.flowOn(Dispatchers.IO)
 
-    fun getMoviePreviews(movieId: Int): Flow<List<Preview>> =
+    fun getMoviePreviews(movieId: Int): Flow<List<MoviePreview>> =
         flow {
             if (!moviePreviewsMap.containsKey(movieId)) {
                 moviePreviewsMap[movieId] = moviePreviews.invoke(movieId)
@@ -76,10 +80,8 @@ class MovieRepository @Inject constructor(
             emit(moviePreviewsMap.getValue(movieId))
         }.flowOn(Dispatchers.IO)
 
-    fun isFavorite(movieSchema: MovieSchema): Flow<Boolean> =
-        flow {
-            emit(movieDao.findFavorite(movieSchema.id).firstOrNull() != null)
-        }.flowOn(Dispatchers.IO)
+    suspend fun isFavorite(movieSchema: MovieSchema): Boolean =
+        movieDao.findFavorite(movieSchema.id).firstOrNull() != null
 
     suspend fun addToFavorites(movieSchema: MovieSchema) {
         movieDao.addFavorite(movieSchema)

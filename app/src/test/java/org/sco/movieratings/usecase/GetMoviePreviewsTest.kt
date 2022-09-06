@@ -8,18 +8,18 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.sco.movieratings.api.TheMovieDBService
-import org.sco.movieratings.api.response.Preview
+import org.sco.movieratings.api.response.MoviePreview
 import org.sco.movieratings.api.response.PreviewsResponse
 
 class GetMoviePreviewsTest {
 
     @Test
     fun `previews returns with successful result`() = runBlockingTest {
-        val mockPreview: Preview = mock()
+        val mockMoviePreview: MoviePreview = mock()
         val mock = mock<TheMovieDBService> {
             on { runBlocking { getMoviePreviews(any()) } } doReturn Result.success(
                 PreviewsResponse(
-                    listOf(mockPreview)
+                    listOf(mockMoviePreview)
                 )
             )
         }
