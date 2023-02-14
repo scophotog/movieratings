@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,9 +37,9 @@ import org.sco.movieratings.utility.MovieListViewState
 
 @Composable
 fun MovieList(
+    viewModel: MovieListViewModel = hiltViewModel(),
     modifier: Modifier = Modifier, movieListType: MovieListType, onItemClick: (Int) -> Unit
 ) {
-    val viewModel: MovieListViewModel = hiltViewModel()
     val viewState by remember(viewModel, movieListType) {
         viewModel.fetchMovieList(
             movieListType
@@ -53,7 +54,7 @@ fun MovieList(
 }
 
 @Composable
-private fun MovieList(
+fun MovieList(
     modifier: Modifier = Modifier,
     viewState: MovieListViewState,
     onMovieClick: (Int) -> Unit
@@ -87,7 +88,8 @@ fun MovieGridList(movieList: List<MovieSchema>, onMovieClick: (Int) -> Unit) {
         columns = if(configuration.screenWidthDp > 600) GridCells.Fixed(5) else GridCells.Fixed(2),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.testTag("MovieList")
     ) {
         items(movieList) { movie ->
             MovieItem(movie, onMovieClick)
