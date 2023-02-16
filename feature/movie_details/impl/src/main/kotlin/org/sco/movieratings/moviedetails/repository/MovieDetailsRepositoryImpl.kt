@@ -9,12 +9,13 @@ import org.sco.movieratings.moviedetails.data.remote.MovieDetailsRest
 import org.sco.movieratings.network.apiCall
 import retrofit2.Response
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class MovieDetailsRepositoryImpl @Inject constructor(
     private val movieDetailsRest: MovieDetailsRest,
-    private val movieDao: MovieDao,
+    @Named("movie_details") private val movieDao: MovieDao,
 ) : MovieDetailsRepository {
 
     override suspend fun getMovie(movieId: Int): MovieDetailItem = MovieDetailItem(

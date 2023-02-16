@@ -10,13 +10,14 @@ import org.sco.movieratings.movielist.mapper.MovieSchemaMapper
 import org.sco.movieratings.network.apiCall
 import retrofit2.Response
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class MovieListRepositoryImpl @Inject constructor(
     private val service: MovieListRest,
     private val mapper: MovieMapper,
-    private val movieDao: MovieDao,
+    @Named("movie_list") private val movieDao: MovieDao,
     private val movieSchemaMapper: MovieSchemaMapper
 ) : MovieListRepository {
 
