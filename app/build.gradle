@@ -143,5 +143,8 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:4.9.1"
     androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0"
 
+    androidTestImplementation project(":feature:movie_list:fake")
+    androidTestImplementation project(":feature:movie_list:fake-wiring")
+
     androidTestImplementation(project(":espresso"))
 }

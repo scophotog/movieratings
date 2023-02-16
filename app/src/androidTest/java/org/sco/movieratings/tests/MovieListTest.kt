@@ -11,10 +11,10 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.sco.movieratings.FakeMovieListRepositoryModule.fakeMovies
 import org.sco.movieratings.MainActivity
 import org.sco.movieratings.movielist.api.MovieListType
 import org.sco.movieratings.movielist.MovieListViewModel
+import org.sco.movieratings.movielist.api.MovieListItem
 import org.sco.movieratings.movielist.compose.MovieList
 
 @HiltAndroidTest
@@ -32,7 +32,7 @@ class MovieListTest {
         composeTestRule.activity.setContent {
             MovieList(
                 viewModel = composeTestRule.activity.viewModels<MovieListViewModel>().value,
-                movieListType = org.sco.movieratings.movielist.api.MovieListType.POPULAR,
+                movieListType = MovieListType.POPULAR,
                 onItemClick = { }
             )
         }
@@ -45,5 +45,14 @@ class MovieListTest {
         fakeMovies.forEach { item ->
             composeTestRule.onNodeWithContentDescription(item.title).assertExists()
         }
+    }
+
+    companion object {
+        private val movie = MovieListItem(
+            id = 0,
+            title = "Something",
+            posterPath = ""
+        )
+        val fakeMovies = listOf(movie,movie,movie)
     }
 }
