@@ -13,18 +13,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
-import org.sco.movieratings.api.response.Review
+import org.sco.movieratings.moviedetails.api.MovieReviewItem
 
 @Composable
-fun MovieReview(review: Review) {
+fun MovieReview(review: MovieReviewItem) {
     var isExpanded by remember { mutableStateOf(false) }
     var showReadMore by remember { mutableStateOf(false) }
     Card(elevation = 3.dp, modifier = Modifier.clickable(enabled = showReadMore) {
         isExpanded = !isExpanded
     }) {
         Column(Modifier.padding(top = 2.dp, bottom = 8.dp, start = 4.dp, end = 4.dp)) {
-            Text(text = review.author ?: "Unknown Author",
-                style = MaterialTheme.typography.subtitle1)
+            Text(
+                text = review.author ?: "Unknown Author",
+                style = MaterialTheme.typography.subtitle1
+            )
             Divider(color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f), thickness = (0.5).dp)
             Text(
                 text = review.content ?: "No Review Data",
@@ -38,12 +40,26 @@ fun MovieReview(review: Review) {
                 }
             )
             if (showReadMore) {
-                Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth().padding(top = 4.dp)) {
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
+                ) {
                     Text(
-                        text = if (isExpanded) { "Read Less" } else { "Read More" }
+                        text = if (isExpanded) {
+                            "Read Less"
+                        } else {
+                            "Read More"
+                        }
                     )
                     Icon(
-                        painter = if (isExpanded) { painterResource(android.R.drawable.arrow_up_float) } else { painterResource(android.R.drawable.arrow_down_float) },
+                        painter = if (isExpanded) {
+                            painterResource(android.R.drawable.arrow_up_float)
+                        } else {
+                            painterResource(android.R.drawable.arrow_down_float)
+                        },
                         contentDescription = null,
                         tint = Color.Red,
                         modifier = Modifier.padding(4.dp)
@@ -57,5 +73,10 @@ fun MovieReview(review: Review) {
 @Preview
 @Composable
 fun MovieReviewPreview(@PreviewParameter(LoremIpsum::class) reviewContent: String) {
-    MovieReview(review = Review(author = "Some Person", content = reviewContent))
+    MovieReview(
+        review = MovieReviewItem(
+            author = "Some Person",
+            content = reviewContent
+        )
+    )
 }

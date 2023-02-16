@@ -1,9 +1,7 @@
 package org.sco.movieratings.repository
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.sco.movieratings.api.response.Movie
+import org.sco.movieratings.movielist.data.model.Movie
 
 class MovieMapperTest {
 

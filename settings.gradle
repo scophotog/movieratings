@@ -1,3 +1,17 @@
 include ':app'
 include ':e2etests'
 include ':espresso'
+include ':core:network:impl'
+include ':core:db:impl'
+
+include ':feature:movie_details:api'
+include ':feature:movie_details:impl'
+include ':feature:movie_details:wiring'
+include ':feature:movie_details:fake'
+include ':feature:movie_details:fake-wiring'
+
+include ':feature:movie_list:api'
+include ':feature:movie_list:impl'
+include ':feature:movie_list:wiring'
+include ':feature:movie_list:fake'
+include ':feature:movie_list:fake-wiring'

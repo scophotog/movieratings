@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -30,15 +29,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import org.sco.movieratings.R
-import org.sco.movieratings.db.MovieSchema
-import org.sco.movieratings.movielist.MovieListType
+import org.sco.movieratings.movielist.api.MovieListType
 import org.sco.movieratings.movielist.MovieListViewModel
+import org.sco.movieratings.movielist.api.MovieListItem
 import org.sco.movieratings.utility.MovieListViewState
 
 @Composable
 fun MovieList(
+    modifier: Modifier = Modifier,
     viewModel: MovieListViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier, movieListType: MovieListType, onItemClick: (Int) -> Unit
+    movieListType: MovieListType, onItemClick: (Int) -> Unit
 ) {
     val viewState by remember(viewModel, movieListType) {
         viewModel.fetchMovieList(
@@ -82,18 +82,19 @@ fun MovieList(
 }
 
 @Composable
-fun MovieGridList(movieList: List<MovieSchema>, onMovieClick: (Int) -> Unit) {
+fun MovieGridList(movieList: List<MovieListItem>, onMovieClick: (Int) -> Unit) {
     val configuration = LocalConfiguration.current
     LazyVerticalGrid(
-        columns = if(configuration.screenWidthDp > 600) GridCells.Fixed(5) else GridCells.Fixed(2),
+        columns = if (configuration.screenWidthDp > 600) GridCells.Fixed(5) else GridCells.Fixed(2),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.testTag("MovieList")
     ) {
-        items(movieList) { movie ->
-            MovieItem(movie, onMovieClick)
-        }
+        //TODO why is this broke
+//        items(movieList) { movie ->
+//            MovieItem(movie, onMovieClick)
+//        }
     }
 }
 
@@ -102,9 +103,7 @@ fun MovieGridList(movieList: List<MovieSchema>, onMovieClick: (Int) -> Unit) {
 fun MovieListPreview() {
     MaterialTheme {
         MovieGridList(
-            movieList = listOf(
-                MovieSchema.mock(), MovieSchema.mock(), MovieSchema.mock(), MovieSchema.mock()
-            ),
+            movieList = listOf(), // TODO Make previewable list
             onMovieClick = { }
         )
     }
@@ -112,9 +111,9 @@ fun MovieListPreview() {
 
 @Composable
 fun MovieItem(
-    movie: MovieSchema,
+    modifier: Modifier = Modifier,
+    movie: MovieListItem,
     selectMovie: (Int) -> Unit = { },
-    modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier

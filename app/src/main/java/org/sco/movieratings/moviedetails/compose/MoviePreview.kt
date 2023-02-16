@@ -20,10 +20,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sco.movieratings.R
-import org.sco.movieratings.api.response.MoviePreview
+import org.sco.movieratings.moviedetails.api.MoviePreviewItem
 
 @Composable
-fun MoviePreview(moviePreview: MoviePreview, modifier: Modifier = Modifier) {
+fun MoviePreview(moviePreview: MoviePreviewItem, modifier: Modifier = Modifier) {
     val previewTitle = moviePreview.name ?: return
     val moviePreviewKey = moviePreview.key ?: return
     val context = LocalContext.current
@@ -72,5 +72,5 @@ private fun startYouTube(moviePreviewKey: String, context: Context) {
 @Preview
 @Composable
 private fun MoviePreviewPreview() {
-    MoviePreview(moviePreview = MoviePreview(name = "Title"))
+    MoviePreview(moviePreview = MoviePreviewItem(name = "Title"))
 }

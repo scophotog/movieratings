@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -27,10 +26,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.sco.movieratings.AppTheme
 import org.sco.movieratings.R
-import org.sco.movieratings.api.response.MoviePreview
-import org.sco.movieratings.api.response.Review
-import org.sco.movieratings.db.MovieSchema
 import org.sco.movieratings.moviedetails.MovieDetailsViewModel
+import org.sco.movieratings.moviedetails.api.MovieDetailItem
+import org.sco.movieratings.moviedetails.api.MoviePreviewItem
+import org.sco.movieratings.moviedetails.api.MovieReviewItem
 
 @Composable
 fun MovieDetailsScreen(movieId: Int, onNavigateUp: () -> Unit) {
@@ -47,14 +46,6 @@ fun MovieDetailsLoader(
         movieDetailsViewModel.getMovie(movieId)
     }.collectAsState(initial = null)
 
-    val movieReviews by remember(movieDetailsViewModel, movieId) {
-        movieDetailsViewModel.getReviews(movieId)
-    }.collectAsState(initial = null)
-
-    val moviePreviews by remember(movieDetailsViewModel, movieId) {
-        movieDetailsViewModel.getPreviews(movieId)
-    }.collectAsState(initial = null)
-
     val isFavorite by remember(movieDetailsViewModel, movieId) {
         movieDetailsViewModel.isFavorite
     }.collectAsState()
@@ -65,10 +56,10 @@ fun MovieDetailsLoader(
     val context = LocalContext.current
     movieDetail?.let {
         MovieDetailsScreen(
-            movieSchema = it,
+            movieDetailItem = it,
             onNavigateUp = onNavigateUp,
-            reviewList = movieReviews ?: listOf(),
-            previewList = moviePreviews ?: listOf(),
+            reviewList = it.reviewList,
+            previewList = it.previewList,
             isFavorite = isFavorite,
             onFavoriteIconClick = {
                 movieDetailsViewModel.onFavoriteClick(it)
@@ -84,9 +75,9 @@ fun MovieDetailsLoader(
 
 @Composable
 fun MovieDetailsScreen(
-    movieSchema: MovieSchema,
-    reviewList: List<Review>,
-    previewList: List<MoviePreview>,
+    movieDetailItem: MovieDetailItem,
+    reviewList: List<MovieReviewItem>,
+    previewList: List<MoviePreviewItem>,
     onNavigateUp: () -> Unit,
     isFavorite: Boolean,
     onFavoriteIconClick: () -> Unit
@@ -96,8 +87,8 @@ fun MovieDetailsScreen(
             .fillMaxSize()
             .background(color = MaterialTheme.colors.background)
     ) {
-        BannerImage(movieSchema = movieSchema, contentDescription = "")
-        Body(movieSchema = movieSchema, reviewList = reviewList, previewList = previewList, isFavorite = isFavorite, onFavoriteClick = onFavoriteIconClick)
+        BannerImage(movieDetailItem = movieDetailItem, contentDescription = "")
+        Body(movieDetailItem = movieDetailItem, reviewList = reviewList, previewList = previewList, isFavorite = isFavorite, onFavoriteClick = onFavoriteIconClick)
         UpButton(upPress = onNavigateUp)
     }
 }
@@ -105,9 +96,9 @@ fun MovieDetailsScreen(
 @Composable
 private fun Body(
     modifier: Modifier = Modifier,
-    movieSchema: MovieSchema,
-    reviewList: List<Review>,
-    previewList: List<MoviePreview>,
+    movieDetailItem: MovieDetailItem,
+    reviewList: List<MovieReviewItem>,
+    previewList: List<MoviePreviewItem>,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit
 ) {
@@ -117,26 +108,28 @@ private fun Body(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item {
-            MovieDetailsSummary(movieSchema, isFavorite, onFavoriteClick)
+            MovieDetailsSummary(movieDetailItem, isFavorite, onFavoriteClick)
         }
         if (reviewList.isNotEmpty()) {
             item {
                 HeaderSection("Reviews")
             }
-            items(reviewList) { review ->
-                MovieReview(review)
-            }
+            //TODO Why Broke?
+//            items(reviewList) { review ->
+//                MovieReview(review)
+//            }
         }
         if (previewList.isNotEmpty()) {
             item {
                 HeaderSection("Previews")
             }
-            items(previewList) { preview ->
-                MoviePreview(
-                    moviePreview = preview,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            //TODO Why Broke?
+//            items(previewList) { preview ->
+//                MoviePreview(
+//                    moviePreview = preview,
+//                    modifier = Modifier.fillMaxWidth()
+//                )
+//            }
         }
     }
 }
@@ -162,24 +155,24 @@ private fun UpButton(upPress: () -> Unit) {
 }
 
 @Composable
-fun MovieDetailsSummary(movieSchema: MovieSchema, isFavorite: Boolean, onFavoriteClick: () -> Unit) {
+fun MovieDetailsSummary(movieDetailItem: MovieDetailItem, isFavorite: Boolean, onFavoriteClick: () -> Unit) {
     Spacer(Modifier.height(125.dp))
     Row {
         Column(Modifier.padding(end = 4.dp)) {
-            MovieDetailsPoster(movieSchema = movieSchema, isFavorite = isFavorite, onFavoriteClick = onFavoriteClick)
+            MovieDetailsPoster(movieDetailItem = movieDetailItem, isFavorite = isFavorite, onFavoriteClick = onFavoriteClick)
         }
         Column(Modifier.padding(start = 4.dp)) {
-            MovieDetailsTextLayout(movieSchema = movieSchema)
+            MovieDetailsTextLayout(movieDetailItem = movieDetailItem)
         }
     }
 }
 
 @Composable
-fun MovieDetailsPoster(movieSchema: MovieSchema, isFavorite: Boolean, onFavoriteClick: () -> Unit) {
+fun MovieDetailsPoster(movieDetailItem: MovieDetailItem, isFavorite: Boolean, onFavoriteClick: () -> Unit) {
     Box {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(movieSchema.posterPath)
+                .data(movieDetailItem.posterPath)
                 .build(),
             placeholder = painterResource(id = R.drawable.movie_poster),
             contentDescription = null
@@ -200,24 +193,24 @@ fun MovieDetailsPoster(movieSchema: MovieSchema, isFavorite: Boolean, onFavorite
 }
 
 @Composable
-fun MovieDetailsTextLayout(movieSchema: MovieSchema) {
+fun MovieDetailsTextLayout(movieDetailItem: MovieDetailItem) {
     Column {
-        Text(text = movieSchema.title, style = MaterialTheme.typography.h4)
-        Text(text = "Release Date ${movieSchema.releaseDate}")
+        Text(text = movieDetailItem.title, style = MaterialTheme.typography.h4)
+        Text(text = "Release Date ${movieDetailItem.releaseDate}")
         Spacer(
             modifier = Modifier
                 .height(10.dp)
                 .fillMaxWidth()
         )
         Text(text = "Overview".uppercase(), style = MaterialTheme.typography.h6)
-        Text(text = movieSchema.overview, style = MaterialTheme.typography.body1)
+        Text(text = movieDetailItem.overview, style = MaterialTheme.typography.body1)
     }
 }
 
 @Preview
 @Composable
 fun MovieDetailsTextLayout() {
-    MovieDetailsTextLayout(movieSchema = TestData)
+    MovieDetailsTextLayout(movieDetailItem = TestData)
 }
 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
@@ -226,7 +219,7 @@ fun MovieDetailsTextLayout() {
 fun PreviewMovieDetails() {
     AppTheme {
         MovieDetailsScreen(
-            movieSchema = MovieSchema(
+            movieDetailItem = MovieDetailItem(
                 id = 1,
                 title = "Movie Title",
                 posterPath = "url",
@@ -248,13 +241,13 @@ fun PreviewMovieDetails() {
 @Composable
 fun BannerImage(
     modifier: Modifier = Modifier,
-    movieSchema: MovieSchema,
+    movieDetailItem: MovieDetailItem,
     contentDescription: String
 ) {
     Box(modifier.wrapContentHeight()) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(movieSchema.backdropPath)
+                .data(movieDetailItem.backdropPath)
                 .placeholder(R.drawable.backdrop_780w)
                 .crossfade(true)
                 .build(),
@@ -279,7 +272,7 @@ fun BannerImage(
     }
 }
 
-private val TestData = MovieSchema(
+private val TestData = MovieDetailItem(
     id = 1,
     title = "Fancy Movie",
     posterPath = "url",

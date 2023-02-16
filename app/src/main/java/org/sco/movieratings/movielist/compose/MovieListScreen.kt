@@ -15,7 +15,7 @@ import androidx.navigation.compose.composable
 import org.sco.movieratings.AppTheme
 import org.sco.movieratings.MainDestinations
 import org.sco.movieratings.R
-import org.sco.movieratings.movielist.MovieListType
+import org.sco.movieratings.movielist.api.MovieListType
 
 fun NavGraphBuilder.addHomeGraph(
     onMovieSelected: (Int, NavBackStackEntry) -> Unit,
@@ -23,21 +23,21 @@ fun NavGraphBuilder.addHomeGraph(
 ) {
     composable(MovieListSections.FAVORITE_MOVIES.route) { from ->
         MovieList(
-            movieListType = MovieListType.FAVORITE,
+            movieListType = org.sco.movieratings.movielist.api.MovieListType.FAVORITE,
             onItemClick = { id -> onMovieSelected(id, from) },
             modifier = modifier
         )
     }
     composable(MovieListSections.TOP_MOVIES.route) { from ->
         MovieList(
-            movieListType = MovieListType.TOP,
+            movieListType = org.sco.movieratings.movielist.api.MovieListType.TOP,
             onItemClick = { id -> onMovieSelected(id, from) },
             modifier = modifier
         )
     }
     composable(MovieListSections.POPULAR_MOVIES.route) { from ->
         MovieList(
-            movieListType = MovieListType.POPULAR,
+            movieListType = org.sco.movieratings.movielist.api.MovieListType.POPULAR,
             onItemClick = { id -> onMovieSelected(id, from) },
             modifier = modifier
         )
@@ -48,17 +48,17 @@ enum class MovieListSections(
     var route: String, @DrawableRes var icon: Int, var title: String
 ) {
     TOP_MOVIES(
-        "${MainDestinations.HOME_ROUTE}/${MovieListType.TOP}",
+        "${MainDestinations.HOME_ROUTE}/${org.sco.movieratings.movielist.api.MovieListType.TOP}",
         R.drawable.ic_top_rated,
         "Top"
     ),
     POPULAR_MOVIES(
-        "${MainDestinations.HOME_ROUTE}/${MovieListType.POPULAR}",
+        "${MainDestinations.HOME_ROUTE}/${org.sco.movieratings.movielist.api.MovieListType.POPULAR}",
         R.drawable.ic_most_popular,
         "Popular"
     ),
     FAVORITE_MOVIES(
-        "${MainDestinations.HOME_ROUTE}/${MovieListType.FAVORITE}",
+        "${MainDestinations.HOME_ROUTE}/${org.sco.movieratings.movielist.api.MovieListType.FAVORITE}",
         R.drawable.ic_my_favorite,
         "Favorites"
     )

@@ -6,11 +6,9 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.testing.TestInstallIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import org.sco.movieratings.api.response.MoviePreview
-import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.db.MovieSchema
 import org.sco.movieratings.di.MovieModule
-import org.sco.movieratings.movielist.MovieListType
+import org.sco.movieratings.movielist.api.MovieListType
 import org.sco.movieratings.repository.IMovieRepository
 import javax.inject.Singleton
 
@@ -23,7 +21,7 @@ object FakeMovieListRepositoryModule {
     @Singleton
     @Provides
     fun provideFakeMovieListRepository() = object : IMovieRepository {
-        override fun getMovieList(listType: MovieListType): Flow<List<MovieSchema>> {
+        override fun getMovieList(listType: org.sco.movieratings.movielist.api.MovieListType): Flow<List<MovieSchema>> {
             return flowOf(fakeMovies)
         }
 
@@ -43,11 +41,11 @@ object FakeMovieListRepositoryModule {
             return flowOf(fakeMovies)
         }
 
-        override fun getMovieReviews(movieId: Int): Flow<List<Review>> {
+        override fun getMovieReviews(movieId: Int): Flow<List<org.sco.movieratings.api.response.Review>> {
             TODO("Not yet implemented")
         }
 
-        override fun getMoviePreviews(movieId: Int): Flow<List<MoviePreview>> {
+        override fun getMoviePreviews(movieId: Int): Flow<List<org.sco.movieratings.api.response.MoviePreview>> {
             TODO("Not yet implemented")
         }
 

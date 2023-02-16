@@ -1,6 +1,6 @@
 package org.sco.movieratings.utility
 
-import org.sco.movieratings.db.MovieSchema
+import org.sco.movieratings.movielist.api.MovieListItem
 
 sealed class Result<out T: Any> {
     data class Success<out T: Any>(val data: T) : Result<T>()
@@ -19,6 +19,6 @@ sealed class Result<out T: Any> {
 
 sealed class MovieListViewState {
     object Loading : MovieListViewState()
-    data class Loaded(val moveList: List<MovieSchema>) : MovieListViewState()
+    data class Loaded(val moveList: List<MovieListItem>) : MovieListViewState()
     object Empty: MovieListViewState()
 }
