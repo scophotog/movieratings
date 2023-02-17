@@ -22,11 +22,26 @@ android {
         }
     }
 
-    // TODO maybe 2 build types, one for fake one for live data?
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "version"
+
+    // Wow can use fake or real data implementations
+    productFlavors {
+        fake {
+            dimension "version"
+            applicationIdSuffix ".fake"
+            versionNameSuffix "-demo"
+        }
+        real {
+            dimension "version"
+            applicationIdSuffix ".real"
+            versionNameSuffix "-real"
         }
     }
 
@@ -51,9 +66,11 @@ android {
 }
 
 dependencies {
-    implementation project(':feature:movie_list:fake')
-    implementation project(':feature:movie_list:fake-wiring')
     implementation project(':feature:movie_list:ui')
+    fakeImplementation project(':feature:movie_list:fake')
+    fakeImplementation project(':feature:movie_list:fake-wiring')
+    realImplementation project(':feature:movie_list:impl')
+    realImplementation project(':feature:movie_list:wiring')
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
