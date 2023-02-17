@@ -31,8 +31,6 @@ android {
 
 dependencies {
     api(project(':feature:movie_list:api'))
-    implementation project(path: ':core:db:impl')
-    implementation project(path: ':core:network:impl')
 
     def composeBom = platform('androidx.compose:compose-bom:2023.01.00')
     implementation composeBom

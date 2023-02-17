@@ -72,12 +72,15 @@ android {
 }
 
 dependencies {
+    // Movie Details
     implementation project(':feature:movie_details:impl')
     implementation project(':feature:movie_details:wiring')
-    implementation project(':feature:movie_list:impl')
+
+    // Movie List
     implementation project(':feature:movie_list:wiring')
     implementation project(':feature:movie_list:ui')
 
+    // App Dependencies
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation "androidx.annotation:annotation:1.3.0"
     implementation "androidx.constraintlayout:constraintlayout:2.1.3"
@@ -137,6 +140,7 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:4.9.1"
     androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0"
 
+    // TODO: Move these to the appropriate module
     androidTestImplementation project(":feature:movie_list:fake")
     androidTestImplementation project(":feature:movie_list:fake-wiring")
 

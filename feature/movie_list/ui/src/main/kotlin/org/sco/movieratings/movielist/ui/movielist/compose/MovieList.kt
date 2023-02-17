@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -28,10 +29,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import org.sco.movieratings.movielist.api.MovieListType
-import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewModel
 import org.sco.movieratings.movielist.api.MovieListItem
+import org.sco.movieratings.movielist.api.MovieListType
 import org.sco.movieratings.movielist.ui.movielist.R
+import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewModel
 import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewState
 
 @Composable
@@ -92,9 +93,8 @@ fun MovieGridList(movieList: List<MovieListItem>, onMovieClick: (Int) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.testTag("MovieList")
     ) {
-        // TODO why isn't the extension function working?
-        items(movieList.size) { index ->
-            MovieItem(movie = movieList[index], selectMovie = onMovieClick)
+        items(movieList) { movie ->
+            MovieItem(movie = movie, selectMovie = onMovieClick)
         }
     }
 }
