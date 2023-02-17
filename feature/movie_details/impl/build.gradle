@@ -25,9 +25,11 @@ dependencies {
     api(project (':feature:movie_details:api'))
     implementation project(path: ':core:db:impl')
     implementation project(path: ':core:network:impl')
+
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
-    implementation 'com.squareup.moshi:moshi:1.13.0'
+    implementation "com.squareup.moshi:moshi:$moshi"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
 
     implementation "androidx.room:room-runtime:2.4.3"
     implementation "androidx.room:room-ktx:2.4.3"

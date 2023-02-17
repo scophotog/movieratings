@@ -2,8 +2,9 @@ package org.sco.movieratings.movielist.fake
 
 import org.sco.movieratings.movielist.api.MovieListInteractor
 import org.sco.movieratings.movielist.api.MovieListItem
+import javax.inject.Inject
 
-class FakeMovieListInteractor : MovieListInteractor {
+class FakeMovieListInteractor @Inject constructor() : MovieListInteractor {
     override suspend fun getPopularMovies(refresh: Boolean): List<MovieListItem> {
         val list = mutableListOf<MovieListItem>()
         repeat(5) {

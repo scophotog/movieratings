@@ -13,9 +13,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.sco.movieratings.MainActivity
 import org.sco.movieratings.movielist.api.MovieListType
-import org.sco.movieratings.movielist.MovieListViewModel
+import movielist.MovieListViewModel
 import org.sco.movieratings.movielist.api.MovieListItem
-import org.sco.movieratings.movielist.compose.MovieList
+import movielist.compose.MovieList
 
 @HiltAndroidTest
 class MovieListTest {
@@ -30,8 +30,8 @@ class MovieListTest {
     fun setup() {
         hiltTestRule.inject()
         composeTestRule.activity.setContent {
-            MovieList(
-                viewModel = composeTestRule.activity.viewModels<MovieListViewModel>().value,
+            movielist.compose.MovieList(
+                viewModel = composeTestRule.activity.viewModels<movielist.MovieListViewModel>().value,
                 movieListType = MovieListType.POPULAR,
                 onItemClick = { }
             )

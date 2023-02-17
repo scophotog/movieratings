@@ -14,11 +14,10 @@ class MovieListInteractorImpl @Inject constructor(
 ): MovieListInteractor {
 
     override suspend fun getPopularMovies(refresh: Boolean): List<MovieListItem> =
-        getPopularMoviesUseCase.invoke()
-
+        getPopularMoviesUseCase()
     override suspend fun getTopRatedMovies(refresh: Boolean): List<MovieListItem> =
-        getTopRatedMoviesUseCase.invoke()
+        getTopRatedMoviesUseCase()
 
     override suspend fun getFavoriteMovies(): List<MovieListItem> =
-        getFavoriteMoviesUseCase.invoke()
+        getFavoriteMoviesUseCase()
 }

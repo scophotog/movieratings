@@ -1,10 +1,12 @@
 package org.sco.movieratings.network.di
 
+import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
+import org.sco.movieratings.network.BuildConfig
 import javax.inject.Named
 
 @Module
@@ -17,7 +19,7 @@ object ApiKeyModule {
         return Interceptor { chain ->
             var request = chain.request()
             val url = request.url.newBuilder()
-                .addQueryParameter("api_key", System.getProperty("API_KEY"))
+                .addQueryParameter("api_key", BuildConfig.MOVIE_DB_API_KEY)
                 .build()
             request = request.newBuilder().url(url).build()
             chain.proceed(request)

@@ -17,8 +17,4 @@ sealed class Result<out T: Any> {
         }
 }
 
-sealed class MovieListViewState {
-    object Loading : MovieListViewState()
-    data class Loaded(val moveList: List<MovieListItem>) : MovieListViewState()
-    object Empty: MovieListViewState()
-}
+

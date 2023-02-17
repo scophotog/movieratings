@@ -1,5 +1,6 @@
 package org.sco.movieratings.network
 
+import android.util.Log
 import retrofit2.Response
 import java.io.IOException
 
@@ -8,6 +9,7 @@ suspend fun <T : Any> apiCall(call: suspend () -> Response<T>): Result<T> {
     try {
         response = call.invoke()
     } catch (t: Throwable) {
+        Log.e("apiCall", "Api Error", t)
         return Result.failure(t)
     }
 

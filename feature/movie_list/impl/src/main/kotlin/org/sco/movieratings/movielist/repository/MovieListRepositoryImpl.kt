@@ -1,5 +1,6 @@
 package org.sco.movieratings.movielist.repository
 
+import android.util.Log
 import org.sco.movieratings.db.MovieDao
 import org.sco.movieratings.movielist.api.MovieListItem
 import org.sco.movieratings.movielist.api.MovieListRepository
@@ -41,7 +42,7 @@ class MovieListRepositoryImpl @Inject constructor(
                 }
             }
             .onFailure {
-                // Womp womp
+                Log.d("MovieListRepository", "Api Error", it)
             }
         return result
     }

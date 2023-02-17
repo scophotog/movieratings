@@ -8,9 +8,6 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.sco.movieratings.moviedetails.compose.MovieDetailsScreen
-import org.sco.movieratings.movielist.compose.MovieListSections
-import org.sco.movieratings.movielist.compose.MovieRatingsBottomBar
-import org.sco.movieratings.movielist.compose.addHomeGraph
 
 @Composable
 fun MovieApp() {

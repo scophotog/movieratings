@@ -1,5 +1,6 @@
 package org.sco.movieratings.network.di
 
+import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
