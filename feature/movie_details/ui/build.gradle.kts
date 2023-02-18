@@ -31,6 +31,7 @@ android {
 }
 
 dependencies {
+    api(project(":feature:movie_list:api"))
     api(project(":feature:movie_details:api"))
 
     implementation(platform(libs.androidx.compose.bom))

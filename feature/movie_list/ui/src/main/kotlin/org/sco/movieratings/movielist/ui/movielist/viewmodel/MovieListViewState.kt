@@ -1,6 +1,6 @@
 package org.sco.movieratings.movielist.ui.movielist.viewmodel
 
-import org.sco.movieratings.movielist.api.MovieListItem
+import org.sco.movieratings.shared.api.MovieListItem
 
 sealed class MovieListViewState {
     object Loading : MovieListViewState()

@@ -25,10 +25,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.sco.movieratings.moviedetails.ui.moviedetails.MovieDetailsViewModel
-import org.sco.movieratings.moviedetails.api.MovieDetailItem
-import org.sco.movieratings.moviedetails.api.MoviePreviewItem
-import org.sco.movieratings.moviedetails.api.MovieReviewItem
 import org.sco.movieratings.moviedetails.ui.moviedetails.R
+import org.sco.movieratings.shared.api.MovieListItem
+import org.sco.movieratings.shared.api.MoviePreviewItem
+import org.sco.movieratings.shared.api.MovieReviewItem
 
 @Composable
 fun MovieDetailsScreen(movieId: Int, onNavigateUp: () -> Unit) {
@@ -36,14 +36,22 @@ fun MovieDetailsScreen(movieId: Int, onNavigateUp: () -> Unit) {
 }
 
 @Composable
+fun MovieDetailsScreen(movieItem: MovieListItem, onNavigateUp: () -> Unit) {
+    MovieDetailsLoader(movieItem = movieItem, onNavigateUp = onNavigateUp)
+}
+
+@Composable
 fun MovieDetailsLoader(
-    movieId: Int,
+    movieId: Int = -1,
+    movieItem: MovieListItem? = null,
     movieDetailsViewModel: MovieDetailsViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit
 ) {
     val movieDetail by remember(movieDetailsViewModel, movieId) {
         movieDetailsViewModel.getMovie(movieId)
     }.collectAsState(initial = null)
+
+    val movieDetailItem by remember { mutableStateOf(movieItem) }
 
     val isFavorite by remember(movieDetailsViewModel, movieId) {
         movieDetailsViewModel.isFavorite
@@ -74,7 +82,7 @@ fun MovieDetailsLoader(
 
 @Composable
 fun MovieDetailsScreen(
-    movieDetailItem: MovieDetailItem,
+    movieDetailItem: MovieListItem,
     reviewList: List<MovieReviewItem>,
     previewList: List<MoviePreviewItem>,
     onNavigateUp: () -> Unit,
@@ -95,7 +103,7 @@ fun MovieDetailsScreen(
 @Composable
 private fun Body(
     modifier: Modifier = Modifier,
-    movieDetailItem: MovieDetailItem,
+    movieDetailItem: MovieListItem,
     reviewList: List<MovieReviewItem>,
     previewList: List<MoviePreviewItem>,
     isFavorite: Boolean,
@@ -154,7 +162,7 @@ private fun UpButton(upPress: () -> Unit) {
 }
 
 @Composable
-fun MovieDetailsSummary(movieDetailItem: MovieDetailItem, isFavorite: Boolean, onFavoriteClick: () -> Unit) {
+fun MovieDetailsSummary(movieDetailItem: MovieListItem, isFavorite: Boolean, onFavoriteClick: () -> Unit) {
     Spacer(Modifier.height(125.dp))
     Row {
         Column(Modifier.padding(end = 4.dp)) {
@@ -167,7 +175,7 @@ fun MovieDetailsSummary(movieDetailItem: MovieDetailItem, isFavorite: Boolean, o
 }
 
 @Composable
-fun MovieDetailsPoster(movieDetailItem: MovieDetailItem, isFavorite: Boolean, onFavoriteClick: () -> Unit) {
+fun MovieDetailsPoster(movieDetailItem: MovieListItem, isFavorite: Boolean, onFavoriteClick: () -> Unit) {
     Box {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -192,7 +200,7 @@ fun MovieDetailsPoster(movieDetailItem: MovieDetailItem, isFavorite: Boolean, on
 }
 
 @Composable
-fun MovieDetailsTextLayout(movieDetailItem: MovieDetailItem) {
+fun MovieDetailsTextLayout(movieDetailItem: MovieListItem) {
     Column {
         Text(text = movieDetailItem.title, style = MaterialTheme.typography.h4)
         Text(text = "Release Date ${movieDetailItem.releaseDate}")
@@ -202,7 +210,7 @@ fun MovieDetailsTextLayout(movieDetailItem: MovieDetailItem) {
                 .fillMaxWidth()
         )
         Text(text = "Overview".uppercase(), style = MaterialTheme.typography.h6)
-        Text(text = movieDetailItem.overview, style = MaterialTheme.typography.body1)
+        Text(text = movieDetailItem.overview ?: "", style = MaterialTheme.typography.body1)
     }
 }
 
@@ -218,13 +226,13 @@ fun MovieDetailsTextLayout() {
 fun PreviewMovieDetails() {
     MaterialTheme {
         MovieDetailsScreen(
-            movieDetailItem = MovieDetailItem(
+            movieDetailItem = MovieListItem(
                 id = 1,
                 title = "Movie Title",
                 posterPath = "url",
                 backdropPath = "url",
                 popularity = 5.0,
-                voteAverage = 5.0f,
+                voteAverage = 5.0,
                 releaseDate = "01/01/2022",
                 overview = "Movie Overview"
             ),
@@ -240,7 +248,7 @@ fun PreviewMovieDetails() {
 @Composable
 fun BannerImage(
     modifier: Modifier = Modifier,
-    movieDetailItem: MovieDetailItem,
+    movieDetailItem: MovieListItem,
     contentDescription: String
 ) {
     Box(modifier.wrapContentHeight()) {
@@ -271,13 +279,13 @@ fun BannerImage(
     }
 }
 
-private val TestData = MovieDetailItem(
+private val TestData = MovieListItem(
     id = 1,
     title = "Fancy Movie",
     posterPath = "url",
     backdropPath = "url",
     popularity = 5.0,
-    voteAverage = 5.0f,
+    voteAverage = 5.0,
     releaseDate = "01/01/2022",
     overview = "Bunch of overview text"
 )

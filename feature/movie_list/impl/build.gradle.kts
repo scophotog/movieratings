@@ -23,9 +23,11 @@ android {
 }
 
 dependencies {
+    api(project(":feature:shared:api"))
     api(project(":feature:movie_list:api"))
     implementation(project(":core:db:impl"))
     implementation(project(":core:network:impl"))
+
 
     implementation(libs.retrofit)
     implementation(libs.retrofitMoshi)

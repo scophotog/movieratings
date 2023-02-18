@@ -9,14 +9,14 @@ import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.sco.movieratings.movielist.api.MovieListItem
-import org.sco.movieratings.movielist.api.MovieListRepository
+import org.sco.movieratings.shared.api.MovieListRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetPopularMoviesUseCaseTest {
 
     @Test
     fun `service returns successful response`() = runTest {
-        val mock = mock<MovieListRepository> {
+        val mock = mock<org.sco.movieratings.shared.api.MovieListRepository> {
             on { runBlocking { getPopularMovies() } } doReturn movies
         }
         val result = GetPopularMoviesUseCase(mock).invoke()
@@ -27,7 +27,7 @@ class GetPopularMoviesUseCaseTest {
 
     @Test
     fun `service returns empty list on a failure result response`() = runTest {
-        val mock = mock<MovieListRepository> {
+        val mock = mock<org.sco.movieratings.shared.api.MovieListRepository> {
             on { runBlocking { getPopularMovies() } } doReturn listOf()
         }
         val result = GetPopularMoviesUseCase(mock).invoke()

@@ -27,7 +27,9 @@ dependencies {
     implementation(project(":core:network:impl"))
     api(project (":feature:movie_details:api"))
     implementation(project (":feature:movie_details:impl"))
-    
+    implementation(project (":feature:shared:wiring"))
+
+
     implementation(libs.retrofit)
     implementation(libs.retrofitMoshi)
     kapt(libs.moshiKotlinCodegen)

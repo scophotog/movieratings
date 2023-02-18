@@ -1,7 +1,7 @@
 package org.sco.movieratings.movielist.usecase
 
-import org.sco.movieratings.movielist.api.MovieListItem
-import org.sco.movieratings.movielist.api.MovieListRepository
+import org.sco.movieratings.shared.api.MovieListItem
+import org.sco.movieratings.shared.api.MovieListRepository
 import javax.inject.Inject
 
 class GetPopularMoviesUseCase @Inject constructor(

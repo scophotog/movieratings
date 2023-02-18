@@ -32,6 +32,7 @@ android {
 
 dependencies {
     api(project(":feature:movie_list:api"))
+    api(project(":feature:shared:api"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.material)

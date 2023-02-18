@@ -24,6 +24,8 @@ android {
 
 dependencies {
     api(project(":feature:movie_list:api"))
+    api(project(":feature:shared:api"))
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 }

@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.sco.movieratings.moviedetails.api.MovieDetailInteractor
-import org.sco.movieratings.moviedetails.api.MovieDetailItem
+import org.sco.movieratings.shared.api.MovieListItem
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,12 +24,11 @@ class MovieDetailsViewModel @Inject constructor(
 //        } ?: false
     }
 
-    fun getMovie(movieId: Int): Flow<MovieDetailItem> = flow {
+    fun getMovie(movieId: Int): Flow<MovieListItem> = flow {
         emit(movieInteractor.getMovie(movieId))
     }
 
-
-    fun onFavoriteClick(movieSchema: MovieDetailItem) {
+    fun onFavoriteClick(movieSchema: MovieListItem) {
 //        viewModelScope.launch {
 //            val favorite = movieRepository.isFavorite(movieSchema)
 //            if(favorite) {

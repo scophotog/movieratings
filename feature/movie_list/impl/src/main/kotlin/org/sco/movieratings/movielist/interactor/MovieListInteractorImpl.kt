@@ -1,10 +1,10 @@
 package org.sco.movieratings.movielist.interactor
 
 import org.sco.movieratings.movielist.api.MovieListInteractor
-import org.sco.movieratings.movielist.api.MovieListItem
 import org.sco.movieratings.movielist.usecase.GetFavoriteMoviesUseCase
 import org.sco.movieratings.movielist.usecase.GetPopularMoviesUseCase
 import org.sco.movieratings.movielist.usecase.GetTopRatedMoviesUseCase
+import org.sco.movieratings.shared.api.MovieListItem
 import javax.inject.Inject
 
 class MovieListInteractorImpl @Inject constructor(

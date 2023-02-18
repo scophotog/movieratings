@@ -10,7 +10,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.sco.movieratings.moviedetails.api.MovieDetailItem
 import org.sco.movieratings.moviedetails.api.MovieDetailsRepository
-import org.sco.movieratings.moviedetails.api.MoviePreviewItem
+import org.sco.movieratings.movielist.api.MoviePreviewItem
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetMoviePreviewsTest {

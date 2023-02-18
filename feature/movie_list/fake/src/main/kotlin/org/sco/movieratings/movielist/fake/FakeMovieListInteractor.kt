@@ -1,7 +1,7 @@
 package org.sco.movieratings.movielist.fake
 
 import org.sco.movieratings.movielist.api.MovieListInteractor
-import org.sco.movieratings.movielist.api.MovieListItem
+import org.sco.movieratings.shared.api.MovieListItem
 import javax.inject.Inject
 
 class FakeMovieListInteractor @Inject constructor() : MovieListInteractor {

@@ -1,4 +1,4 @@
-package org.sco.movieratings
+package org.sco.movieratings.compose
 
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
@@ -9,12 +9,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.*
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import org.sco.movieratings.compose.MovieListSections
 
 object MainDestinations {
     const val HOME_ROUTE = "home"
     const val MOVIE_DETAIL_ROUTE = "movie"
     const val MOVIE_ID_KEY = "movieId"
+    const val MOVIE_ITEM = "movieItem"
 }
 
 @Composable
