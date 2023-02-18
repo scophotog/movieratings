@@ -1,4 +1,4 @@
-package org.sco.movieratings.moviedetails.compose
+package org.sco.movieratings.moviedetails.ui.moviedetails.compose
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -24,12 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import org.sco.movieratings.AppTheme
-import org.sco.movieratings.R
-import org.sco.movieratings.moviedetails.MovieDetailsViewModel
+import org.sco.movieratings.moviedetails.ui.moviedetails.MovieDetailsViewModel
 import org.sco.movieratings.moviedetails.api.MovieDetailItem
 import org.sco.movieratings.moviedetails.api.MoviePreviewItem
 import org.sco.movieratings.moviedetails.api.MovieReviewItem
+import org.sco.movieratings.moviedetails.ui.moviedetails.R
 
 @Composable
 fun MovieDetailsScreen(movieId: Int, onNavigateUp: () -> Unit) {
@@ -217,7 +216,7 @@ fun MovieDetailsTextLayout() {
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewMovieDetails() {
-    AppTheme {
+    MaterialTheme {
         MovieDetailsScreen(
             movieDetailItem = MovieDetailItem(
                 id = 1,

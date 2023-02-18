@@ -1,4 +1,4 @@
-package org.sco.movieratings.di
+package org.sco.movieratings.coroutine.di
 
 import dagger.Module
 import dagger.Provides

@@ -1,4 +1,4 @@
-package org.sco.movieratings.moviedetails
+package org.sco.movieratings.moviedetails.ui.moviedetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

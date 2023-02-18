@@ -60,8 +60,8 @@ android {
 
 dependencies {
     // Movie Details
-    implementation(project(":feature:movie_details:impl"))
     implementation(project(":feature:movie_details:wiring"))
+    implementation(project(":feature:movie_details:ui"))
 
     // Movie List
     implementation(project(":feature:movie_list:wiring"))

@@ -1,4 +1,4 @@
-package org.sco.movieratings.moviedetails.compose
+package org.sco.movieratings.moviedetails.ui.moviedetails.compose
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

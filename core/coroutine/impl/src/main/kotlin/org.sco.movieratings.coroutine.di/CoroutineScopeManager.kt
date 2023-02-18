@@ -1,4 +1,4 @@
-package org.sco.movieratings.di
+package org.sco.movieratings.coroutine.di
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

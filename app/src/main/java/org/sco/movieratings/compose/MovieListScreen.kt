@@ -1,6 +1,7 @@
-package org.sco.movieratings
+package org.sco.movieratings.compose
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -8,12 +9,16 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import org.sco.movieratings.MainDestinations
+import org.sco.movieratings.R
 import org.sco.movieratings.movielist.api.MovieListType
 import org.sco.movieratings.movielist.ui.movielist.compose.MovieList
+import org.sco.movieratings.ui.theme.AppTheme
 
 fun NavGraphBuilder.addHomeGraph(
     onMovieSelected: (Int, NavBackStackEntry) -> Unit,
@@ -43,22 +48,22 @@ fun NavGraphBuilder.addHomeGraph(
 }
 
 enum class MovieListSections(
-    var route: String, @DrawableRes var icon: Int, var title: String
+    var route: String, @DrawableRes var icon: Int, @StringRes var title: Int
 ) {
     TOP_MOVIES(
         "${MainDestinations.HOME_ROUTE}/${MovieListType.TOP}",
         R.drawable.ic_top_rated,
-        "Top"
+        R.string.bottom_nav_top
     ),
     POPULAR_MOVIES(
         "${MainDestinations.HOME_ROUTE}/${MovieListType.POPULAR}",
         R.drawable.ic_most_popular,
-        "Popular"
+        R.string.bottom_nav_popular
     ),
     FAVORITE_MOVIES(
         "${MainDestinations.HOME_ROUTE}/${MovieListType.FAVORITE}",
         R.drawable.ic_my_favorite,
-        "Favorites"
+        R.string.bottom_nav_favorite
     )
 }
 
@@ -76,10 +81,10 @@ fun MovieRatingsBottomBar(
                 icon = {
                     Icon(
                         painterResource(id = section.icon),
-                        contentDescription = section.title
+                        contentDescription = stringResource(section.title)
                     )
                 },
-                label = { Text(text = section.title) },
+                label = { Text(text = stringResource(section.title)) },
                 alwaysShowLabel = true,
                 selected = section == currentSection,
                 onClick = { navigateToRoute(section.route) }

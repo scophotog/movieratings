@@ -1,4 +1,4 @@
-package org.sco.movieratings
+package org.sco.movieratings.compose
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
@@ -7,7 +7,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import org.sco.movieratings.moviedetails.compose.MovieDetailsScreen
+import org.sco.movieratings.ui.theme.AppTheme
+import org.sco.movieratings.MainDestinations
+import org.sco.movieratings.rememberMovieRatingsAppState
 
 @Composable
 fun MovieApp() {
@@ -54,7 +56,7 @@ private fun NavGraphBuilder.movieRatingsNavGraph(
         arguments = listOf(navArgument(MainDestinations.MOVIE_ID_KEY) { type = NavType.IntType })
     ) { navBackStackEntry ->
         val arguments = requireNotNull(navBackStackEntry.arguments)
-        MovieDetailsScreen(
+        org.sco.movieratings.moviedetails.ui.moviedetails.compose.MovieDetailsScreen(
             movieId = arguments.getInt(MainDestinations.MOVIE_ID_KEY),
             onNavigateUp = upPress
         )

@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.*
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import org.sco.movieratings.compose.MovieListSections
 
 object MainDestinations {
     const val HOME_ROUTE = "home"

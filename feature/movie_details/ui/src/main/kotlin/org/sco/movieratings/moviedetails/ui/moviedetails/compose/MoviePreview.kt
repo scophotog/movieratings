@@ -1,4 +1,4 @@
-package org.sco.movieratings.moviedetails.compose
+package org.sco.movieratings.moviedetails.ui.moviedetails.compose
 
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -19,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.sco.movieratings.R
 import org.sco.movieratings.moviedetails.api.MoviePreviewItem
+import org.sco.movieratings.moviedetails.ui.moviedetails.R
 
 @Composable
 fun MoviePreview(moviePreview: MoviePreviewItem, modifier: Modifier = Modifier) {
@@ -48,7 +48,9 @@ fun MoviePreview(moviePreview: MoviePreviewItem, modifier: Modifier = Modifier) 
         Image(
             painter = painterResource(android.R.drawable.ic_media_play),
             contentDescription = stringResource(R.string.play_video),
-            modifier = Modifier.background(color = Color.Red, shape = RoundedCornerShape(4.dp)).padding(horizontal = 8.dp, vertical = 2.dp)
+            modifier = Modifier
+                .background(color = Color.Red, shape = RoundedCornerShape(4.dp))
+                .padding(horizontal = 8.dp, vertical = 2.dp)
         )
         Text(
             text = previewTitle,

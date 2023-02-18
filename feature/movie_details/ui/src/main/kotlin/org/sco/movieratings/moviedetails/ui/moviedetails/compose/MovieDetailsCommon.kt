@@ -1,4 +1,4 @@
-package org.sco.movieratings.moviedetails.compose
+package org.sco.movieratings.moviedetails.ui.moviedetails.compose
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
