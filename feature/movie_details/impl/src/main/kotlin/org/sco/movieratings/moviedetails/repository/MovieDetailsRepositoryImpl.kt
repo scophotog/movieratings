@@ -46,7 +46,7 @@ class MovieDetailsRepositoryImpl @Inject constructor(
     private suspend fun <R : Any, T> doApiCall(serviceApiCall: suspend () -> Response<R>): List<T> {
         val result = mutableListOf<T>()
         apiCall { serviceApiCall() }
-            .onSuccess { response ->
+            .onSuccess {
 
             }
             .onFailure {

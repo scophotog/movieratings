@@ -27,8 +27,8 @@ class MovieSchemaMapper @Inject constructor(
         return movieRawList.map {
             MovieListItem(
                 id = it.id,
-                title = it.title ?: "",
-                posterPath = it.posterPath.run { imagePath + this } ?: "",
+                title = it.title,
+                posterPath = it.posterPath.run { imagePath + this },
             )
         }
     }
