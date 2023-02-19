@@ -8,14 +8,14 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import movielist.MovieListViewModel
-import movielist.compose.MovieList
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.sco.movieratings.MainActivity
-import org.sco.movieratings.movielist.api.MovieListItem
 import org.sco.movieratings.movielist.api.MovieListType
+import org.sco.movieratings.movielist.ui.movielist.compose.MovieList
+import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewModel
+import org.sco.movieratings.shared.api.MovieListItem
 
 @HiltAndroidTest
 class MovieListTest {
@@ -30,8 +30,8 @@ class MovieListTest {
     fun setup() {
         hiltTestRule.inject()
         composeTestRule.activity.setContent {
-            movielist.compose.MovieList(
-                viewModel = composeTestRule.activity.viewModels<movielist.MovieListViewModel>().value,
+            MovieList(
+                viewModel = composeTestRule.activity.viewModels<MovieListViewModel>().value,
                 movieListType = MovieListType.POPULAR,
                 onItemClick = { }
             )

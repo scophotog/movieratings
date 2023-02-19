@@ -37,9 +37,11 @@ androidCoreTesting = { module = "androidx.arch.core:core-testing", version.ref =
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "gradleAndroid" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
-androidx-compose-material =  { group = "androidx.compose.material", name = "material" }
-androidx-compose-toolingPreview =  { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-uiTooling =  { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-material = { group = "androidx.compose.material", name = "material" }
+androidx-compose-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-toolingPreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-uiTooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coilCompose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coreKtx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }

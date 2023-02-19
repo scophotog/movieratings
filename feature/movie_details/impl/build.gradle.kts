@@ -29,17 +29,6 @@ dependencies {
     implementation(project(":core:db:impl"))
     implementation(project(":core:network:impl"))
 
-    implementation(libs.retrofit)
-    implementation(libs.retrofitMoshi)
-    kapt(libs.moshiKotlinCodegen)
-    implementation(libs.moshiKotlin)
-
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
-
-    implementation(libs.coroutinesCore)
-    implementation(libs.coroutinesAndroid)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
