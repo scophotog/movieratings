@@ -9,7 +9,7 @@ interface MovieListRepository {
     suspend fun getMovieReviews(movieId: Int): List<MovieReviewItem>
     suspend fun getMoviePreviews(movieId: Int): List<MoviePreviewItem>
 
-    suspend fun isFavorite(movieSchema: MovieListItem): Boolean
-    suspend fun addToFavorites(movieSchema: MovieListItem)
-    suspend fun removeFromFavorites(movie: MovieListItem)
+    suspend fun isFavorite(movieId: Int): Boolean
+    suspend fun addToFavorites(movieId: Int)
+    suspend fun removeFromFavorites(movieId: Int)
 }

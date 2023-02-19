@@ -19,24 +19,21 @@ class MovieDetailsViewModel @Inject constructor(
     val isFavorite: StateFlow<Boolean> = _isFavorite
 
     fun checkIsFavorite(movieId: Int) = viewModelScope.launch {
-//        _isFavorite.value = getMovie(movieId).firstOrNull()?.let {
-//            movieRepository.isFavorite(it)
-//        } ?: false
+        _isFavorite.value = movieInteractor.isFavorite(movieId)
     }
 
     fun getMovie(movieId: Int): Flow<MovieListItem> = flow {
         emit(movieInteractor.getMovie(movieId))
     }
 
-    fun onFavoriteClick(movieSchema: MovieListItem) {
-//        viewModelScope.launch {
-//            val favorite = movieRepository.isFavorite(movieSchema)
-//            if(favorite) {
-//                movieRepository.removeFromFavorites(movieSchema)
-//            } else {
-//                movieRepository.addToFavorites(movieSchema)
-//            }
-//            _isFavorite.emit(!favorite)
-//        }
+    fun onFavoriteClick(movieId: Int) {
+        viewModelScope.launch {
+            if (movieInteractor.isFavorite(movieId)) {
+                movieInteractor.removeFavorite(movieId)
+            } else {
+                movieInteractor.addFavorite(movieId)
+            }
+            _isFavorite.emit(!_isFavorite.value)
+        }
     }
 }

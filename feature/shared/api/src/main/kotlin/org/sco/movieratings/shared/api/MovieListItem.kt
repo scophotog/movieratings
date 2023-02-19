@@ -10,6 +10,6 @@ data class MovieListItem(
     val voteAverage: Double? = null,
     val voteCount: Int? = null,
     val backdropPath: String? = null,
-    val previewList: List<MoviePreviewItem> = mutableListOf(),
-    val reviewList: List<MovieReviewItem> = mutableListOf()
+    val previewList: MutableList<MoviePreviewItem> = mutableListOf(),
+    val reviewList: MutableList<MovieReviewItem> = mutableListOf()
 )

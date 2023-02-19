@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -36,22 +37,14 @@ fun MovieDetailsScreen(movieId: Int, onNavigateUp: () -> Unit) {
 }
 
 @Composable
-fun MovieDetailsScreen(movieItem: MovieListItem, onNavigateUp: () -> Unit) {
-    MovieDetailsLoader(movieItem = movieItem, onNavigateUp = onNavigateUp)
-}
-
-@Composable
 fun MovieDetailsLoader(
     movieId: Int = -1,
-    movieItem: MovieListItem? = null,
     movieDetailsViewModel: MovieDetailsViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit
 ) {
     val movieDetail by remember(movieDetailsViewModel, movieId) {
         movieDetailsViewModel.getMovie(movieId)
     }.collectAsState(initial = null)
-
-    val movieDetailItem by remember { mutableStateOf(movieItem) }
 
     val isFavorite by remember(movieDetailsViewModel, movieId) {
         movieDetailsViewModel.isFavorite
@@ -69,7 +62,7 @@ fun MovieDetailsLoader(
             previewList = it.previewList,
             isFavorite = isFavorite,
             onFavoriteIconClick = {
-                movieDetailsViewModel.onFavoriteClick(it)
+                movieDetailsViewModel.onFavoriteClick(it.id)
                 // TODO: Use a snackbar
                 if (isFavorite) {
                     Toast.makeText(context,"Removed from favorites", Toast.LENGTH_SHORT).show()
@@ -121,22 +114,20 @@ private fun Body(
             item {
                 HeaderSection("Reviews")
             }
-            //TODO Why Broke?
-//            items(reviewList) { review ->
-//                MovieReview(review)
-//            }
+            items(reviewList) { review ->
+                MovieReview(review)
+            }
         }
         if (previewList.isNotEmpty()) {
             item {
                 HeaderSection("Previews")
             }
-            //TODO Why Broke?
-//            items(previewList) { preview ->
-//                MoviePreview(
-//                    moviePreview = preview,
-//                    modifier = Modifier.fillMaxWidth()
-//                )
-//            }
+            items(previewList) { preview ->
+                MoviePreview(
+                    moviePreview = preview,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
