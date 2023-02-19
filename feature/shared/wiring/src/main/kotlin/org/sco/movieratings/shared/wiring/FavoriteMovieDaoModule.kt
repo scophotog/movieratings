@@ -7,7 +7,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import org.sco.movieratings.db.MovieDao
 import org.sco.movieratings.db.MovieDatabase
-import javax.inject.Named
 
 @Module
 @InstallIn(SingletonComponent::class)

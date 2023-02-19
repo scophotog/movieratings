@@ -1,13 +1,10 @@
 package org.sco.e2etests
 
-import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.sco.espresso.robots.movieDetails
-import org.sco.espresso.robots.movieList
 import org.sco.movieratings.MainActivity
 
 @RunWith(AndroidJUnit4::class)

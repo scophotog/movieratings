@@ -5,7 +5,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import org.sco.movieratings.*
 
 // TODO: Try Material 3
 private val LightColors = lightColors(

@@ -9,7 +9,6 @@ import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.sco.movieratings.movielist.api.MovieListItem
-import org.sco.movieratings.shared.api.MovieListRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetPopularMoviesUseCaseTest {

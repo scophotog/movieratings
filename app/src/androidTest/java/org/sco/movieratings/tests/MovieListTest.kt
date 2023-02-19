@@ -8,14 +8,14 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import movielist.MovieListViewModel
+import movielist.compose.MovieList
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.sco.movieratings.MainActivity
-import org.sco.movieratings.movielist.api.MovieListType
-import movielist.MovieListViewModel
 import org.sco.movieratings.movielist.api.MovieListItem
-import movielist.compose.MovieList
+import org.sco.movieratings.movielist.api.MovieListType
 
 @HiltAndroidTest
 class MovieListTest {
