@@ -10,6 +10,8 @@ android {
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
+
+        testInstrumentationRunner = "org.sco.espresso.HiltTestRunner"
     }
 
     compileOptions {
@@ -48,4 +50,15 @@ dependencies {
 
     implementation(libs.coil)
     implementation(libs.coilCompose)
+
+    // Testing
+    debugImplementation(libs.androidx.compose.test.manifest)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.test.junit4)
+    androidTestImplementation(libs.junitAndroidExt)
+    androidTestImplementation(libs.androidCoreTesting)
+    androidTestImplementation(libs.espresso)
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler)
+    androidTestImplementation(project(":espresso"))
 }

@@ -15,7 +15,7 @@ android {
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "org.sco.movieratings.HiltTestRunner"
+        testInstrumentationRunner = "org.sco.espresso.HiltTestRunner"
 
         kapt {
             arguments {
@@ -78,9 +78,6 @@ dependencies {
     implementation(libs.androidx.compose.toolingPreview)
     debugImplementation(libs.androidx.compose.uiTooling)
 
-    androidTestImplementation(libs.androidx.compose.test.junit4)
-    debugImplementation(libs.androidx.compose.test.manifest)
-
     // Navigation
     implementation(libs.navigationCompose)
 
@@ -92,21 +89,11 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
-    kaptAndroidTest(libs.hilt.android.compiler)
 
     // Coil
     implementation(libs.coil)
     implementation(libs.coilCompose)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.junitAndroidExt)
-    androidTestImplementation(libs.androidCoreTesting)
-    androidTestImplementation(libs.espresso)
-    androidTestImplementation(libs.hilt.android.testing)
-
-    // TODO: Move these to the appropriate module
-    androidTestImplementation(project(":feature:shared:api"))
-    androidTestImplementation(project(":feature:movie_list:fake"))
-    androidTestImplementation(project(":feature:movie_list:fake-wiring"))
 
 
     androidTestImplementation(project(":espresso"))

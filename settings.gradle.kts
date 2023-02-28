@@ -23,7 +23,6 @@ dependencyResolutionManagement {
 }
 
 include(":app")
-include(":e2etests")
 include(":espresso")
 include(":core:network:impl")
 include(":core:db:impl")

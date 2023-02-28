@@ -1,4 +1,4 @@
-package org.sco.movieratings
+package org.sco.espresso
 
 import android.app.Application
 import android.content.Context
