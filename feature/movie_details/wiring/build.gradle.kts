@@ -25,9 +25,8 @@ android {
 dependencies {
     implementation(project(":core:db:impl"))
     implementation(project(":core:network:impl"))
-    api(project (":feature:movie_details:api"))
-    implementation(project (":feature:movie_details:impl"))
-    implementation(project (":feature:shared:wiring"))
+    implementation(project(":feature:movie_details:impl"))
+    implementation(project(":feature:shared:wiring"))
 
 
     implementation(libs.retrofit)

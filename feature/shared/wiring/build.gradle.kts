@@ -25,8 +25,7 @@ android {
 dependencies {
     implementation(project(":core:db:impl"))
     implementation(project(":core:network:impl"))
-    api(project(":feature:shared:api"))
-    api(project(":feature:shared:impl"))
+    implementation(project(":feature:shared:impl"))
 
     implementation(libs.retrofit)
     implementation(libs.retrofitMoshi)

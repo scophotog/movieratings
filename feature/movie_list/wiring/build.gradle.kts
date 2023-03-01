@@ -25,7 +25,6 @@ android {
 dependencies {
     implementation(project(":core:db:impl"))
     implementation(project(":core:network:impl"))
-    api(project(":feature:movie_list:api"))
     implementation(project(":feature:movie_list:impl"))
 
     implementation(libs.retrofit)
