@@ -25,12 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import org.sco.movieratings.AppTheme
 import org.sco.movieratings.R
 import org.sco.movieratings.api.response.MoviePreview
 import org.sco.movieratings.api.response.Review
 import org.sco.movieratings.db.MovieSchema
 import org.sco.movieratings.moviedetails.MovieDetailsViewModel
+import org.sco.movieratings.ui.theme.AppTheme
 
 @Composable
 fun MovieDetailsScreen(movieId: Int, onNavigateUp: () -> Unit) {

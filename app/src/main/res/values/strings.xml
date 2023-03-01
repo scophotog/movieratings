@@ -1,38 +1,12 @@
-<resources xmlns:xliff="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Movie Ratings</string>
-    <string name="movie_details_activity">Movie Details</string>
-    <string name="settings_activity">Settings</string>
-    <string name="release_date_label">Release Date:</string>
-    <string name="vote_average_label">Vote Average:</string>
 
     <string name="no_movies">No movies :(</string>
-    <string name="pick_movie">Select a Movie</string>
 
-    <string name="reviews_text">Reviews:</string>
-    <string name="previews_text">Previews:</string>
+    <string name="bottom_nav_popular">Popular</string>
+    <string name="bottom_nav_top">Top</string>
+    <string name="bottom_nav_favorite">Favorites</string>
 
-    <!-- Menu Options -->
-    <string name="sort_by">Sort By</string>
-    <string name="action_refresh">Refresh</string>
-    <string name="home_settings">Home</string>
-    <string name="most_popular_settings">Most Popular</string>
-    <string name="high_rated_settings">Top Rated</string>
-    <string name="my_favorites_settings">Favorites</string>
-    <string name="pref_sort_key" translatable="false">sort</string>
-    <string name="pref_sort_my_favorites" translatable="false">my_favorites</string>
-    <!-- Make sure these next two match the api -->
-    <string name="pref_sort_top_rated" translatable="false">top_rated</string>
-    <string name="pref_sort_popular_rated" translatable="false">popular</string>
-
-    <!-- Formats -->
-    <!-- Format Release Date -->
-    <string name="format_release_date">Release Year: <xliff:g id="year">%1$s</xliff:g></string>
-    <!-- Format Rating -->
-    <string name="format_rating">Rating: <xliff:g id="temp">%.1f</xliff:g> \u002F 10</string>
-    <string name="poster_description">Movie Poster</string>
-    <string name="mark_as_favorite_description">Mark as Favorite</string>
     <string name="play_video">Play Video</string>
-    <string name="preview_title">%1$s: %2$s</string>
     <string name="label_back">Back</string>
-
 </resources>

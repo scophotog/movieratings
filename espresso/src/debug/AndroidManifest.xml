@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.sco.movieratings">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application android:allowBackup="false"
         android:usesCleartextTraffic="true">
-        <activity android:name=".HiltTestActivity"
+        <activity android:name="org.sco.movieratings.HiltTestActivity"
             android:exported="false">
         </activity>
     </application>

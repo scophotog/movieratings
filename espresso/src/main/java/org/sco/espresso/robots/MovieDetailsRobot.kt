@@ -1,8 +1,5 @@
 package org.sco.espresso.robots
 
-import org.sco.movieratings.R
-
-
 class MovieDetailsRobot {
 
 }
