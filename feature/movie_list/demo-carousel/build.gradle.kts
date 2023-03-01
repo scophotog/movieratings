@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "org.sco.movieratings.movielist.demo"
+    namespace = "org.sco.movieratings.movielist.democarousel"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.sco.movieratings.movielist.demo"
+        applicationId = "org.sco.movieratings.movielist.democarousel"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
@@ -70,7 +70,7 @@ android {
 val fakeImplementation by configurations
 val realImplementation by configurations
 dependencies {
-    implementation(project(":feature:movie_list:ui"))
+    implementation(project(":feature:movie_list:ui2"))
     fakeImplementation(project(":feature:movie_list:fake-wiring"))
     realImplementation(project(":feature:movie_list:wiring"))
 

@@ -44,6 +44,14 @@ fun NavGraphBuilder.addHomeGraph(
             modifier = modifier
         )
     }
+// Uncomment to experiment with UI project 2
+// Comment the lines above
+//    composable(MovieListSections.TOP_MOVIES.route) { from ->
+//        MovieList(
+//            onItemClick = { id -> onMovieSelected(id, from) },
+//            modifier = modifier
+//        )
+//    }
 }
 
 enum class MovieListSections(
@@ -54,11 +62,13 @@ enum class MovieListSections(
         R.drawable.ic_top_rated,
         R.string.bottom_nav_top
     ),
+    // Comment out when experimenting with UI project 2
     POPULAR_MOVIES(
         "${MainDestinations.HOME_ROUTE}/${MovieListType.POPULAR}",
         R.drawable.ic_most_popular,
         R.string.bottom_nav_popular
     ),
+    // Comment out when experimenting with UI project 2
     FAVORITE_MOVIES(
         "${MainDestinations.HOME_ROUTE}/${MovieListType.FAVORITE}",
         R.drawable.ic_my_favorite,

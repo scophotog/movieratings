@@ -2,13 +2,10 @@ package org.sco.movieratings.movielist.ui.movielist.compose
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -21,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -29,8 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import org.sco.movieratings.movielist.api.MovieListType
 import org.sco.movieratings.movielist.ui.movielist.R
+import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieList
 import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewModel
 import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewState
 import org.sco.movieratings.shared.api.MovieListItem
@@ -39,13 +35,10 @@ import org.sco.movieratings.shared.api.MovieListItem
 fun MovieList(
     modifier: Modifier = Modifier,
     viewModel: MovieListViewModel = hiltViewModel(),
-    movieListType: MovieListType = MovieListType.POPULAR,
     onItemClick: (Int) -> Unit = {}
 ) {
-    val viewState by remember(viewModel, movieListType) {
-        viewModel.fetchMovieList(
-            movieListType
-        )
+    val viewState by remember(viewModel) {
+        viewModel.fetchMovieList()
     }.collectAsState(initial = MovieListViewState.Loading)
 
     MovieList(
@@ -69,7 +62,7 @@ fun MovieList(
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center)
             )
-            is MovieListViewState.Loaded -> MovieGridList(
+            is MovieListViewState.Loaded -> MovieRowList(
                 movieList = state.movieList,
                 onMovieClick = onMovieClick
             )
@@ -84,17 +77,40 @@ fun MovieList(
 }
 
 @Composable
-fun MovieGridList(movieList: List<MovieListItem>, onMovieClick: (Int) -> Unit) {
-    val configuration = LocalConfiguration.current
-    LazyVerticalGrid(
-        columns = if (configuration.screenWidthDp > 600) GridCells.Fixed(5) else GridCells.Fixed(2),
-        contentPadding = PaddingValues(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.testTag("MovieList")
-    ) {
-        items(movieList) { movie ->
-            MovieItem(movie = movie, selectMovie = onMovieClick)
+fun MovieRowList(movieList: List<MovieList>, onMovieClick: (Int) -> Unit) {
+    LazyColumn {
+        items(movieList) {
+            if (it.movieList.isNotEmpty()) {
+                MovieCarousel(
+                    movieListTitle = it.title,
+                    movieList = it.movieList,
+                    onMovieClick = onMovieClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun MovieCarousel(
+    movieListTitle: String,
+    movieList: List<MovieListItem>,
+    onMovieClick: (Int) -> Unit
+) {
+    Column {
+        Text(
+            text = movieListTitle,
+            style = MaterialTheme.typography.h5,
+            modifier = Modifier.padding(start = 8.dp)
+        )
+        LazyRow(
+            contentPadding = PaddingValues(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.testTag("MovieList")
+        ) {
+            items(movieList) { movie ->
+                MovieItem(movie = movie, selectMovie = onMovieClick)
+            }
         }
     }
 }
@@ -103,7 +119,8 @@ fun MovieGridList(movieList: List<MovieListItem>, onMovieClick: (Int) -> Unit) {
 @Composable
 fun MovieListPreview() {
     MaterialTheme {
-        MovieGridList(
+        MovieCarousel(
+            movieListTitle = "Sample Movies",
             movieList = listOf(
                 MovieListItem(0, "Foo", null),
                 MovieListItem(0, "Foo", null),
