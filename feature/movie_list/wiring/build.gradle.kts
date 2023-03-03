@@ -26,6 +26,7 @@ dependencies {
     implementation(project(":core:db:impl"))
     implementation(project(":core:network:wiring"))
     implementation(project(":feature:movie_list:impl"))
+    implementation(project(":feature:shared:wiring"))
 
     implementation(libs.retrofit)
     implementation(libs.retrofitMoshi)

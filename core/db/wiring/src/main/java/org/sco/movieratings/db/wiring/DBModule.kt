@@ -1,4 +1,4 @@
-package org.sco.movieratings.db.di
+package org.sco.movieratings.db.wiring
 
 import android.content.Context
 import dagger.Module

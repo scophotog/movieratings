@@ -24,7 +24,7 @@ android {
 
 dependencies {
     api(project(":feature:shared:api"))
-    implementation(project(":core:db:impl"))
+    api(project(":core:db:api"))
     implementation(project(":core:network:wiring"))
 
 

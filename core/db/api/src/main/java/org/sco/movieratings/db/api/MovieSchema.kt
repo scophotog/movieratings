@@ -1,4 +1,4 @@
-package org.sco.movieratings.db
+package org.sco.movieratings.db.api
 
 import android.os.Parcelable
 import androidx.room.Entity

@@ -1,7 +1,7 @@
 package org.sco.movieratings.shared.impl.repository
 
 import android.util.Log
-import org.sco.movieratings.db.MovieDao
+import org.sco.movieratings.db.api.MovieDao
 import org.sco.movieratings.network.apiCall
 import org.sco.movieratings.shared.api.MovieListItem
 import org.sco.movieratings.shared.api.MovieListRepository
@@ -20,7 +20,7 @@ class MovieListRepositoryImpl @Inject constructor(
     private val service: MovieListRest,
     private val movieDetailsRest: MovieDetailsRest,
     private val mapper: MovieMapper,
-    private val movieDao: MovieDao
+    private val movieDao: org.sco.movieratings.db.api.MovieDao
 ) : MovieListRepository {
 
     private val popularMoviesCache: MutableList<MovieListItem> = mutableListOf()

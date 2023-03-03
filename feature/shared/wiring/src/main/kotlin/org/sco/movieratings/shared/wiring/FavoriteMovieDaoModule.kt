@@ -5,7 +5,6 @@ import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.sco.movieratings.db.MovieDao
 import org.sco.movieratings.db.MovieDatabase
 
 @Module
@@ -14,6 +13,6 @@ object FavoriteMovieDaoModule {
 
     @Provides
     @Reusable
-    fun favoritesDao(db: MovieDatabase): MovieDao =
+    fun favoritesDao(db: MovieDatabase): org.sco.movieratings.db.api.MovieDao =
         db.movieDao()
 }
