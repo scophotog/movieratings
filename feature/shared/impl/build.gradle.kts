@@ -25,7 +25,7 @@ android {
 dependencies {
     api(project(":feature:shared:api"))
     implementation(project(":core:db:impl"))
-    implementation(project(":core:network:impl"))
+    implementation(project(":core:network:wiring"))
 
 
     implementation(libs.retrofit)

@@ -24,9 +24,9 @@ dependencyResolutionManagement {
 
 include(":app")
 include(":espresso")
-include(":core:network:impl")
+include(":core:network:wiring")
 include(":core:db:impl")
-include(":core:coroutine:impl")
+include(":core:coroutine:wiring")
 
 include(":feature:shared:api")
 include(":feature:shared:impl")

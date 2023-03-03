@@ -27,7 +27,7 @@ dependencies {
     api(project(":feature:movie_details:api"))
     api(project(":feature:shared:wiring"))
     implementation(project(":core:db:impl"))
-    implementation(project(":core:network:impl"))
+    implementation(project(":core:network:wiring"))
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
