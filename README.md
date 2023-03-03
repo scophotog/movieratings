@@ -2,4 +2,12 @@
 
 Just a toy project for trying out stuff
 
-![Build Status](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiUjNMRWtYOTIzdzI2UjlQZ3l2MWVFSGYzWU42eGZ4WEhTWnRzMklBeXlsek5CclZpQU40VHdnNCthY1hmcnlacXBtY2VuZnp1d2crdUJrdldFaStNUE5BPSIsIml2UGFyYW1ldGVyU3BlYyI6IjdKZ2t5OHV1VXMzSUJ6cXkiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main)
+## setup
+
+Go to [www.themoviedb.org](https://www.themoviedb.org/) and get yourself an api key.
+
+Inside `local.properties` add the key there:
+
+```
+API_KEY=your_api_key
+```
