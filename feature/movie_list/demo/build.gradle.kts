@@ -70,10 +70,13 @@ android {
 val fakeImplementation by configurations
 val realImplementation by configurations
 dependencies {
+    // Demo Dependencies
     implementation(project(":feature:movie_list:ui"))
     fakeImplementation(project(":feature:movie_list:fake-wiring"))
     realImplementation(project(":feature:movie_list:wiring"))
 
+
+    // Other Dependencies
     implementation(libs.coreKtx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activityCompose)

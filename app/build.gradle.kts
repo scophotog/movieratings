@@ -66,6 +66,7 @@ dependencies {
     // Movie List
     implementation(project(":feature:movie_list:wiring"))
     implementation(project(":feature:movie_list:ui"))
+//    implementation(project(":feature:movie_list:ui2"))
 
     // App Dependencies
     implementation(libs.coreKtx)
