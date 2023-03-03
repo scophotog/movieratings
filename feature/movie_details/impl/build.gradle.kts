@@ -34,9 +34,8 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation("androidx.test:core:1.4.0")
-    testImplementation("org.mockito:mockito-core:4.0.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
-    testImplementation("org.mockito:mockito-inline:4.0.0")
+    testImplementation(libs.mockk)
+    testImplementation(project(":feature:shared:fake"))
     testImplementation("androidx.arch.core:core-testing:2.1.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
     testImplementation("androidx.room:room-testing:2.4.1")

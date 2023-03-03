@@ -1,44 +1,34 @@
 package org.sco.movieratings.movielist.usecase
 
-import junit.framework.Assert.assertEquals
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
-import org.sco.movieratings.movielist.api.MovieListItem
+import org.sco.movieratings.shared.api.MovieListRepository
+import org.sco.movieratings.shared.fake.repository.FakeRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetPopularMoviesUseCaseTest {
 
     @Test
-    fun `service returns successful response`() = runTest {
-        val mock = mock<org.sco.movieratings.shared.api.MovieListRepository> {
-            on { runBlocking { getPopularMovies() } } doReturn movies
-        }
-        val result = GetPopularMoviesUseCase(mock).invoke()
+    fun `service returns successful response - fake`() = runTest {
+        val fakeRepository = FakeRepository()
+        val result = GetPopularMoviesUseCase(fakeRepository).invoke()
         assertTrue(result.isNotEmpty())
-        assertEquals(movies.size, result.size)
-        assertEquals(movies.first().title, result.first().title)
+        assertEquals(3, result.size)
+        assertEquals("Fake", result.first().title)
     }
 
     @Test
-    fun `service returns empty list on a failure result response`() = runTest {
-        val mock = mock<org.sco.movieratings.shared.api.MovieListRepository> {
-            on { runBlocking { getPopularMovies() } } doReturn listOf()
+    fun `service returns empty list - mockk`() = runTest {
+        val mock = mockk<MovieListRepository> {
+            every { runBlocking { getPopularMovies() } } returns listOf()
         }
         val result = GetPopularMoviesUseCase(mock).invoke()
         assertTrue(result.isEmpty())
-    }
-
-    companion object {
-        private val movie = MovieListItem(
-            title = "Movie",
-            id = 1,
-            posterPath = "http://poster.png"
-        )
-        private val movies = listOf(movie)
     }
 }

@@ -24,19 +24,18 @@ android {
 
 dependencies {
     api(project(":feature:shared:api"))
-    implementation(project(":feature:shared:wiring"))
-    api(project(":feature:movie_list:api"))
-    implementation(project(":core:db:impl"))
-    implementation(project(":core:network:impl"))
 
+    implementation(libs.retrofit)
+    implementation(libs.retrofitMoshi)
+    kapt(libs.moshiKotlinCodegen)
+    implementation(libs.moshiKotlin)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+
+    implementation(libs.coroutinesCore)
+    implementation(libs.coroutinesAndroid)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(project(":feature:shared:fake"))
-    testImplementation("androidx.test:core:1.4.0")
-    testImplementation("androidx.arch.core:core-testing:2.1.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
-    testImplementation("androidx.room:room-testing:2.4.1")
 }

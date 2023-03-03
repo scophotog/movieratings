@@ -31,6 +31,7 @@ include(":core:coroutine:impl")
 include(":feature:shared:api")
 include(":feature:shared:impl")
 include(":feature:shared:wiring")
+include(":feature:shared:fake")
 
 include(":feature:movie_details:api")
 include(":feature:movie_details:impl")
