@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -34,19 +33,21 @@ import org.sco.movieratings.movielist.ui.movielist.R
 import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewModel
 import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewState
 import org.sco.movieratings.shared.api.MovieListItem
+import org.sco.movieratings.util.WindowInfo
+import org.sco.movieratings.util.rememberWindowInfo
 
 @Composable
 fun MovieList(
     modifier: Modifier = Modifier,
     viewModel: MovieListViewModel = hiltViewModel(),
-    movieListType: MovieListType = MovieListType.POPULAR,
+    movieListType: MovieListType,
     onItemClick: (Int) -> Unit = {}
 ) {
-    val viewState by remember(viewModel, movieListType) {
-        viewModel.fetchMovieList(
-            movieListType
-        )
-    }.collectAsState(initial = MovieListViewState.Loading)
+
+    val viewState by remember(viewModel) {
+        viewModel.fetchMovieList(movieListType)
+        viewModel.listState
+    }.collectAsState()
 
     MovieList(
         viewState = viewState,
@@ -70,7 +71,7 @@ fun MovieList(
                     .wrapContentSize(Alignment.Center)
             )
             is MovieListViewState.Loaded -> MovieGridList(
-                movieList = state.movieList,
+                movieList = state.movieListState.movieList,
                 onMovieClick = onMovieClick
             )
             MovieListViewState.Loading -> CircularProgressIndicator(
@@ -85,9 +86,10 @@ fun MovieList(
 
 @Composable
 fun MovieGridList(movieList: List<MovieListItem>, onMovieClick: (Int) -> Unit) {
-    val configuration = LocalConfiguration.current
+    val windowInfo = rememberWindowInfo()
+
     LazyVerticalGrid(
-        columns = if (configuration.screenWidthDp > 600) GridCells.Fixed(5) else GridCells.Fixed(2),
+        columns = if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact) GridCells.Fixed(2) else GridCells.Fixed(5),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),

@@ -11,7 +11,9 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.sco.movieratings.movielist.api.MovieListType
 import org.sco.movieratings.movielist.ui.movielist.compose.MovieList
+import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListState
 import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewState
 import org.sco.movieratings.shared.api.MovieListItem
 
@@ -25,7 +27,7 @@ class MovieListTest {
         composeTestRule.setContent {
             MovieList(
                 modifier = Modifier,
-                viewState = MovieListViewState.Loaded(listOf(movie)),
+                viewState = MovieListViewState.Loaded(movieListState),
                 onMovieClick = { }
             )
         }
@@ -39,10 +41,15 @@ class MovieListTest {
     }
 
     companion object {
+
         private val movie = MovieListItem(
             id = 0,
             title = "Something",
             posterPath = ""
+        )
+        private val movieListState = MovieListState(
+            movieList = listOf(movie),
+            type = MovieListType.POPULAR
         )
     }
 }
