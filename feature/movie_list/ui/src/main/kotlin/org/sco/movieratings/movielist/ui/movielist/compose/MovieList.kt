@@ -40,7 +40,7 @@ import org.sco.movieratings.util.rememberWindowInfo
 fun MovieList(
     modifier: Modifier = Modifier,
     viewModel: MovieListViewModel = hiltViewModel(),
-    movieListType: MovieListType,
+    movieListType: MovieListType = MovieListType.POPULAR,
     onItemClick: (Int) -> Unit = {}
 ) {
 
