@@ -20,7 +20,7 @@ class MovieListRepositoryImpl @Inject constructor(
     private val service: MovieListRest,
     private val movieDetailsRest: MovieDetailsRest,
     private val mapper: MovieMapper,
-    private val movieDao: org.sco.movieratings.db.api.MovieDao
+    private val movieDao: MovieDao
 ) : MovieListRepository {
 
     private val popularMoviesCache: MutableList<MovieListItem> = mutableListOf()

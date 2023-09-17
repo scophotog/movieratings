@@ -1,6 +1,5 @@
 package org.sco.movieratings.shared.impl.data.mapper
 
-import org.sco.movieratings.db.api.MovieSchema
 import org.sco.movieratings.shared.api.MovieListItem
 import org.sco.movieratings.shared.api.MoviePreviewItem
 import org.sco.movieratings.shared.api.MovieReviewItem

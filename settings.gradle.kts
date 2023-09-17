@@ -1,26 +1,25 @@
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+
 pluginManagement {
+    includeBuild("build-logic")
+
     repositories {
         gradlePluginPortal()
         google()
         mavenCentral()
     }
-
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id.startsWith("androidx.navigation.safeargs")) {
-                useModule("androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5")
-            }
-        }
-    }
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
     }
 }
+
+rootProject.name = "MovieRatingsApp"
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":app")
 include(":espresso")
@@ -52,3 +51,4 @@ include(":feature:movie_list:ui2")
 include(":core:db:api")
 include(":core:db:wiring")
 include(":util")
+include(":plugins:convention")

@@ -75,7 +75,7 @@ class MovieRatingsAppState(
  * This is used to de-duplicate navigation events.
  */
 private fun NavBackStackEntry.lifecycleIsResumed() =
-    this.lifecycle.currentState == Lifecycle.State.RESUMED
+    this.getLifecycle().currentState == Lifecycle.State.RESUMED
 
 private val NavGraph.startDestination: NavDestination?
     get() = findNode(startDestinationId)

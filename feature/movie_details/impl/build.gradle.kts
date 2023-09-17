@@ -1,34 +1,16 @@
 plugins {
-    id("com.android.library")
+    id("movieratings.android-lib")
+    id("movieratings.hilt")
     id("kotlin-android")
     id("kotlin-kapt")
 }
 
-android {
-    compileSdk = libs.versions.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
+android.namespace = "org.sco.movieratings.moviedetails"
 
 dependencies {
     api(project(":feature:movie_details:api"))
     api(project(":feature:shared:api"))
     implementation(project(":core:db:impl"))
-
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
 
     testImplementation(libs.junit)
     testImplementation("androidx.test:core:1.4.0")
