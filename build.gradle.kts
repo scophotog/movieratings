@@ -14,6 +14,7 @@ buildscript {
         classpath(libs.android.gradle.plugin)
         classpath(libs.kotlin.plugin)
         classpath(libs.hilt.android.gradle)
+        classpath(libs.app.cash.paparazzi)
     }
 }
 
