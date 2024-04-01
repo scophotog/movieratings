@@ -1,15 +1,15 @@
 [versions]
 activityCompose = "1.4.0"
-androidCoreTesting = "2.1.0"
-androidxComposeBom = "2023.01.00"
+androidCoreTesting = "2.2.0"
+androidxComposeBom = "2024.03.00"
 coil = "2.1.0"
-compileSdk = "33"
+compileSdk = "34"
 compose-compiler = "1.4.2"
 coreKtx = "1.7.0"
 coreTesting = "2.1.0"
 espresso = "3.4.0"
 fragmentKtx = "1.4.1"
-gradleAndroid = "7.4.1"
+gradleAndroid = "8.3.1"
 hilt = "2.44"
 hiltNavigation = "1.0.0"
 junit = "4.13.2"
@@ -29,11 +29,14 @@ preferenceKtx = "1.2.0"
 recyclerView = "1.2.1"
 retrofit = "2.9.0"
 room = "2.2.6"
-targetSdk = "33"
+targetSdk = "34"
+androidXTestCore = "1.5.0"
 
 [libraries]
 activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidCoreTesting = { module = "androidx.arch.core:core-testing", version.ref = "androidCoreTesting" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidXTestCore" }
+androidx-test-core-ktx = { module = "androidx.test:core-ktx", version.ref = "androidXTestCore" }
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "gradleAndroid" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }

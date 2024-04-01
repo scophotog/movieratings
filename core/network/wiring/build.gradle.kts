@@ -6,7 +6,7 @@ plugins {
     id("kotlin-kapt")
 }
 
-var apiKey = gradleLocalProperties(rootDir).getProperty("API_KEY")
+val apiKey = gradleLocalProperties(rootDir, providers).getProperty("API_KEY")
     ?: System.getenv("API_KEY")
     ?: "NoAPIKeyFound"
 
@@ -19,11 +19,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     buildTypes {
@@ -34,6 +34,7 @@ android {
             buildConfigField("String", "MOVIE_DB_API_KEY", "\"${apiKey}\"")
         }
     }
+    namespace = "org.sco.movieratings.network"
 }
 
 dependencies {
