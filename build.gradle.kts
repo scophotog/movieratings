@@ -1,11 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    extra.apply {
-        set("minSdkVersion", libs.versions.minSdk.get().toInt())
-        set("targetSdkVersion", libs.versions.targetSdk.get().toInt())
-        set("compileSdkVersion", libs.versions.compileSdk.get().toInt())
-    }
     repositories {
         google {
             content {
@@ -27,8 +22,8 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.kover)
+    alias(libs.plugins.kover) apply false
+    alias(libs.plugins.paparazzi) apply false
 }
 
 tasks.register<Delete>("clean").configure {

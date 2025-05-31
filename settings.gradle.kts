@@ -12,14 +12,6 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
-
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id.startsWith("androidx.navigation.safeargs")) {
-                useModule("androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5")
-            }
-        }
-    }
 }
 
 dependencyResolutionManagement {
@@ -67,5 +59,14 @@ include(":feature:movie_list:ui")
 include(":feature:movie_list:ui2")
 include(":core:db:api")
 include(":core:db:wiring")
-include(":util")
 include(":core:designsystem")
+include(":util")
+
+
+check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
+    """
+    Now in Android requires JDK 17+ but it is currently using JDK ${JavaVersion.current()}.
+    Java Home: [${System.getProperty("java.home")}]
+    https://developer.android.com/build/jdks#jdk-config-in-studio
+    """.trimIndent()
+}
