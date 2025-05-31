@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.movieratings.android.library)
     alias(libs.plugins.movieratings.hilt)
+    alias(libs.plugins.movieratings.kover)
 }
 
 android {

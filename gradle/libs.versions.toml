@@ -23,6 +23,7 @@ junit = "4.13.2"
 junitAndroidExt = "1.1.2"
 kotlinXCoroutines = "1.5.2"
 kotlin = "2.1.10"
+kover = "0.9.1"
 ksp = "2.1.10-1.0.31"
 lifecycle = "2.4.0"
 lifecycleExtentions = "2.2.0"
@@ -102,6 +103,7 @@ android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", ver
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kover-gradlePlugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 
@@ -112,7 +114,7 @@ android-lint = { id = "com.android.lint", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.9.1" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
@@ -126,3 +128,4 @@ movieratings-android-library-compose = { id = "movieratings.android.library.comp
 movieratings-hilt = { id = "movieratings.hilt" }
 movieratings-retrofit = { id = "movieratings.retrofit" }
 movieratings-android-room = { id = "movieratings.android.room"}
+movieratings-kover = { id = "movieratings.kover" }

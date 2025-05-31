@@ -24,6 +24,7 @@ dependencies {
     compileOnly(libs.android.tools.common)
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.kover.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.room.gradlePlugin)
 }
@@ -68,6 +69,10 @@ gradlePlugin {
         register("retrofit") {
             id = libs.plugins.movieratings.retrofit.get().pluginId
             implementationClass = "MoshiConventionPlugin"
+        }
+        register("kover") {
+            id = libs.plugins.movieratings.kover.get().pluginId
+            implementationClass = "KoverConventionPlugin"
         }
     }
 }
