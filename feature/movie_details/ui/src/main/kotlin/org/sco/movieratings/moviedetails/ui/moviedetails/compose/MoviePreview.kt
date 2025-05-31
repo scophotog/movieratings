@@ -3,13 +3,16 @@ package org.sco.movieratings.moviedetails.ui.moviedetails.compose
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import org.sco.movieratings.moviedetails.ui.moviedetails.R
 import org.sco.movieratings.shared.api.MoviePreviewItem
 
@@ -31,7 +35,7 @@ fun MoviePreview(moviePreview: MoviePreviewItem, modifier: Modifier = Modifier) 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .background(color = MaterialTheme.colors.background)
+            .background(color = MaterialTheme.colorScheme.background)
             .clickable(
                 enabled = true,
                 role = Role.Button,
@@ -40,7 +44,7 @@ fun MoviePreview(moviePreview: MoviePreviewItem, modifier: Modifier = Modifier) 
             .border(
                 border = BorderStroke(
                     width = 1.dp,
-                    color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                 )
             )
             .padding(top = 4.dp, bottom = 4.dp, start = 4.dp)
@@ -55,16 +59,16 @@ fun MoviePreview(moviePreview: MoviePreviewItem, modifier: Modifier = Modifier) 
         )
         Text(
             text = previewTitle,
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(start = 5.dp)
         )
     }
 }
 
 private fun startYouTube(moviePreviewKey: String, context: Context) {
-    val youTubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$moviePreviewKey"))
+    val youTubeIntent = Intent(Intent.ACTION_VIEW, "vnd.youtube:$moviePreviewKey".toUri())
     val youTubeWebIntent =
-        Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=$moviePreviewKey"))
+        Intent(Intent.ACTION_VIEW, "http://www.youtube.com/watch?v=$moviePreviewKey".toUri())
     try {
         context.startActivity(youTubeIntent)
     } catch (e: ActivityNotFoundException) {

@@ -2,10 +2,10 @@ package org.sco.movieratings.compose
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -15,9 +15,9 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import org.sco.movieratings.R
+import org.sco.movieratings.designsystem.ui.theme.AppTheme
 import org.sco.movieratings.movielist.api.MovieListType
 import org.sco.movieratings.movielist.ui.movielist.compose.MovieList
-import org.sco.movieratings.ui.theme.AppTheme
 
 fun NavGraphBuilder.addHomeGraph(
     onMovieSelected: (Int, NavBackStackEntry) -> Unit,
@@ -84,9 +84,9 @@ fun MovieRatingsBottomBar(
 ) {
     val currentSection = tabs.first { it.route == currentRoute }
 
-    BottomNavigation {
+    NavigationBar {
         tabs.forEach { section ->
-            BottomNavigationItem(
+            NavigationBarItem(
                 icon = {
                     Icon(
                         painterResource(id = section.icon),
@@ -107,7 +107,7 @@ fun MovieRatingsBottomBar(
 private fun MovieRatingsBottomNavPreview() {
     AppTheme {
         MovieRatingsBottomBar(
-            tabs = MovieListSections.values(),
+            tabs = MovieListSections.entries.toTypedArray(),
             currentRoute = MovieListSections.TOP_MOVIES.route,
             navigateToRoute = {}
         )

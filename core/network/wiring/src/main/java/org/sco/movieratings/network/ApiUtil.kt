@@ -15,7 +15,6 @@ suspend fun <T : Any> apiCall(call: suspend () -> Response<T>): Result<T> {
 
     return if (!response.isSuccessful) {
         val errorBody = response.errorBody()
-        @Suppress("BlockingMethodInNonBlockingContext")
         Result.failure(IOException("Bad Response: ${response.message()} ${response.code()} ${errorBody?.string()}"))
     } else {
         val responseBody = response.body()

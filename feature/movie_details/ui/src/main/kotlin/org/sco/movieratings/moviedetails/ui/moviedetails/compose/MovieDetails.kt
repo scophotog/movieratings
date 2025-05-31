@@ -4,17 +4,32 @@ import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -88,7 +103,7 @@ fun MovieDetailsScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colors.background)
+            .background(color = MaterialTheme.colorScheme.background)
     ) {
         BannerImage(movieDetailItem = movieDetailItem, contentDescription = "")
         Body(movieDetailItem = movieDetailItem, reviewList = reviewList, previewList = previewList, isFavorite = isFavorite, onFavoriteClick = onFavoriteIconClick)
@@ -180,13 +195,13 @@ fun MovieDetailsPoster(movieDetailItem: MovieListItem, isFavorite: Boolean, onFa
         )
         IconButton(
             onClick = { onFavoriteClick() },
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp).background(shape = CircleShape, color = MaterialTheme.colors.onSecondary.copy(alpha = 0.8f)).align(Alignment.BottomEnd)
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp).background(shape = CircleShape, color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f)).align(Alignment.BottomEnd)
         ) {
             Icon(
                 painter = if (isFavorite) painterResource(R.drawable.ic_is_favorite) else painterResource(
                     R.drawable.ic_not_favorite
                 ),
-                tint = MaterialTheme.colors.secondary,
+                tint = MaterialTheme.colorScheme.secondary,
                 contentDescription = null
             )
         }
@@ -196,21 +211,21 @@ fun MovieDetailsPoster(movieDetailItem: MovieListItem, isFavorite: Boolean, onFa
 @Composable
 fun MovieDetailsTextLayout(movieDetailItem: MovieListItem) {
     Column {
-        Text(text = movieDetailItem.title, style = MaterialTheme.typography.h4)
+        Text(text = movieDetailItem.title, style = MaterialTheme.typography.headlineMedium)
         Text(text = "Release Date ${movieDetailItem.releaseDate}")
         Spacer(
             modifier = Modifier
                 .height(10.dp)
                 .fillMaxWidth()
         )
-        Text(text = "Overview".uppercase(), style = MaterialTheme.typography.h6)
-        Text(text = movieDetailItem.overview ?: "", style = MaterialTheme.typography.body1)
+        Text(text = "Overview".uppercase(), style = MaterialTheme.typography.headlineSmall)
+        Text(text = movieDetailItem.overview ?: "", style = MaterialTheme.typography.bodyLarge)
     }
 }
 
 @Preview
 @Composable
-fun MovieDetailsTextLayout() {
+fun MovieDetailsTextLayoutPreview() {
     MovieDetailsTextLayout(movieDetailItem = TestData)
 }
 
@@ -264,7 +279,7 @@ fun BannerImage(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            MaterialTheme.colors.background
+                            MaterialTheme.colorScheme.background
                         ),
                         startY = 50f
                     )

@@ -1,14 +1,18 @@
 package org.sco.movieratings.compose
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.*
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.navigation
+import org.sco.movieratings.designsystem.ui.theme.AppTheme
 import org.sco.movieratings.moviedetails.ui.moviedetails.compose.MovieDetailsScreen
-import org.sco.movieratings.ui.theme.AppTheme
 
 @Composable
 fun MovieApp() {
@@ -23,8 +27,7 @@ fun MovieApp() {
                         navigateToRoute = appState::navigateToBottonBarRoute
                     )
                 }
-            },
-            scaffoldState = appState.scaffoldState
+            }
         ) { innerPaddingModifier  ->
             NavHost(
                 navController = appState.navController,

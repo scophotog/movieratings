@@ -10,10 +10,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -78,7 +78,7 @@ fun MovieList(
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center),
-                color = MaterialTheme.colors.onBackground
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -128,7 +128,7 @@ fun MovieItem(
             .clickable(
                 onClick = { selectMovie(movie.id) }
             ),
-        elevation = 8.dp,
+        shadowElevation = 8.dp,
         shape = RoundedCornerShape(8.dp)
     ) {
         AsyncImage(
@@ -148,7 +148,7 @@ fun MovieListError(
 ) {
     Text(
         text = errorMessage,
-        style = MaterialTheme.typography.h2,
+        style = MaterialTheme.typography.displayLarge,
         textAlign = TextAlign.Center,
         modifier = modifier
     )

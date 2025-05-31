@@ -2,15 +2,20 @@ package org.sco.movieratings.movielist.ui.movielist.compose
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -70,7 +75,7 @@ fun MovieList(
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center),
-                color = MaterialTheme.colors.onBackground
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -100,7 +105,7 @@ fun MovieCarousel(
     Column {
         Text(
             text = movieListTitle,
-            style = MaterialTheme.typography.h5,
+            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(start = 8.dp)
         )
         LazyRow(
@@ -143,7 +148,7 @@ fun MovieItem(
             .clickable(
                 onClick = { selectMovie(movie.id) }
             ),
-        elevation = 8.dp,
+        shadowElevation = 8.dp,
         shape = RoundedCornerShape(8.dp)
     ) {
         AsyncImage(
@@ -163,7 +168,7 @@ fun MovieListError(
 ) {
     Text(
         text = errorMessage,
-        style = MaterialTheme.typography.h2,
+        style = MaterialTheme.typography.displayLarge,
         textAlign = TextAlign.Center,
         modifier = modifier
     )

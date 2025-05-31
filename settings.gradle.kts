@@ -1,8 +1,16 @@
 pluginManagement {
+    includeBuild("build-logic")
+
     repositories {
-        gradlePluginPortal()
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
         mavenCentral()
+        gradlePluginPortal()
     }
 
     resolutionStrategy {
@@ -15,12 +23,20 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
     repositories {
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
         mavenCentral()
     }
 }
+
+rootProject.name = "movieratings"
 
 include(":app")
 include(":espresso")
@@ -52,3 +68,4 @@ include(":feature:movie_list:ui2")
 include(":core:db:api")
 include(":core:db:wiring")
 include(":util")
+include(":core:designsystem")

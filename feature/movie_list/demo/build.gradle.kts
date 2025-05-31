@@ -1,18 +1,14 @@
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("dagger.hilt.android.plugin")
-    id("kotlin-kapt")
+    alias(libs.plugins.movieratings.android.application)
+    alias(libs.plugins.movieratings.android.application.compose)
+    alias(libs.plugins.movieratings.hilt)
 }
 
 android {
     namespace = "org.sco.movieratings.movielist.demo"
-    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "org.sco.movieratings.movielist.demo"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -45,22 +41,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
-
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -75,23 +55,9 @@ dependencies {
     fakeImplementation(project(":feature:movie_list:fake-wiring"))
     realImplementation(project(":feature:movie_list:wiring"))
 
+    implementation(project(":core:designsystem"))
 
-    // Other Dependencies
-    implementation(libs.coreKtx)
-    implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.activityCompose)
-    implementation(libs.viewmodelCompose)
-    implementation(libs.viewmodelKtx)
-
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.toolingPreview)
-    debugImplementation(libs.androidx.compose.uiTooling)
-
-    implementation(libs.lifecycle.livedata.ktx)
-    implementation(libs.hilt.navigation.compose)
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.activity.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.junitAndroidExt)

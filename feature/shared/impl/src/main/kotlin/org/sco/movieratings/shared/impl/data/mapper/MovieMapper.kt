@@ -55,7 +55,7 @@ class MovieMapper @Inject constructor(
         }
     }
 
-    fun mapMovieSchemaToMovieList(movieRawList: List<org.sco.movieratings.db.api.MovieSchema>): List<MovieListItem> {
+    fun mapMovieSchemaToMovieList(movieRawList: List<MovieSchema>): List<MovieListItem> {
         return movieRawList.map {
             MovieListItem(
                 id = it.id,
@@ -65,8 +65,8 @@ class MovieMapper @Inject constructor(
         }
     }
     
-    fun mapToMovieSchema(movieListItem: MovieListItem): org.sco.movieratings.db.api.MovieSchema {
-        return org.sco.movieratings.db.api.MovieSchema(
+    fun mapToMovieSchema(movieListItem: MovieListItem): MovieSchema {
+        return MovieSchema(
             id = movieListItem.id,
             title = movieListItem.title,
             posterPath = movieListItem.posterPath ?: "",

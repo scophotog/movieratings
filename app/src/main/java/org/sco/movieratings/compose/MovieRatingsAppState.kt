@@ -1,7 +1,5 @@
 package org.sco.movieratings.compose
 
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -22,19 +20,17 @@ object MainDestinations {
 
 @Composable
 fun rememberMovieRatingsAppState(
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
     navController: NavHostController = rememberNavController()
 ) =
-    remember(scaffoldState, navController) {
-        MovieRatingsAppState(scaffoldState, navController)
+    remember(navController) {
+        MovieRatingsAppState(navController)
     }
 
 @Stable
 class MovieRatingsAppState(
-    val scaffoldState: ScaffoldState,
     val navController: NavHostController
 ) {
-    val bottomBarTabs = MovieListSections.values()
+    val bottomBarTabs = MovieListSections.entries.toTypedArray()
 
     private val bottomBarRoutes = bottomBarTabs.map { it.route }
     val shouldShowBottomBar: Boolean
@@ -75,7 +71,7 @@ class MovieRatingsAppState(
  * This is used to de-duplicate navigation events.
  */
 private fun NavBackStackEntry.lifecycleIsResumed() =
-    this.getLifecycle().currentState == Lifecycle.State.RESUMED
+    this.lifecycle.currentState == Lifecycle.State.RESUMED
 
 private val NavGraph.startDestination: NavDestination?
     get() = findNode(startDestinationId)

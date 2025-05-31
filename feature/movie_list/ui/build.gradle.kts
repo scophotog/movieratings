@@ -1,35 +1,20 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
+    alias(libs.plugins.movieratings.android.feature)
+    alias(libs.plugins.movieratings.android.library)
+    alias(libs.plugins.movieratings.android.library.compose)
+    alias(libs.plugins.movieratings.hilt)
 }
 
+//apply {
+//    plugin("app.cash.paparazzi")
+//}
+
 android {
-    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-
         testInstrumentationRunner = "org.sco.espresso.HiltTestRunner"
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
     namespace = "org.sco.movieratings.movielist.ui.movielist"
 }
 
@@ -38,29 +23,18 @@ dependencies {
     api(project(":feature:shared:api"))
     implementation(project(":util"))
 
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.toolingPreview)
-    debugImplementation(libs.androidx.compose.uiTooling)
-
-    implementation(libs.coroutinesCore)
-    implementation(libs.coroutinesAndroid)
-
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
-    implementation(libs.hilt.navigation.compose)
+    implementation(project(":core:designsystem"))
 
     implementation(libs.coil)
     implementation(libs.coilCompose)
 
     // Testing
-    debugImplementation(libs.androidx.compose.test.manifest)
+    testImplementation(libs.junit)
+
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.test.junit4)
     androidTestImplementation(libs.junitAndroidExt)
     androidTestImplementation(libs.androidCoreTesting)
     androidTestImplementation(libs.espresso)
     androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest(libs.hilt.android.compiler)
     androidTestImplementation(project(":espresso"))
 }

@@ -13,8 +13,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.sco.movieratings.db.api.MovieDao
 import org.sco.movieratings.db.MovieDatabase
+import org.sco.movieratings.db.api.MovieDao
 import org.sco.movieratings.db.api.MovieSchema
 
 class MovieDaoTest {

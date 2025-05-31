@@ -5,7 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.sco.movieratings.movielist.api.MovieListInteractor
-import org.sco.movieratings.movielist.api.MovieListType
 import javax.inject.Inject
 
 @HiltViewModel

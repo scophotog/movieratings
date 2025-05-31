@@ -1,8 +1,8 @@
 package org.sco.movieratings.moviedetails.ui.moviedetails.compose
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -10,10 +10,10 @@ import androidx.compose.ui.geometry.Offset
 
 @Composable
 fun HeaderSection(text: String) {
-    val lineColor = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
+    val lineColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
     Text(
         text = text,
-        style = MaterialTheme.typography.h5,
+        style = MaterialTheme.typography.headlineMedium,
         modifier = Modifier
             .fillMaxWidth()
             .drawBehind {

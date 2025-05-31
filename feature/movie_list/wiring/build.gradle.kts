@@ -1,45 +1,13 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
+    alias(libs.plugins.movieratings.android.library)
+    alias(libs.plugins.movieratings.hilt)
 }
 
 android {
-    compileSdk = libs.versions.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     namespace = "org.sco.movieratings.movielist.di"
 }
 
 dependencies {
-    implementation(project(":core:db:impl"))
-    implementation(project(":core:network:wiring"))
     implementation(project(":feature:movie_list:impl"))
     implementation(project(":feature:shared:wiring"))
-
-    implementation(libs.retrofit)
-    implementation(libs.retrofitMoshi)
-    kapt(libs.moshiKotlinCodegen)
-    implementation(libs.moshiKotlin)
-
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
-
-    implementation(libs.coroutinesCore)
-    implementation(libs.coroutinesAndroid)
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
 }
