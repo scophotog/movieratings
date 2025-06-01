@@ -60,6 +60,8 @@ include(":feature:movie_list:ui2")
 include(":core:db:api")
 include(":core:db:wiring")
 include(":core:designsystem")
+include(":core:testing")
+include(":core:screenshot-testing")
 include(":util")
 
 
@@ -70,3 +72,4 @@ check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     https://developer.android.com/build/jdks#jdk-config-in-studio
     """.trimIndent()
 }
+

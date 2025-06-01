@@ -13,11 +13,7 @@ dependencies {
     api(project(":feature:movie_list:api"))
     implementation(project(":core:db:impl"))
 
-    testImplementation(libs.junit)
+    testImplementation(project(":core:testing"))
     testImplementation(libs.mockk)
     testImplementation(project(":feature:shared:fake"))
-    testImplementation("androidx.test:core:1.4.0")
-    testImplementation("androidx.arch.core:core-testing:2.1.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
-    testImplementation("androidx.room:room-testing:2.4.1")
 }
