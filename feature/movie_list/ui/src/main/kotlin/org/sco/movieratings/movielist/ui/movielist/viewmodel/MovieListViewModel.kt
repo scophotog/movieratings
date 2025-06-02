@@ -7,13 +7,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.sco.movieratings.movielist.api.MovieListInteractor
-import org.sco.movieratings.movielist.api.MovieListType
+import org.sco.movieratings.core.domain.GetFavoriteMoviesUseCase
+import org.sco.movieratings.core.domain.GetPopularMoviesUseCase
+import org.sco.movieratings.core.domain.GetTopRatedMoviesUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
-    private val movieListInteractor: MovieListInteractor
+    private val popularMoviesUseCase: GetPopularMoviesUseCase,
+    private val topRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+    private val favoriteMoviesUseCase: GetFavoriteMoviesUseCase,
 ) : ViewModel() {
 
     private var _listState = MutableStateFlow<MovieListViewState>(MovieListViewState.Empty)
@@ -28,19 +31,21 @@ class MovieListViewModel @Inject constructor(
         viewModelScope.launch {
             _listState.value = MovieListViewState.Loading
             val movieList = when(type) {
-                MovieListType.POPULAR ->  movieListInteractor.getPopularMovies()
-                MovieListType.TOP ->  movieListInteractor.getTopRatedMovies()
-                MovieListType.FAVORITE ->  movieListInteractor.getFavoriteMovies()
+                MovieListType.POPULAR ->  popularMoviesUseCase()
+                MovieListType.TOP ->  topRatedMoviesUseCase()
+                MovieListType.FAVORITE ->  favoriteMoviesUseCase()
             }
-            _listState.value = if (movieList.isNotEmpty()) {
-                MovieListViewState.Loaded(
+            movieList.collect {
+                _listState.value = if (it.isNotEmpty()) {
+                    MovieListViewState.Loaded(
                         MovieListState(
-                            movieList = movieList,
+                            movieList = it,
                             type = type
                         )
-                )
-            } else {
-                MovieListViewState.Empty
+                    )
+                } else {
+                    MovieListViewState.Empty
+                }
             }
         }
     }

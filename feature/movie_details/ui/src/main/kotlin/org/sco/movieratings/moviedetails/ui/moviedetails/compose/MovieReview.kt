@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
-import org.sco.movieratings.shared.api.MovieReviewItem
+import org.sco.movieratings.core.model.data.MovieReviewItem
 
 @Composable
 fun MovieReview(review: MovieReviewItem) {

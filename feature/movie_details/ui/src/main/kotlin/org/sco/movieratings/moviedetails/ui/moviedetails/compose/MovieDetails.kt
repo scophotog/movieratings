@@ -43,11 +43,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import org.sco.movieratings.core.model.data.MovieListItem
+import org.sco.movieratings.core.model.data.MoviePreviewItem
+import org.sco.movieratings.core.model.data.MovieReviewItem
 import org.sco.movieratings.moviedetails.ui.moviedetails.MovieDetailsViewModel
 import org.sco.movieratings.moviedetails.ui.moviedetails.R
-import org.sco.movieratings.shared.api.MovieListItem
-import org.sco.movieratings.shared.api.MoviePreviewItem
-import org.sco.movieratings.shared.api.MovieReviewItem
 
 @Composable
 fun MovieDetailsScreen(movieId: Int, onNavigateUp: () -> Unit) {
@@ -62,7 +62,8 @@ fun MovieDetailsLoader(
 ) {
     val movieDetail by remember(movieDetailsViewModel, movieId) {
         movieDetailsViewModel.getMovie(movieId)
-    }.collectAsState(initial = null)
+        movieDetailsViewModel.uiState
+    }.collectAsState()
 
     val isFavorite by remember(movieDetailsViewModel, movieId) {
         movieDetailsViewModel.isFavorite
@@ -72,22 +73,26 @@ fun MovieDetailsLoader(
         movieDetailsViewModel.checkIsFavorite(movieId)
     }
     val context = LocalContext.current
-    movieDetail?.let {
-        MovieDetailsScreen(
-            movieDetailItem = it,
-            onNavigateUp = onNavigateUp,
-            reviewList = it.reviewList,
-            previewList = it.previewList,
-            isFavorite = isFavorite,
-            onFavoriteIconClick = {
-                movieDetailsViewModel.onFavoriteClick(it.id)
-                // TODO: Use a snackbar
-                if (isFavorite) {
-                    Toast.makeText(context,"Removed from favorites", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context,"Added to favorites", Toast.LENGTH_SHORT).show()
-                }
-            })
+    when(val movie = movieDetail) {
+        is MovieDetailsViewModel.MovieUiState.Empty,
+        is MovieDetailsViewModel.MovieUiState.Loading -> {/* no-op */}
+        is MovieDetailsViewModel.MovieUiState.Movie -> {
+            MovieDetailsScreen(
+                movieDetailItem = movie.movie,
+                onNavigateUp = onNavigateUp,
+                reviewList = movie.movie.reviewList,
+                previewList = movie.movie.previewList,
+                isFavorite = isFavorite,
+                onFavoriteIconClick = {
+                    movieDetailsViewModel.onFavoriteClick(movie.movie.id)
+                    // TODO: Use a snackbar
+                    if (isFavorite) {
+                        Toast.makeText(context,"Removed from favorites", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context,"Added to favorites", Toast.LENGTH_SHORT).show()
+                    }
+                })
+        }
     }
 }
 

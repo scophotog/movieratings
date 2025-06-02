@@ -7,5 +7,5 @@ android {
 }
 
 dependencies {
-    api(project(":feature:shared:api"))
+    api(project(":core:model"))
 }

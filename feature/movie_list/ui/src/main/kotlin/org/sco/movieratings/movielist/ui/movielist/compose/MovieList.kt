@@ -28,11 +28,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import org.sco.movieratings.movielist.api.MovieListType
+import org.sco.movieratings.core.model.data.MovieListItem
 import org.sco.movieratings.movielist.ui.movielist.R
+import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListType
 import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewModel
 import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewState
-import org.sco.movieratings.shared.api.MovieListItem
 import org.sco.movieratings.util.WindowInfo
 import org.sco.movieratings.util.rememberWindowInfo
 

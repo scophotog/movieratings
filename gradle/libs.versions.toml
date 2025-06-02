@@ -39,6 +39,8 @@ retrofit = "2.9.0"
 room = "2.7.1"
 androidXTestCore = "1.5.0"
 paparazzi = "1.3.5"
+turbine = "1.2.0"
+appcompat = "1.7.0"
 
 
 [bundles]
@@ -87,6 +89,7 @@ hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hi
 hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
 hilt-ext-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltExt" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigation" }
+javax-inject = { module = "javax.inject:javax.inject", version = "1" }
 junit = { module = "junit:junit", version.ref = "junit" }
 junitAndroidExt = { module = "androidx.test.ext:junit", version.ref = "junitAndroidExt" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
@@ -107,6 +110,7 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 app-cash-paparazzi = { module = "app.cash.paparazzi:paparazzi-gradle-plugin", version.ref = "paparazzi" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
@@ -116,6 +120,7 @@ kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-pl
 kover-gradlePlugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -139,3 +144,5 @@ movieratings-hilt = { id = "movieratings.hilt" }
 movieratings-retrofit = { id = "movieratings.retrofit" }
 movieratings-android-room = { id = "movieratings.android.room"}
 movieratings-kover = { id = "movieratings.kover" }
+movieratings-jvm-library = { id = "movieratings.jvm.library" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

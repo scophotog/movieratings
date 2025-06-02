@@ -32,36 +32,26 @@ rootProject.name = "movieratings"
 
 include(":app")
 include(":espresso")
-include(":core:network:wiring")
-include(":core:db:impl")
-include(":core:coroutine:wiring")
+include(":core:db")
+include(":core:network")
+include(":core:designsystem")
+include(":core:testing")
+include(":core:screenshot-testing")
+include(":core:common")
+include(":core:model")
+include(":core:data")
+include(":core:domain")
 
-include(":feature:shared:api")
-include(":feature:shared:impl")
-include(":feature:shared:wiring")
-include(":feature:shared:fake")
+//include(":feature:shared:fake")
 
-include(":feature:movie_details:api")
-include(":feature:movie_details:impl")
-include(":feature:movie_details:wiring")
-include(":feature:movie_details:fake")
-include(":feature:movie_details:fake-wiring")
 include(":feature:movie_details:ui")
 
-include(":feature:movie_list:api")
-include(":feature:movie_list:impl")
-include(":feature:movie_list:wiring")
-include(":feature:movie_list:fake")
-include(":feature:movie_list:fake-wiring")
+
 include(":feature:movie_list:demo")
 include(":feature:movie_list:demo-carousel")
 include(":feature:movie_list:ui")
 include(":feature:movie_list:ui2")
-include(":core:db:api")
-include(":core:db:wiring")
-include(":core:designsystem")
-include(":core:testing")
-include(":core:screenshot-testing")
+
 include(":util")
 
 
@@ -72,4 +62,5 @@ check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     https://developer.android.com/build/jdks#jdk-config-in-studio
     """.trimIndent()
 }
+
 

@@ -74,5 +74,9 @@ gradlePlugin {
             id = libs.plugins.movieratings.kover.get().pluginId
             implementationClass = "KoverConventionPlugin"
         }
+        register("jvmLibrary") {
+            id = libs.plugins.movieratings.jvm.library.get().pluginId
+            implementationClass = "JvmLibraryConventionPlugin"
+        }
     }
 }

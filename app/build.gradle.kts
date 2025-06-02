@@ -33,11 +33,11 @@ android {
 
 dependencies {
     // Movie Details
-    implementation(project(":feature:movie_details:wiring"))
+//    implementation(project(":feature:movie_details:wiring"))
     implementation(project(":feature:movie_details:ui"))
 
     // Movie List
-    implementation(project(":feature:movie_list:wiring"))
+//    implementation(project(":feature:movie_list:wiring"))
     implementation(project(":feature:movie_list:ui"))
 //    implementation(project(":feature:movie_list:ui2"))
     implementation(project(":core:designsystem"))

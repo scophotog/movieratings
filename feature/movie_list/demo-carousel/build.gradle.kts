@@ -52,8 +52,8 @@ val realImplementation by configurations
 dependencies {
     // Demo Dependencies
     implementation(project(":feature:movie_list:ui2"))
-    fakeImplementation(project(":feature:movie_list:fake-wiring"))
-    realImplementation(project(":feature:movie_list:wiring"))
+//    fakeImplementation(project(":feature:movie_list:fake-wiring"))
+//    realImplementation(project(":feature:movie_list:wiring"))
 
     implementation(project(":core:designsystem"))
 

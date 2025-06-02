@@ -19,8 +19,9 @@ android {
 }
 
 dependencies {
-    api(project(":feature:movie_list:api"))
-    api(project(":feature:shared:api"))
+//    api(project(":feature:movie_list:api"))
+    implementation(project(":core:domain"))
+    api(project(":core:model"))
     implementation(project(":util"))
 
     implementation(project(":core:designsystem"))

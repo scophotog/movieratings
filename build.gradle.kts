@@ -24,6 +24,7 @@ plugins {
     alias(libs.plugins.room) apply false
     alias(libs.plugins.kover) apply false
     alias(libs.plugins.paparazzi) apply false
+    alias(libs.plugins.kotlin.android) apply false
 }
 
 tasks.register<Delete>("clean").configure {

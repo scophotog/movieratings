@@ -1,7 +1,7 @@
 package org.sco.movieratings.shared.fake.repository
 
 import org.sco.movieratings.shared.api.MovieListItem
-import org.sco.movieratings.shared.api.MovieListRepository
+import org.sco.movieratings.core.data.repository.MovieListRepository
 import org.sco.movieratings.shared.api.MoviePreviewItem
 import org.sco.movieratings.shared.api.MovieReviewItem
 

@@ -16,8 +16,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import org.sco.movieratings.R
 import org.sco.movieratings.designsystem.ui.theme.AppTheme
-import org.sco.movieratings.movielist.api.MovieListType
 import org.sco.movieratings.movielist.ui.movielist.compose.MovieList
+import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListType
 
 fun NavGraphBuilder.addHomeGraph(
     onMovieSelected: (Int, NavBackStackEntry) -> Unit,

@@ -3,9 +3,9 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import org.junit.Rule
 import org.junit.Test
-import org.sco.movieratings.movielist.api.MovieListType
 import org.sco.movieratings.movielist.ui.movielist.compose.MovieList
 import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListState
+import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListType
 import org.sco.movieratings.movielist.ui.movielist.viewmodel.MovieListViewState
 import org.sco.movieratings.shared.api.MovieListItem
 

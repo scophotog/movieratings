@@ -24,8 +24,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import org.sco.movieratings.core.model.data.MoviePreviewItem
 import org.sco.movieratings.moviedetails.ui.moviedetails.R
-import org.sco.movieratings.shared.api.MoviePreviewItem
 
 @Composable
 fun MoviePreview(moviePreview: MoviePreviewItem, modifier: Modifier = Modifier) {
