@@ -44,7 +44,7 @@ class MovieRatingsAppState(
         navController.navigateUp()
     }
 
-    fun navigateToBottonBarRoute(route: String) {
+    fun navigateToBottomBarRoute(route: String) {
         if (route != currentRoute) {
             navController.navigate(route) {
                 launchSingleTop = true

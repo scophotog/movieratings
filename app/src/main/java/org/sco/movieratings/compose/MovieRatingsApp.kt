@@ -24,7 +24,7 @@ fun MovieApp() {
                     MovieRatingsBottomBar(
                         tabs = appState.bottomBarTabs,
                         currentRoute = appState.currentRoute!!,
-                        navigateToRoute = appState::navigateToBottonBarRoute
+                        navigateToRoute = appState::navigateToBottomBarRoute
                     )
                 }
             }

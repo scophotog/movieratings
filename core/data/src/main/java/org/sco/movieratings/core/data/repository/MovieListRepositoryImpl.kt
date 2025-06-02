@@ -13,9 +13,7 @@ import org.sco.movieratings.network.model.toMovieListItem
 import org.sco.movieratings.network.model.toMoviePreviewItem
 import org.sco.movieratings.network.model.toReviewItem
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class MovieListRepositoryImpl @Inject constructor(
     private val service: TheMovieDbNetworkDataSource,
     private val movieDao: MovieDao

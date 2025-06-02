@@ -3,5 +3,5 @@
     <!-- Base application theme. -->
     <style name="Theme.Movie" parent="Base.Theme.Movie" />
 
-    <style name="Base.Theme.Movie" parent="android:Theme.Material.Light.NoActionBar"/>
+    <style name="Base.Theme.Movie" parent="android:Theme.Material.NoActionBar" />
 </resources>
