@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.sco.movieratings.core.domain.AddFavoriteMovieUseCase
 import org.sco.movieratings.core.domain.GetMovieUseCase
@@ -25,8 +28,15 @@ class MovieDetailsViewModel @Inject constructor(
     private val _isFavorite = MutableStateFlow(false)
     val isFavorite: StateFlow<Boolean> = _isFavorite
 
-    private val _uiState = MutableStateFlow<MovieUiState>(MovieUiState.Loading)
+    private val _uiState = MutableStateFlow<MovieUiState>(MovieUiState.Empty)
     val uiState: StateFlow<MovieUiState> = _uiState
+        .onStart {
+            emit(MovieUiState.Empty)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = MovieUiState.Loading
+        )
 
     fun checkIsFavorite(movieId: Int) = viewModelScope.launch {
         movieFavoriteUseCase(movieId).collect {
